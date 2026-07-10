@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="MedicineBook.API/MedicineBook.API.csproj" />
+  <Project Path="MedicineBook.UI/MedicineBook.UI.esproj" />
 </Solution>
