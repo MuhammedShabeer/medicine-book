@@ -27,23 +27,23 @@ const Login = () => {
   };
 
   return (
-    <div className="app-container" style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '420px', padding: '40px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <Shield size={48} color="var(--primary-color)" style={{ marginBottom: '16px' }} />
-          <h2>Medicine Book</h2>
-          <p>Sign in to your account</p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="glass-panel animate-fade-in w-full max-w-md p-8 md:p-10">
+        <div className="text-center mb-8">
+          <Shield className="w-12 h-12 text-primary mx-auto mb-4" />
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Medicine Book</h2>
+          <p className="text-slate-300">Sign in to your account</p>
         </div>
 
         {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger-color)', padding: '12px', borderRadius: '8px', marginBottom: '24px', textAlign: 'center' }}>
+          <div className="bg-danger/10 text-danger p-3 rounded-lg mb-6 text-center text-sm font-medium border border-danger/20">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Username</label>
+            <label className="block mb-2 text-sm text-slate-300 font-medium">Username</label>
             <input 
               type="text" 
               className="glass-input" 
@@ -53,7 +53,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Password</label>
+            <label className="block mb-2 text-sm text-slate-300 font-medium">Password</label>
             <input 
               type="password" 
               className="glass-input" 
@@ -62,10 +62,14 @@ const Login = () => {
               required 
             />
           </div>
-          <button type="submit" className="glass-button" disabled={loading} style={{ marginTop: '12px' }}>
+          <button type="submit" className="glass-button mt-4" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+      </div>
+      
+      <div className="absolute bottom-6 w-full text-center text-[12px] text-white/30 tracking-wide font-medium pointer-events-none">
+        Concept & Design: Sayyid Muhammed
       </div>
     </div>
   );

@@ -12,7 +12,10 @@ export default defineConfig({
         name: 'Medicine Book',
         short_name: 'MedBook',
         description: 'Pharmacy Medicine Inventory Management',
-        theme_color: '#ffffff',
+        theme_color: '#0f172a',
+        background_color: '#0f172a',
+        display: 'standalone',
+        orientation: 'portrait',
         icons: [
           {
             src: 'pwa-192x192.png',

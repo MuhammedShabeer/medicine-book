@@ -1,47 +1,70 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Package, Users, Activity } from 'lucide-react';
+import axios from 'axios';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
+  const [stats, setStats] = useState({ totalMedicines: '--', totalUsers: '--', systemStatus: '--' });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('/api/dashboard/stats');
+        setStats(response.data);
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   return (
-    <div className="animate-fade-in">
-      <h1 style={{ marginBottom: '8px' }}>Dashboard</h1>
-      <p style={{ marginBottom: '32px' }}>Overview of Medicine Book</p>
+    <div className="animate-fade-in pb-8 min-h-[calc(100vh-64px)] md:min-h-screen flex flex-col">
+      <h1 className="text-3xl md:text-4xl mb-2">Dashboard</h1>
+      <p className="text-slate-300 mb-8">Overview of Medicine Book</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ padding: '16px', background: 'rgba(79, 70, 229, 0.1)', borderRadius: '12px', color: 'var(--primary-color)' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
+        <div className="glass-panel p-6 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+          <div className="p-4 bg-primary/10 rounded-2xl text-primary">
             <Package size={32} />
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.8rem' }}>--</h3>
-            <p style={{ margin: 0 }}>Total Medicines</p>
+            <h3 className="text-3xl m-0 leading-none">{loading ? '...' : stats.totalMedicines}</h3>
+            <p className="text-slate-300 text-sm mt-1">Total Medicines</p>
           </div>
         </div>
 
         {user.roles.includes('Admin') && (
-          <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', color: 'var(--secondary-color)' }}>
+          <div className="glass-panel p-6 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+            <div className="p-4 bg-secondary/10 rounded-2xl text-secondary">
               <Users size={32} />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: '1.8rem' }}>--</h3>
-              <p style={{ margin: 0 }}>Total Users</p>
+              <h3 className="text-3xl m-0 leading-none">{loading ? '...' : stats.totalUsers}</h3>
+              <p className="text-slate-300 text-sm mt-1">Total Users</p>
             </div>
           </div>
         )}
 
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px', color: 'var(--danger-color)' }}>
+        <div className="glass-panel p-6 flex items-center gap-4 hover:-translate-y-1 transition-transform">
+          <div className="p-4 bg-danger/10 rounded-2xl text-danger">
             <Activity size={32} />
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.8rem' }}>Active</h3>
-            <p style={{ margin: 0 }}>System Status</p>
+            <h3 className="text-3xl m-0 leading-none">{loading ? '...' : stats.systemStatus}</h3>
+            <p className="text-slate-300 text-sm mt-1">System Status</p>
           </div>
         </div>
+      </div>
+      
+      {/* Footer in the main content area so it's always visible on mobile too */}
+      <div className="mt-auto pt-8 text-center text-[11px] text-white/30 tracking-wide font-medium">
+        Concept & Design: Sayyid Muhammed
       </div>
     </div>
   );

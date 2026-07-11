@@ -70,5 +70,52 @@ namespace MedicineBook.API.Controllers
 
             return Ok(new { Status = "Success", Message = "User created successfully!" });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto model)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound(new { Status = "Error", Message = "User not found!" });
+
+            user.FullName = model.FullName;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User update failed!" });
+
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var passwordResult = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                if (!passwordResult.Succeeded)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Password update failed!" });
+            }
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+            if (!await _roleManager.RoleExistsAsync(model.Role))
+                await _roleManager.CreateAsync(new IdentityRole(model.Role));
+                
+            await _userManager.AddToRoleAsync(user, model.Role);
+
+            return Ok(new { Status = "Success", Message = "User updated successfully!" });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound(new { Status = "Error", Message = "User not found!" });
+
+            // Prevent deleting the main admin user if needed, but for now allow any admin to delete any user.
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User deletion failed!" });
+
+            return Ok(new { Status = "Success", Message = "User deleted successfully!" });
+        }
     }
 }
