@@ -31,8 +31,8 @@ const Login = () => {
       <div className="glass-panel animate-fade-in w-full max-w-md p-8 md:p-10">
         <div className="text-center mb-8">
           <Shield className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">Medicine Book</h2>
-          <p className="text-slate-300">Sign in to your account</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">Medicine Book</h2>
+          <p className="text-slate-600 dark:text-slate-300">Sign in to your account</p>
         </div>
 
         {error && (
@@ -43,7 +43,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
-            <label className="block mb-2 text-sm text-slate-300 font-medium">Username</label>
+            <label className="block mb-2 text-sm text-slate-700 dark:text-slate-300 font-medium">Username</label>
             <input 
               type="text" 
               className="glass-input" 
@@ -53,7 +53,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <label className="block mb-2 text-sm text-slate-300 font-medium">Password</label>
+            <label className="block mb-2 text-sm text-slate-700 dark:text-slate-300 font-medium">Password</label>
             <input 
               type="password" 
               className="glass-input" 
@@ -68,7 +68,7 @@ const Login = () => {
         </form>
       </div>
       
-      <div className="absolute bottom-6 w-full text-center text-[12px] text-white/30 tracking-wide font-medium pointer-events-none">
+      <div className="absolute bottom-6 w-full text-center text-[10px] text-slate-400 dark:text-white/30 tracking-wider font-semibold uppercase pointer-events-none">
         Concept & Design: Sayyid Muhammed
       </div>
     </div>

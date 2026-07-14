@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
-import { Upload, Search, RefreshCw, Plus, Edit, Trash2, X, Info } from 'lucide-react';
+import { Upload, Search, RefreshCw, Plus, Edit, Trash2, X, Info, ClipboardList } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import WorkflowCard from '../components/WorkflowCard';
+import WorkflowBuilder from '../components/WorkflowBuilder';
 
 const MedicinesList = () => {
   const [medicines, setMedicines] = useState([]);
@@ -25,7 +27,7 @@ const MedicinesList = () => {
   const [currentInfoMedicine, setCurrentInfoMedicine] = useState('');
   
   // Form states
-  const [formData, setFormData] = useState({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '' });
+  const [formData, setFormData] = useState({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '' });
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -79,7 +81,7 @@ const MedicinesList = () => {
 
   const openAddModal = () => {
     setModalMode('add');
-    setFormData({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '' });
+    setFormData({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '' });
     setFormError('');
     setShowModal(true);
   };
@@ -109,7 +111,8 @@ const MedicinesList = () => {
       name: medicine.category || '', // DB 'Category' maps to UI 'Name'
       quantity: medicine.quantity, 
       batchNumber: medicine.batchNumber || '', 
-      expiryDate: medicine.expiryDate ? new Date(medicine.expiryDate).toISOString().split('T')[0] : '' 
+      expiryDate: medicine.expiryDate ? new Date(medicine.expiryDate).toISOString().split('T')[0] : '',
+      workflowData: medicine.workflowData || ''
     });
     setFormError('');
     setShowModal(true);
@@ -139,7 +142,8 @@ const MedicinesList = () => {
       expiryDate: formData.expiryDate ? new Date(formData.expiryDate).toISOString() : new Date().toISOString(),
       price: 0, // Price is hidden in this app version
       description: '',
-      supplier: ''
+      supplier: '',
+      workflowData: formData.workflowData
     };
 
     try {
@@ -161,8 +165,8 @@ const MedicinesList = () => {
     <div className="animate-fade-in pb-8">
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl mb-2">Medicine Inventory</h1>
-          <p className="text-slate-300">View and manage pharmacy items</p>
+          <h1 className="text-3xl md:text-4xl mb-2 text-slate-900 dark:text-white">Medicine Inventory</h1>
+          <p className="text-slate-600 dark:text-slate-300">View and manage pharmacy items</p>
         </div>
         <div className="flex flex-wrap gap-3">
           {user.roles.includes('Admin') && (
@@ -212,9 +216,9 @@ const MedicinesList = () => {
       </div>
 
       {loading ? (
-        <div className="glass-panel p-8 text-center text-slate-300">Loading medicines...</div>
+        <div className="glass-panel p-8 text-center text-slate-600 dark:text-slate-300">Loading medicines...</div>
       ) : medicines.length === 0 ? (
-        <div className="glass-panel p-8 text-center text-slate-300">No medicines found.</div>
+        <div className="glass-panel p-8 text-center text-slate-600 dark:text-slate-300">No medicines found.</div>
       ) : (
         <>
           {/* Desktop Table View */}
@@ -245,7 +249,14 @@ const MedicinesList = () => {
                     {user.roles.includes('Admin') && (
                       <td className="p-4 text-right flex justify-end gap-2">
                         <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
-                          <Info size={14} /> Info
+                          <Info size={14} /> AI Web Summary
+                        </button>
+                        <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
+                          setInfoData({ type: 'workflow', data: m.workflowData ? JSON.parse(m.workflowData) : null });
+                          setCurrentInfoMedicine(m.category || m.name);
+                          setShowInfoModal(true);
+                        }}>
+                          <ClipboardList size={14} /> Workflow Card
                         </button>
                         <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1" onClick={() => openEditModal(m)}>
                           <Edit size={14} /> Edit
@@ -268,26 +279,26 @@ const MedicinesList = () => {
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
                     <div className="text-xs font-mono text-primary mb-1">#{m.name}</div>
-                    <div className="font-semibold text-white leading-tight break-words">{m.category || '-'}</div>
+                    <div className="font-semibold text-slate-900 dark:text-white leading-tight break-words">{m.category || '-'}</div>
                   </div>
                   <span className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${m.quantity < 10 ? 'bg-danger/20 text-danger' : 'bg-secondary/20 text-secondary'}`}>
                     Qty: {m.quantity}
                   </span>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-white/10 text-sm">
+                <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-slate-200 dark:border-white/10 text-sm">
                   <div>
-                    <span className="text-slate-400 block text-[0.65rem] uppercase tracking-wider mb-0.5">Batch #</span>
-                    <span className="font-medium text-slate-200">{m.batchNumber || '-'}</span>
+                    <span className="text-slate-500 dark:text-slate-400 block text-[0.65rem] uppercase tracking-wider mb-0.5">Batch #</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200">{m.batchNumber || '-'}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[0.65rem] uppercase tracking-wider mb-0.5">Expiry</span>
-                    <span className="font-medium text-slate-200">{new Date(m.expiryDate).toLocaleDateString()}</span>
+                    <span className="text-slate-500 dark:text-slate-400 block text-[0.65rem] uppercase tracking-wider mb-0.5">Expiry</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200">{new Date(m.expiryDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
                 {user.roles.includes('Admin') && (
-                  <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-white/10">
+                  <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
                     <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
                       <Info size={14} /> Info
                     </button>
@@ -307,12 +318,12 @@ const MedicinesList = () => {
 
       {/* Modal */}
       {showModal && createPortal(
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
-          <div className="glass-panel w-full max-w-md p-6 relative">
-            <button className="absolute top-4 right-4 text-slate-400 hover:text-white" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex items-start justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in">
+          <div className="glass-panel w-full max-w-2xl p-6 relative my-8 bg-white/95 dark:bg-slate-800/95">
+            <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
               <X size={24} />
             </button>
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">
               {modalMode === 'add' ? 'Add New Medicine' : 'Edit Medicine'}
             </h2>
 
@@ -324,28 +335,28 @@ const MedicinesList = () => {
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="block mb-1 text-sm text-slate-300">Code <span className="text-danger">*</span></label>
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Code <span className="text-danger">*</span></label>
                 <input type="text" className="glass-input py-2" required value={formData.code} onChange={e => setFormData({...formData, code: e.target.value})} />
               </div>
               
               <div>
-                <label className="block mb-1 text-sm text-slate-300">Name <span className="text-danger">*</span></label>
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Name <span className="text-danger">*</span></label>
                 <input type="text" className="glass-input py-2" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
               </div>
 
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block mb-1 text-sm text-slate-300">Quantity <span className="text-danger">*</span></label>
+                  <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Quantity <span className="text-danger">*</span></label>
                   <input type="number" min="0" className="glass-input py-2" required value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})} />
                 </div>
                 <div className="flex-1">
-                  <label className="block mb-1 text-sm text-slate-300">Batch Number</label>
+                  <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Batch Number</label>
                   <input type="text" className="glass-input py-2" value={formData.batchNumber} onChange={e => setFormData({...formData, batchNumber: e.target.value})} />
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1 text-sm text-slate-300">Expiry Date <span className="text-danger">*</span></label>
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Expiry Date <span className="text-danger">*</span></label>
                 <input type="date" className="glass-input py-2" required value={formData.expiryDate} onChange={e => setFormData({...formData, expiryDate: e.target.value})} />
               </div>
 
@@ -356,6 +367,13 @@ const MedicinesList = () => {
                 </button>
               </div>
             </form>
+
+            <div className="mt-6 border-t border-white/10 pt-4">
+               <WorkflowBuilder 
+                 data={formData.workflowData ? JSON.parse(formData.workflowData) : null} 
+                 onChange={(data) => setFormData({...formData, workflowData: JSON.stringify(data)})}
+               />
+            </div>
           </div>
         </div>,
         document.body
@@ -363,22 +381,22 @@ const MedicinesList = () => {
 
       {/* Info Modal */}
       {showInfoModal && createPortal(
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
-          <div className="glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col relative">
-            <div className="p-6 pb-4 border-b border-white/10 shrink-0">
-              <button className="absolute top-4 right-4 text-slate-400 hover:text-white" onClick={() => setShowInfoModal(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
+          <div className="glass-panel bg-white/95 dark:bg-slate-800/95 w-full max-w-4xl max-h-[90vh] flex flex-col relative overflow-hidden">
+            <div className="p-6 pb-4 border-b border-slate-200 dark:border-white/10 shrink-0">
+              <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowInfoModal(false)}>
                 <X size={24} />
               </button>
-              <h2 className="text-2xl font-bold mb-1 flex items-center gap-2">
-                <Info className="text-cyan-400" />
+              <h2 className="text-2xl font-bold mb-1 flex items-center gap-2 text-slate-900 dark:text-white">
+                <Info className="text-cyan-500 dark:text-cyan-400" />
                 Aggregated AI Mode
               </h2>
-              <p className="text-sm text-slate-300">
-                Live Data Overview for <span className="font-semibold text-white">#{currentInfoMedicine}</span>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Live Data Overview for <span className="font-semibold text-slate-900 dark:text-white">#{currentInfoMedicine}</span>
               </p>
             </div>
 
-            <div className="p-6 overflow-y-auto flex-1">
+            <div className="p-6 overflow-y-auto flex-1 bg-slate-50 dark:bg-slate-900/50">
               {infoError && (
                 <div className="bg-danger/10 text-danger p-4 rounded-xl mb-4 text-sm font-medium border border-danger/20">
                   {infoError}
@@ -390,18 +408,28 @@ const MedicinesList = () => {
                   <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
                   Querying multiple sources...
                 </div>
-              ) : !infoData ? null : (
+              ) : !infoData ? null : infoData.type === 'workflow' ? (
+                <div className="py-4">
+                  {infoData.data ? (
+                    <WorkflowCard drugName={currentInfoMedicine} data={infoData.data} />
+                  ) : (
+                    <div className="text-center text-slate-400 py-10">
+                      No pharmacy workflow card has been authored for this medicine yet. Admin can create one by clicking Edit.
+                    </div>
+                  )}
+                </div>
+              ) : (
                 <div className="flex flex-col gap-6">
                   
                   {/* DuckDuckGo Section */}
-                  <div className="bg-white/5 rounded-xl p-5 border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-orange-400"></span>
                       Web Summary (DuckDuckGo)
                     </h3>
                     {infoData.duckDuckGo ? (
                       <>
-                        <p className="text-sm text-slate-300 mb-3">{infoData.duckDuckGo.snippet}</p>
+                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">{infoData.duckDuckGo.snippet}</p>
                         <a href={infoData.duckDuckGo.url} target="_blank" rel="noopener noreferrer" className="text-orange-400 text-sm hover:underline">View Search Results ↗</a>
                       </>
                     ) : (
@@ -410,14 +438,14 @@ const MedicinesList = () => {
                   </div>
 
                   {/* Wikipedia Section */}
-                  <div className="bg-white/5 rounded-xl p-5 border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-blue-400"></span>
                       Wikipedia Medical Overview
                     </h3>
                     {infoData.wikipedia ? (
                       <>
-                        <p className="text-sm text-slate-300 mb-3">{infoData.wikipedia.summary}</p>
+                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">{infoData.wikipedia.summary}</p>
                         <a href={infoData.wikipedia.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 text-sm hover:underline">Read full article ↗</a>
                       </>
                     ) : (
@@ -426,21 +454,21 @@ const MedicinesList = () => {
                   </div>
 
                   {/* FDA Section */}
-                  <div className="bg-white/5 rounded-xl p-5 border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-red-400"></span>
                       US FDA Database
                     </h3>
                     {infoData.openFda ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 dark:text-slate-300">
                         {infoData.openFda.activeIngredient && (
-                           <div><strong className="text-slate-100 block mb-1">Active Ingredient:</strong> {infoData.openFda.activeIngredient}</div>
+                           <div><strong className="text-slate-900 dark:text-slate-100 block mb-1">Active Ingredient:</strong> {infoData.openFda.activeIngredient}</div>
                         )}
                         {infoData.openFda.purpose && (
-                           <div><strong className="text-slate-100 block mb-1">Purpose:</strong> {infoData.openFda.purpose}</div>
+                           <div><strong className="text-slate-900 dark:text-slate-100 block mb-1">Purpose:</strong> {infoData.openFda.purpose}</div>
                         )}
                         {infoData.openFda.warnings && (
-                           <div className="md:col-span-2"><strong className="text-slate-100 block mb-1">Warnings:</strong> <span className="line-clamp-3">{infoData.openFda.warnings}</span></div>
+                           <div className="md:col-span-2"><strong className="text-slate-900 dark:text-slate-100 block mb-1">Warnings:</strong> <span className="line-clamp-3">{infoData.openFda.warnings}</span></div>
                         )}
                       </div>
                     ) : (
@@ -451,23 +479,23 @@ const MedicinesList = () => {
 
 
                   {/* Wellcare Section */}
-                  <div className="bg-white/5 rounded-xl p-5 border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-green-400"></span>
                       Local Pharmacy Pricing (Wellcare Qatar)
                     </h3>
                     {infoData.wellcare?.length > 0 ? (
                       <div className="flex flex-col gap-3 mt-4">
                         {infoData.wellcare.map((item, index) => (
-                          <div key={index} className="flex gap-4 items-center bg-black/20 p-3 rounded-lg border border-white/5">
+                          <div key={index} className="flex gap-4 items-center bg-slate-50 dark:bg-black/20 p-3 rounded-lg border border-slate-200 dark:border-white/5">
                             {item.imageUrl ? (
                               <img src={item.imageUrl} alt={item.title} className="w-16 h-16 object-contain bg-white rounded p-1" />
                             ) : (
-                              <div className="w-16 h-16 bg-white/10 rounded flex items-center justify-center text-xs text-slate-500">No Img</div>
+                              <div className="w-16 h-16 bg-slate-200 dark:bg-white/10 rounded flex items-center justify-center text-xs text-slate-500">No Img</div>
                             )}
                             <div className="flex-1">
-                              <h4 className="font-semibold text-white text-sm">{item.title}</h4>
-                              <div className="text-green-400 font-medium text-sm mt-1">{item.price}</div>
+                              <h4 className="font-semibold text-slate-900 dark:text-white text-sm">{item.title}</h4>
+                              <div className="text-green-500 dark:text-green-400 font-medium text-sm mt-1">{item.price}</div>
                               {item.productUrl && <a href={item.productUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-400 hover:text-green-400 mt-1 inline-block">View Store Page</a>}
                             </div>
                           </div>

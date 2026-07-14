@@ -314,7 +314,8 @@ namespace MedicineBook.API.Controllers
                 Price = model.Price,
                 ExpiryDate = model.ExpiryDate,
                 BatchNumber = model.BatchNumber,
-                Supplier = model.Supplier
+                Supplier = model.Supplier,
+                WorkflowData = model.WorkflowData
             };
 
             _context.Medicines.Add(medicine);
@@ -339,6 +340,7 @@ namespace MedicineBook.API.Controllers
             medicine.ExpiryDate = model.ExpiryDate;
             medicine.BatchNumber = model.BatchNumber;
             medicine.Supplier = model.Supplier;
+            medicine.WorkflowData = model.WorkflowData;
 
             _context.Medicines.Update(medicine);
             await _context.SaveChangesAsync();
@@ -371,7 +373,8 @@ namespace MedicineBook.API.Controllers
                 Price = d.Price,
                 ExpiryDate = d.ExpiryDate,
                 BatchNumber = d.BatchNumber,
-                Supplier = d.Supplier
+                Supplier = d.Supplier,
+                WorkflowData = d.WorkflowData
             }).ToList();
         }
     }
@@ -386,5 +389,6 @@ namespace MedicineBook.API.Controllers
         public DateTime ExpiryDate { get; set; }
         public string? BatchNumber { get; set; }
         public string? Supplier { get; set; }
+        public string? WorkflowData { get; set; }
     }
 }

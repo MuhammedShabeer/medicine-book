@@ -11,5 +11,6 @@ namespace MedicineBook.API.Models
         public DateTime ExpiryDate { get; set; }
         public string? BatchNumber { get; set; }
         public string? Supplier { get; set; }
+        public string? WorkflowData { get; set; }
     }
 }

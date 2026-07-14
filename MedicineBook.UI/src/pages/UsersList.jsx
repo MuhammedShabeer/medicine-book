@@ -95,8 +95,8 @@ const UsersList = () => {
     <div className="animate-fade-in pb-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl mb-2">User Management</h1>
-          <p className="text-slate-300">Manage system users and their roles</p>
+          <h1 className="text-3xl md:text-4xl mb-2 text-slate-900 dark:text-white">User Management</h1>
+          <p className="text-slate-600 dark:text-slate-300">Manage system users and their roles</p>
         </div>
         <button className="glass-button justify-center" onClick={openAddModal}>
           <UserPlus size={18} />
@@ -105,7 +105,7 @@ const UsersList = () => {
       </div>
 
       {loading ? (
-        <div className="glass-panel p-8 text-center text-slate-300">Loading users...</div>
+        <div className="glass-panel p-8 text-center text-slate-600 dark:text-slate-300">Loading users...</div>
       ) : (
         <>
           {/* Desktop Table View */}
@@ -150,14 +150,14 @@ const UsersList = () => {
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
                     <div className="text-xs font-mono text-primary mb-1">@{u.username}</div>
-                    <div className="font-semibold text-white leading-tight break-words">{u.fullName || '-'}</div>
+                    <div className="font-semibold text-slate-900 dark:text-white leading-tight break-words">{u.fullName || '-'}</div>
                   </div>
                   <span className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${u.roles.includes('Admin') ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'}`}>
                     {u.roles.join(', ')}
                   </span>
                 </div>
 
-                <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-white/10">
+                <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
                   <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5" onClick={() => openEditModal(u)}>
                     <Edit size={14} /> Edit
                   </button>
@@ -173,12 +173,12 @@ const UsersList = () => {
 
       {/* Modal */}
       {showModal && createPortal(
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
-          <div className="glass-panel w-full max-w-md p-6 relative">
-            <button className="absolute top-4 right-4 text-slate-400 hover:text-white" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
+          <div className="glass-panel w-full max-w-md p-6 relative bg-white/95 dark:bg-slate-800/95">
+            <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
               <X size={24} />
             </button>
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">
               {modalMode === 'add' ? 'Add New User' : 'Edit User'}
             </h2>
 
@@ -191,26 +191,26 @@ const UsersList = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {modalMode === 'add' && (
                 <div>
-                  <label className="block mb-1 text-sm text-slate-300">Username <span className="text-danger">*</span></label>
+                  <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Username <span className="text-danger">*</span></label>
                   <input type="text" className="glass-input py-2" required value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} />
                 </div>
               )}
               
               <div>
-                <label className="block mb-1 text-sm text-slate-300">Full Name</label>
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Full Name</label>
                 <input type="text" className="glass-input py-2" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
               </div>
 
               <div>
-                <label className="block mb-1 text-sm text-slate-300">
-                  Password {modalMode === 'add' ? <span className="text-danger">*</span> : <span className="text-xs text-slate-400 font-normal ml-2">(Leave blank to keep unchanged)</span>}
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">
+                  Password {modalMode === 'add' ? <span className="text-danger">*</span> : <span className="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(Leave blank to keep unchanged)</span>}
                 </label>
                 <input type="password" className="glass-input py-2" required={modalMode === 'add'} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
               </div>
 
               <div>
-                <label className="block mb-1 text-sm text-slate-300">Role <span className="text-danger">*</span></label>
-                <select className="glass-input py-2 bg-surface" value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})}>
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Role <span className="text-danger">*</span></label>
+                <select className="glass-input py-2 bg-slate-50 dark:bg-slate-800" value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})}>
                   <option value="Staff">Staff</option>
                   <option value="Admin">Admin</option>
                 </select>
