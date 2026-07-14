@@ -109,7 +109,7 @@ const UsersList = () => {
       ) : (
         <>
           {/* Desktop Table View */}
-          <div className="hidden md:block glass-panel overflow-x-auto">
+          <div className="hidden md:block glass-panel overflow-x-auto overflow-y-auto max-h-[400px]">
             <table className="glass-table w-full min-w-[600px]">
               <thead>
                 <tr>
