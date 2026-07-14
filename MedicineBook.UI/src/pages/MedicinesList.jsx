@@ -26,6 +26,10 @@ const MedicinesList = () => {
   const [infoError, setInfoError] = useState('');
   const [currentInfoMedicine, setCurrentInfoMedicine] = useState('');
   
+  // Workflow Card Modal states
+  const [showWorkflowModal, setShowWorkflowModal] = useState(false);
+  const [workflowData, setWorkflowData] = useState(null);
+  
   // Form states
   const [formData, setFormData] = useState({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '' });
   const [formLoading, setFormLoading] = useState(false);
@@ -252,9 +256,9 @@ const MedicinesList = () => {
                           <Info size={14} /> AI Web Summary
                         </button>
                         <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
-                          setInfoData({ type: 'workflow', data: m.workflowData ? JSON.parse(m.workflowData) : null });
+                          setWorkflowData(m.workflowData ? JSON.parse(m.workflowData) : null);
                           setCurrentInfoMedicine(m.category || m.name);
-                          setShowInfoModal(true);
+                          setShowWorkflowModal(true);
                         }}>
                           <ClipboardList size={14} /> Workflow Card
                         </button>
@@ -298,9 +302,16 @@ const MedicinesList = () => {
                 </div>
 
                 {user.roles.includes('Admin') && (
-                  <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
+                  <div className="flex justify-end flex-wrap gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
                     <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
                       <Info size={14} /> Info
+                    </button>
+                    <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
+                      setWorkflowData(m.workflowData ? JSON.parse(m.workflowData) : null);
+                      setCurrentInfoMedicine(m.category || m.name);
+                      setShowWorkflowModal(true);
+                    }}>
+                      <ClipboardList size={14} /> Workflow
                     </button>
                     <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5" onClick={() => openEditModal(m)}>
                       <Edit size={14} /> Edit
@@ -408,17 +419,7 @@ const MedicinesList = () => {
                   <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
                   Querying multiple sources...
                 </div>
-              ) : !infoData ? null : infoData.type === 'workflow' ? (
-                <div className="py-4">
-                  {infoData.data ? (
-                    <WorkflowCard drugName={currentInfoMedicine} data={infoData.data} />
-                  ) : (
-                    <div className="text-center text-slate-400 py-10">
-                      No pharmacy workflow card has been authored for this medicine yet. Admin can create one by clicking Edit.
-                    </div>
-                  )}
-                </div>
-              ) : (
+              ) : !infoData ? null : (
                 <div className="flex flex-col gap-6">
                   
                   {/* DuckDuckGo Section */}
@@ -509,6 +510,29 @@ const MedicinesList = () => {
                 </div>
               )}
             </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Dedicated Workflow Card Modal */}
+      {showWorkflowModal && createPortal(
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowWorkflowModal(false)}>
+          <div className="relative w-full max-w-md flex justify-center" onClick={e => e.stopPropagation()}>
+            <button className="absolute top-4 right-4 z-50 text-white/70 hover:text-white transition-all p-1.5 bg-black/20 rounded-full hover:bg-black/40 backdrop-blur-md shadow-sm" onClick={() => setShowWorkflowModal(false)}>
+              <X size={20} />
+            </button>
+            {workflowData ? (
+              <WorkflowCard drugName={currentInfoMedicine} data={workflowData} />
+            ) : (
+              <div className="glass-panel p-8 text-center bg-white/90 dark:bg-slate-800/90 w-full rounded-2xl shadow-xl">
+                <ClipboardList className="mx-auto mb-3 text-slate-300 dark:text-slate-600" size={48} />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Workflow Card</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  No pharmacy workflow card has been authored for #{currentInfoMedicine} yet. Admin can create one by editing the medicine.
+                </p>
+              </div>
+            )}
           </div>
         </div>,
         document.body
