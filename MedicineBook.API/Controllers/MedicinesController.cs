@@ -32,7 +32,8 @@ namespace MedicineBook.API.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(m => m.Name.Contains(search) || (m.Category != null && m.Category.Contains(search)));
+                var lowerSearch = search.ToLower();
+                query = query.Where(m => m.Name.ToLower().Contains(lowerSearch) || (m.Category != null && m.Category.ToLower().Contains(lowerSearch)));
             }
 
             var totalItems = await query.CountAsync();
