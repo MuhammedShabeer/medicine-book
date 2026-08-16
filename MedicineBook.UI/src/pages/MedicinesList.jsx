@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
-import { Upload, Search, RefreshCw, Plus, Edit, Trash2, X, Info, ClipboardList } from 'lucide-react';
+import { Upload, Search, RefreshCw, Plus, Edit, Trash2, X, Info, ClipboardList, Lightbulb } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import WorkflowCard from '../components/WorkflowCard';
 import WorkflowBuilder from '../components/WorkflowBuilder';
+import MedicineFilesModal from '../components/MedicineFilesModal';
 
 const MedicinesList = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 50;
   
   const { user } = useContext(AuthContext);
+  const { addToast } = useToast();
   const fileInputRef = useRef(null);
 
   // Modal states
@@ -30,16 +37,34 @@ const MedicinesList = () => {
   const [showWorkflowModal, setShowWorkflowModal] = useState(false);
   const [workflowData, setWorkflowData] = useState(null);
   
+  // Files Modal states
+  const [showFilesModal, setShowFilesModal] = useState(false);
+  const [currentFileMedicine, setCurrentFileMedicine] = useState({ id: null, name: '' });
+  
+  // Tips Modal states
+  const [showTipsModal, setShowTipsModal] = useState(false);
+  const [currentTipsMedicine, setCurrentTipsMedicine] = useState('');
+  const [currentTipsData, setCurrentTipsData] = useState('');
+
   // Form states
-  const [formData, setFormData] = useState({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '' });
+  const [formData, setFormData] = useState({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '', tipsAndTricks: '' });
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
   const fetchMedicines = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/medicines?search=${search}`);
+      const res = await axios.get(`/api/medicines?search=${search}&page=${page}&pageSize=${pageSize}`);
       setMedicines(res.data.data);
+      setTotalItems(res.data.totalItems);
+      setTotalPages(Math.ceil(res.data.totalItems / pageSize) || 1);
+
+      if (search.length >= 3) {
+        axios.post('/api/analytics/track', {
+          actionType: 'Search',
+          details: `Searched for: ${search}`
+        }).catch(() => {});
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -48,13 +73,17 @@ const MedicinesList = () => {
   };
 
   useEffect(() => {
-    // Initial fetch on mount is handled because search is initially empty
     const delayDebounceFn = setTimeout(() => {
       fetchMedicines();
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [search]); // Re-fetch whenever search string changes
+  }, [search, page]);
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
 
   // Form submit handler can just prevent default since real-time search handles fetching
   const handleSearch = (e) => {
@@ -73,10 +102,10 @@ const MedicinesList = () => {
       await axios.post('/api/medicines/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert('Upload successful!');
+      addToast('Upload successful!', 'success');
       fetchMedicines();
     } catch (err) {
-      alert(err.response?.data?.Message || 'Upload failed');
+      addToast(err.response?.data?.Message || 'Upload failed', 'error');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -85,9 +114,23 @@ const MedicinesList = () => {
 
   const openAddModal = () => {
     setModalMode('add');
-    setFormData({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '' });
+    setFormData({ id: '', code: '', name: '', quantity: 0, batchNumber: '', expiryDate: '', workflowData: '', tipsAndTricks: '' });
     setFormError('');
     setShowModal(true);
+  };
+
+  const handleShowWorkflow = async (medicine) => {
+    setWorkflowData(medicine.workflowData ? JSON.parse(medicine.workflowData) : null);
+    setCurrentInfoMedicine(medicine.category || medicine.name);
+    setShowWorkflowModal(true);
+    
+    // Track action
+    try {
+      await axios.post('/api/analytics/track', {
+        actionType: 'View_Medicine',
+        details: `Viewed workflow for ${medicine.name}`
+      });
+    } catch (e) { /* ignore */ }
   };
 
   const openInfoModal = async (medicineName) => {
@@ -116,7 +159,8 @@ const MedicinesList = () => {
       quantity: medicine.quantity, 
       batchNumber: medicine.batchNumber || '', 
       expiryDate: medicine.expiryDate ? new Date(medicine.expiryDate).toISOString().split('T')[0] : '',
-      workflowData: medicine.workflowData || ''
+      workflowData: medicine.workflowData || '',
+      tipsAndTricks: medicine.tipsAndTricks || ''
     });
     setFormError('');
     setShowModal(true);
@@ -127,9 +171,10 @@ const MedicinesList = () => {
     
     try {
       await axios.delete(`/api/medicines/${id}`);
+      addToast('Medicine deleted successfully', 'success');
       fetchMedicines();
     } catch (err) {
-      alert(err.response?.data?.Message || 'Failed to delete medicine');
+      addToast(err.response?.data?.Message || 'Failed to delete medicine', 'error');
     }
   };
 
@@ -147,7 +192,8 @@ const MedicinesList = () => {
       price: 0, // Price is hidden in this app version
       description: '',
       supplier: '',
-      workflowData: formData.workflowData
+      workflowData: formData.workflowData,
+      tipsAndTricks: formData.tipsAndTricks
     };
 
     try {
@@ -214,7 +260,7 @@ const MedicinesList = () => {
             className="glass-input flex-1 pl-11" 
             placeholder="Search by name or code..." 
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
           />
         </form>
       </div>
@@ -230,17 +276,19 @@ const MedicinesList = () => {
             <table className="glass-table w-full min-w-[600px]">
               <thead>
                 <tr>
+                  <th className="whitespace-nowrap">Sl No.</th>
                   <th className="whitespace-nowrap">Code</th>
                   <th className="whitespace-nowrap">Name</th>
                   <th className="whitespace-nowrap">Qty</th>
                   <th className="whitespace-nowrap">Batch #</th>
                   <th className="whitespace-nowrap">Expiry Date</th>
-                  {user.roles.includes('Admin') && <th className="whitespace-nowrap text-right">Actions</th>}
+                  <th className="whitespace-nowrap text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {medicines.map(m => (
+                {medicines.map((m, index) => (
                   <tr key={m.id} className="hover:bg-white/5 transition-colors border-b border-white/5">
+                    <td className="p-4 text-slate-500 font-medium">{(page - 1) * pageSize + index + 1}</td>
                     <td className="font-medium p-4">{m.name}</td>
                     <td className="p-4">{m.category || '-'}</td>
                     <td className="p-4">
@@ -250,26 +298,41 @@ const MedicinesList = () => {
                     </td>
                     <td className="p-4">{m.batchNumber || '-'}</td>
                     <td className="p-4">{new Date(m.expiryDate).toLocaleDateString()}</td>
-                    {user.roles.includes('Admin') && (
-                      <td className="p-4 text-right flex justify-end gap-2">
-                        <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
-                          <Info size={14} /> AI Web Summary
-                        </button>
-                        <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
-                          setWorkflowData(m.workflowData ? JSON.parse(m.workflowData) : null);
-                          setCurrentInfoMedicine(m.category || m.name);
-                          setShowWorkflowModal(true);
-                        }}>
-                          <ClipboardList size={14} /> Workflow Card
-                        </button>
-                        <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1" onClick={() => openEditModal(m)}>
-                          <Edit size={14} /> Edit
-                        </button>
-                        <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-danger !border-danger/30 hover:!bg-danger/10" onClick={() => handleDelete(m.id, m.name)}>
-                          <Trash2 size={14} /> Delete
-                        </button>
-                      </td>
-                    )}
+                    <td className="p-4 text-right flex justify-end gap-2">
+                      <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
+                        <Info size={14} /> AI Web Summary
+                      </button>
+                      <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-purple-400 !border-purple-400/30 hover:!bg-purple-400/10" onClick={() => {
+                        setCurrentFileMedicine({ id: m.id, name: m.category || m.name });
+                        setShowFilesModal(true);
+                      }}>
+                        <Upload size={14} /> Files
+                      </button>
+                      <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
+                        setWorkflowData(m.workflowData ? JSON.parse(m.workflowData) : null);
+                        setCurrentInfoMedicine(m.category || m.name);
+                        setShowWorkflowModal(true);
+                      }}>
+                        <ClipboardList size={14} /> Workflow Card
+                      </button>
+                      <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-amber-400 !border-amber-400/30 hover:!bg-amber-400/10" onClick={() => {
+                        setCurrentTipsData(m.tipsAndTricks || '');
+                        setCurrentTipsMedicine(m.category || m.name);
+                        setShowTipsModal(true);
+                      }}>
+                        <Lightbulb size={14} /> Tips
+                      </button>
+                      {user.roles.includes('Admin') && (
+                        <>
+                          <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1" onClick={() => openEditModal(m)}>
+                            <Edit size={14} /> Edit
+                          </button>
+                          <button className="glass-button secondary py-1 px-3 text-sm flex items-center gap-1 !text-danger !border-danger/30 hover:!bg-danger/10" onClick={() => handleDelete(m.id, m.name)}>
+                            <Trash2 size={14} /> Delete
+                          </button>
+                        </>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -278,9 +341,12 @@ const MedicinesList = () => {
 
           {/* Mobile Card View */}
           <div className="md:hidden flex flex-col gap-4">
-            {medicines.map(m => (
+            {medicines.map((m, index) => (
               <div key={m.id} className="glass-panel p-4 flex flex-col gap-2 relative">
-                <div className="flex justify-between items-start gap-4">
+                <div className="absolute top-0 left-0 bg-primary/10 text-primary px-2 py-1 rounded-br-lg text-[10px] font-bold">
+                  #{(page - 1) * pageSize + index + 1}
+                </div>
+                <div className="flex justify-between items-start gap-4 pt-4">
                   <div className="flex-1">
                     <div className="text-xs font-mono text-primary mb-1">#{m.name}</div>
                     <div className="font-semibold text-slate-900 dark:text-white leading-tight break-words">{m.category || '-'}</div>
@@ -301,37 +367,81 @@ const MedicinesList = () => {
                   </div>
                 </div>
 
-                {user.roles.includes('Admin') && (
-                  <div className="flex justify-end flex-wrap gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
-                    <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
-                      <Info size={14} /> Info
-                    </button>
-                    <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
-                      setWorkflowData(m.workflowData ? JSON.parse(m.workflowData) : null);
-                      setCurrentInfoMedicine(m.category || m.name);
-                      setShowWorkflowModal(true);
-                    }}>
-                      <ClipboardList size={14} /> Workflow
-                    </button>
-                    <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5" onClick={() => openEditModal(m)}>
-                      <Edit size={14} /> Edit
-                    </button>
-                    <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-danger !border-danger/30 hover:!bg-danger/10" onClick={() => handleDelete(m.id, m.name)}>
-                      <Trash2 size={14} /> Delete
-                    </button>
-                  </div>
-                )}
+                <div className="flex justify-end flex-wrap gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
+                  <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-cyan-400 !border-cyan-400/30 hover:!bg-cyan-400/10" onClick={() => openInfoModal(m.category || m.name)}>
+                    <Info size={14} /> Info
+                  </button>
+                  <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-purple-400 !border-purple-400/30 hover:!bg-purple-400/10" onClick={() => {
+                    setCurrentFileMedicine({ id: m.id, name: m.category || m.name });
+                    setShowFilesModal(true);
+                  }}>
+                    <Upload size={14} /> Files
+                  </button>
+                  <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-blue-400 !border-blue-400/30 hover:!bg-blue-400/10" onClick={() => {
+                    setWorkflowData(m.workflowData ? JSON.parse(m.workflowData) : null);
+                    setCurrentInfoMedicine(m.category || m.name);
+                    setShowWorkflowModal(true);
+                  }}>
+                    <ClipboardList size={14} /> Workflow
+                  </button>
+                  <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-amber-400 !border-amber-400/30 hover:!bg-amber-400/10" onClick={() => {
+                    setCurrentTipsData(m.tipsAndTricks || '');
+                    setCurrentTipsMedicine(m.category || m.name);
+                    setShowTipsModal(true);
+                  }}>
+                    <Lightbulb size={14} /> Tips
+                  </button>
+                  {user.roles.includes('Admin') && (
+                    <>
+                      <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5" onClick={() => openEditModal(m)}>
+                        <Edit size={14} /> Edit
+                      </button>
+                      <button className="glass-button secondary py-1.5 px-4 text-sm flex items-center gap-1.5 !text-danger !border-danger/30 hover:!bg-danger/10" onClick={() => handleDelete(m.id, m.name)}>
+                        <Trash2 size={14} /> Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             ))}
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 glass-panel p-4">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
+                Showing <span className="font-semibold text-slate-900 dark:text-white">{(page - 1) * pageSize + 1}</span> to <span className="font-semibold text-slate-900 dark:text-white">{Math.min(page * pageSize, totalItems)}</span> of <span className="font-semibold text-slate-900 dark:text-white">{totalItems}</span> medicines
+              </div>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setPage(p => Math.max(1, p - 1))} 
+                  disabled={page === 1}
+                  className="glass-button secondary px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center px-4 font-medium text-sm text-slate-700 dark:text-slate-300">
+                  Page {page} of {totalPages}
+                </div>
+                <button 
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))} 
+                  disabled={page === totalPages}
+                  className="glass-button secondary px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
 
       {/* Modal */}
       {showModal && createPortal(
-        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex items-start justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in">
-          <div className="glass-panel w-full max-w-2xl p-6 relative my-8 bg-white/95 dark:bg-slate-800/95">
-            <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center p-0 md:p-6 overflow-hidden animate-fade-in">
+          <div className="glass-panel w-full max-w-2xl p-6 relative bg-white/95 dark:bg-slate-800/95 rounded-t-3xl md:rounded-2xl max-h-[95vh] overflow-y-auto animate-slide-up md:animate-scale-in">
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-6 md:hidden"></div>
+            <button className="absolute top-4 md:top-6 right-4 md:right-6 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
               <X size={24} />
             </button>
             <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">
@@ -371,6 +481,16 @@ const MedicinesList = () => {
                 <input type="date" className="glass-input py-2" required value={formData.expiryDate} onChange={e => setFormData({...formData, expiryDate: e.target.value})} />
               </div>
 
+              <div>
+                <label className="block mb-1 text-sm text-slate-700 dark:text-slate-300 font-medium">Tips & Tricks</label>
+                <textarea 
+                  className="glass-input py-2 w-full h-24 resize-none" 
+                  placeholder="Enter useful tips or tricks for this medicine..."
+                  value={formData.tipsAndTricks} 
+                  onChange={e => setFormData({...formData, tipsAndTricks: e.target.value})} 
+                />
+              </div>
+
               <div className="flex gap-3 mt-4">
                 <button type="button" className="glass-button secondary flex-1" onClick={() => setShowModal(false)}>Cancel</button>
                 <button type="submit" className="glass-button flex-1" disabled={formLoading}>
@@ -392,22 +512,19 @@ const MedicinesList = () => {
 
       {/* Info Modal */}
       {showInfoModal && createPortal(
-        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
-          <div className="glass-panel bg-white/95 dark:bg-slate-800/95 w-full max-w-4xl max-h-[90vh] flex flex-col relative overflow-hidden">
-            <div className="p-6 pb-4 border-b border-slate-200 dark:border-white/10 shrink-0">
-              <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowInfoModal(false)}>
-                <X size={24} />
-              </button>
-              <h2 className="text-2xl font-bold mb-1 flex items-center gap-2 text-slate-900 dark:text-white">
-                <Info className="text-cyan-500 dark:text-cyan-400" />
-                Aggregated AI Mode
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center p-0 md:p-4 overflow-hidden animate-fade-in">
+          <div className="glass-panel w-full max-w-3xl p-6 relative bg-white/95 dark:bg-slate-800/95 rounded-t-3xl md:rounded-2xl max-h-[90vh] flex flex-col animate-slide-up md:animate-scale-in">
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-6 md:hidden"></div>
+            <div className="flex justify-between items-center mb-4 shrink-0">
+              <h2 className="text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                <Info className="text-cyan-500" /> AI Knowledge Base
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Live Data Overview for <span className="font-semibold text-slate-900 dark:text-white">#{currentInfoMedicine}</span>
-              </p>
+              <button onClick={() => setShowInfoModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors text-slate-500">
+                <X size={20} />
+              </button>
             </div>
 
-            <div className="p-6 overflow-y-auto flex-1 bg-slate-50 dark:bg-slate-900/50">
+            <div className="overflow-y-auto flex-1 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4">
               {infoError && (
                 <div className="bg-danger/10 text-danger p-4 rounded-xl mb-4 text-sm font-medium border border-danger/20">
                   {infoError}
@@ -417,95 +534,27 @@ const MedicinesList = () => {
               {infoLoading ? (
                 <div className="py-12 text-center text-slate-300 flex flex-col items-center">
                   <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
-                  Querying multiple sources...
+                  Querying AI model...
                 </div>
               ) : !infoData ? null : (
                 <div className="flex flex-col gap-6">
                   
-                  {/* DuckDuckGo Section */}
-                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-orange-400"></span>
-                      Web Summary (DuckDuckGo)
-                    </h3>
-                    {infoData.duckDuckGo ? (
-                      <>
-                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">{infoData.duckDuckGo.snippet}</p>
-                        <a href={infoData.duckDuckGo.url} target="_blank" rel="noopener noreferrer" className="text-orange-400 text-sm hover:underline">View Search Results ↗</a>
-                      </>
-                    ) : (
-                      <p className="text-sm text-slate-500 italic">No web summary found.</p>
-                    )}
-                  </div>
-
-                  {/* Wikipedia Section */}
-                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-blue-400"></span>
-                      Wikipedia Medical Overview
-                    </h3>
-                    {infoData.wikipedia ? (
-                      <>
-                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">{infoData.wikipedia.summary}</p>
-                        <a href={infoData.wikipedia.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 text-sm hover:underline">Read full article ↗</a>
-                      </>
-                    ) : (
-                      <p className="text-sm text-slate-500 italic">No Wikipedia data found.</p>
-                    )}
-                  </div>
-
-                  {/* FDA Section */}
-                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-red-400"></span>
-                      US FDA Database
-                    </h3>
-                    {infoData.openFda ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 dark:text-slate-300">
-                        {infoData.openFda.activeIngredient && (
-                           <div><strong className="text-slate-900 dark:text-slate-100 block mb-1">Active Ingredient:</strong> {infoData.openFda.activeIngredient}</div>
-                        )}
-                        {infoData.openFda.purpose && (
-                           <div><strong className="text-slate-900 dark:text-slate-100 block mb-1">Purpose:</strong> {infoData.openFda.purpose}</div>
-                        )}
-                        {infoData.openFda.warnings && (
-                           <div className="md:col-span-2"><strong className="text-slate-900 dark:text-slate-100 block mb-1">Warnings:</strong> <span className="line-clamp-3">{infoData.openFda.warnings}</span></div>
-                        )}
+                  {/* OpenRouter AI Summary Section */}
+                  {infoData.aiSummary ? (
+                    <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 rounded-xl p-5 border border-indigo-200 dark:border-indigo-500/30 shadow-sm">
+                      <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-3 flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-indigo-500 text-white flex items-center justify-center shadow-sm">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        </div>
+                        OpenRouter AI Insights
+                      </h3>
+                      <div className="text-sm text-indigo-900/80 dark:text-indigo-200/80 space-y-3 leading-relaxed whitespace-pre-wrap">
+                        {infoData.aiSummary.content}
                       </div>
-                    ) : (
-                      <p className="text-sm text-slate-500 italic">No exact FDA match found.</p>
-                    )}
-                  </div>
-                  
-
-
-                  {/* Wellcare Section */}
-                  <div className="bg-white dark:bg-white/5 rounded-xl p-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-green-400"></span>
-                      Local Pharmacy Pricing (Wellcare Qatar)
-                    </h3>
-                    {infoData.wellcare?.length > 0 ? (
-                      <div className="flex flex-col gap-3 mt-4">
-                        {infoData.wellcare.map((item, index) => (
-                          <div key={index} className="flex gap-4 items-center bg-slate-50 dark:bg-black/20 p-3 rounded-lg border border-slate-200 dark:border-white/5">
-                            {item.imageUrl ? (
-                              <img src={item.imageUrl} alt={item.title} className="w-16 h-16 object-contain bg-white rounded p-1" />
-                            ) : (
-                              <div className="w-16 h-16 bg-slate-200 dark:bg-white/10 rounded flex items-center justify-center text-xs text-slate-500">No Img</div>
-                            )}
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-slate-900 dark:text-white text-sm">{item.title}</h4>
-                              <div className="text-green-500 dark:text-green-400 font-medium text-sm mt-1">{item.price}</div>
-                              {item.productUrl && <a href={item.productUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-400 hover:text-green-400 mt-1 inline-block">View Store Page</a>}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-slate-500 italic">No local pricing matches found.</p>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-8 text-slate-500 italic">No AI insights generated. Please try again.</div>
+                  )}
 
                 </div>
               )}
@@ -517,9 +566,13 @@ const MedicinesList = () => {
 
       {/* Dedicated Workflow Card Modal */}
       {showWorkflowModal && createPortal(
-        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowWorkflowModal(false)}>
-          <div className="relative w-full max-w-md flex justify-center" onClick={e => e.stopPropagation()}>
-            <button className="absolute top-4 right-4 z-50 text-white/70 hover:text-white transition-all p-1.5 bg-black/20 rounded-full hover:bg-black/40 backdrop-blur-md shadow-sm" onClick={() => setShowWorkflowModal(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/70 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center p-0 md:p-4 overflow-hidden animate-fade-in" onClick={() => setShowWorkflowModal(false)}>
+          <div className="glass-panel w-full max-w-4xl p-0 relative bg-slate-50 dark:bg-slate-900 rounded-t-3xl md:rounded-2xl max-h-[95vh] overflow-y-auto shadow-2xl animate-slide-up md:animate-scale-in" onClick={e => e.stopPropagation()}>
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mt-4 mb-2 md:hidden"></div>
+            <button 
+              className="absolute top-4 right-4 z-10 p-2 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-full text-slate-600 dark:text-white hover:bg-white dark:hover:bg-black/80 transition-all shadow-sm"
+              onClick={() => setShowWorkflowModal(false)}
+            >
               <X size={20} />
             </button>
             {workflowData ? (
@@ -536,6 +589,40 @@ const MedicinesList = () => {
           </div>
         </div>,
         document.body
+      )}
+
+      {/* Tips & Tricks Modal */}
+      {showTipsModal && createPortal(
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/70 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center p-0 md:p-4 overflow-hidden animate-fade-in" onClick={() => setShowTipsModal(false)}>
+          <div className="glass-panel w-full max-w-3xl p-6 relative bg-white/95 dark:bg-slate-800/95 rounded-t-3xl md:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl animate-slide-up md:animate-scale-in" onClick={e => e.stopPropagation()}>
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-6 md:hidden"></div>
+            <div className="flex justify-between items-center mb-6 shrink-0">
+              <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
+                <div className="p-2 bg-amber-100 dark:bg-amber-500/20 text-amber-500 rounded-xl">
+                  <Lightbulb size={24} />
+                </div>
+                Tips & Tricks for {currentTipsMedicine}
+              </h2>
+              <button onClick={() => setShowTipsModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors text-slate-500">
+                <X size={20} />
+              </button>
+            </div>
+              
+            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed border border-slate-200 dark:border-white/10 min-h-[100px]">
+              {currentTipsData ? currentTipsData : <span className="italic text-slate-400">No tips and tricks have been added for this medicine yet.</span>}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Files Modal */}
+      {showFilesModal && (
+        <MedicineFilesModal 
+          medicineId={currentFileMedicine.id} 
+          medicineName={currentFileMedicine.name} 
+          onClose={() => setShowFilesModal(false)} 
+        />
       )}
     </div>
   );

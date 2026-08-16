@@ -29,11 +29,17 @@ namespace MedicineBook.API.Models.DTOs
         public string? IndicationsAndUsage { get; set; }
     }
 
+    public class AiSummaryDto
+    {
+        public string? Content { get; set; }
+    }
+
     public class AggregatedScrapeResultDto
     {
         public List<ScrapedMedicineDto> Wellcare { get; set; } = new();
         public WikipediaDto? Wikipedia { get; set; }
         public DuckDuckGoDto? DuckDuckGo { get; set; }
         public OpenFdaDto? OpenFda { get; set; }
+        public AiSummaryDto? AiSummary { get; set; }
     }
 }

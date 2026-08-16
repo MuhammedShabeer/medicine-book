@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MedicineBook.API.Data;
 
 namespace MedicineBook.API.Controllers
 {
@@ -16,15 +17,18 @@ namespace MedicineBook.API.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _context;
 
         public AuthController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("login")]
@@ -38,6 +42,8 @@ namespace MedicineBook.API.Controllers
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName!),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.GivenName, user.FullName ?? ""),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -47,6 +53,17 @@ namespace MedicineBook.API.Controllers
                 }
 
                 var token = GetToken(authClaims);
+
+                // Log the login activity
+                var log = new UserActivityLog
+                {
+                    UserId = user.Id,
+                    ActionType = "Login",
+                    Details = "User logged in successfully",
+                    Timestamp = DateTime.UtcNow
+                };
+                _context.UserActivityLogs.Add(log);
+                await _context.SaveChangesAsync();
 
                 return Ok(new
                 {

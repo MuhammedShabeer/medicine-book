@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Medicine Book',
-        short_name: 'MedBook',
-        description: 'Pharmacy Medicine Inventory Management',
+        name: 'NEXFLUX',
+        short_name: 'NEXFLUX',
+        description: 'NEXFLUX Inventory Management',
         theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',
@@ -34,6 +34,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
+        target: 'http://localhost:5217',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/uploads': {
         target: 'http://localhost:5217',
         changeOrigin: true,
         secure: false,

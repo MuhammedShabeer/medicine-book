@@ -18,11 +18,13 @@ namespace MedicineBook.API.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public MedicinesController(ApplicationDbContext context, IHttpClientFactory httpClientFactory)
+        public MedicinesController(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _context = context;
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -89,6 +91,7 @@ namespace MedicineBook.API.Controllers
                             ExpiryDate = row.Cell(6).TryGetValue<DateTime>(out var d) ? d : DateTime.MinValue,
                             BatchNumber = row.Cell(7).GetValue<string>(),
                             Supplier = row.Cell(8).GetValue<string>(),
+                            TipsAndTricks = null
                         };
                         medicines.Add(medicine);
                     }
@@ -136,22 +139,16 @@ namespace MedicineBook.API.Controllers
                 // Use a standard bot user-agent to avoid being blocked by Wikipedia's policy
                 client.DefaultRequestHeaders.Add("User-Agent", "MedicineBookApp/1.0 (contact@tafawsolutions.com)");
 
-                var wellcareTask = ScrapeWellcare(client, name);
-                var wikiTask = ScrapeWikipedia(client, name);
-                var ddgTask = ScrapeDuckDuckGo(client, name);
-                var fdaTask = ScrapeOpenFda(client, name);
+                var aiTask = ScrapeAiOverview(client, name);
 
-                await Task.WhenAll(wellcareTask, wikiTask, ddgTask, fdaTask);
+                await aiTask;
 
                 var aggregatedResult = new AggregatedScrapeResultDto
                 {
-                    Wellcare = wellcareTask.Result,
-                    Wikipedia = wikiTask.Result,
-                    DuckDuckGo = ddgTask.Result,
-                    OpenFda = fdaTask.Result
+                    AiSummary = aiTask.Result
                 };
 
-                return Ok(new { Status = "Success", Source = "Aggregated AI Mode", Data = aggregatedResult });
+                return Ok(new { Status = "Success", Source = "AI Insights", Data = aggregatedResult });
             }
             catch (Exception ex)
             {
@@ -159,142 +156,42 @@ namespace MedicineBook.API.Controllers
             }
         }
 
-        private async Task<List<ScrapedMedicineDto>> ScrapeWellcare(HttpClient client, string name)
+
+
+        private async Task<AiSummaryDto?> ScrapeAiOverview(HttpClient client, string name)
         {
-            var results = new List<ScrapedMedicineDto>();
             try
             {
-                var url = $"https://www.wellcareonline.com/search/suggest.json?q={Uri.EscapeDataString(name)}&resources[type]=product";
-                var response = await client.GetAsync(url);
-                if (!response.IsSuccessStatusCode) {
-                    var err = await response.Content.ReadAsStringAsync();
-                    throw new Exception($"HTTP {response.StatusCode}: {err}");
-                }
+                var apiKey = _configuration["OpenRouter:ApiKey"];
+                if (string.IsNullOrEmpty(apiKey)) return null;
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                using var document = JsonDocument.Parse(jsonString);
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://openrouter.ai/api/v1/chat/completions");
+                request.Headers.Add("Authorization", $"Bearer {apiKey}");
                 
-                if (document.RootElement.TryGetProperty("resources", out var resources) &&
-                    resources.TryGetProperty("results", out var resultsNode) &&
-                    resultsNode.TryGetProperty("products", out var productsArray))
+                var payload = new
                 {
-                    foreach (var product in productsArray.EnumerateArray())
+                    model = "openai/gpt-4o",
+                    messages = new[]
                     {
-                        var title = product.TryGetProperty("title", out var t) ? t.GetString() : "Unknown";
-                        var body = product.TryGetProperty("body", out var b) ? b.GetString() : "";
-                        var price = product.TryGetProperty("price", out var p) ? p.GetString() : "0.00";
-                        var productUrl = product.TryGetProperty("url", out var u) ? u.GetString() : "";
-                        var imageUrl = product.TryGetProperty("image", out var img) ? img.GetString() : "";
-
-                        if (!string.IsNullOrEmpty(body))
-                            body = System.Text.RegularExpressions.Regex.Replace(body, "<.*?>", String.Empty).Trim();
-
-                        results.Add(new ScrapedMedicineDto
-                        {
-                            Title = title!,
-                            Description = body,
-                            Price = $"QAR {price}",
-                            ImageUrl = imageUrl,
-                            ProductUrl = string.IsNullOrEmpty(productUrl) ? null : $"https://www.wellcareonline.com{productUrl}"
-                        });
-                        
-                        if (results.Count >= 5) break;
+                        new { role = "user", content = $"Give a brief, professional clinical overview (2-3 short paragraphs) of the medicine: {name}. Highlight its main uses, mechanism, and any major warnings." }
                     }
-                }
-            }
-            catch (Exception ex) { 
-                results.Add(new ScrapedMedicineDto { Title = "Error", Description = ex.Message });
-            }
-            return results;
-        }
+                };
 
-        private async Task<WikipediaDto?> ScrapeWikipedia(HttpClient client, string name)
-        {
-            try
-            {
-                var url = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&titles={Uri.EscapeDataString(name)}&format=json";
-                var response = await client.GetAsync(url);
-                if (!response.IsSuccessStatusCode) return null;
+                request.Content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                using var document = JsonDocument.Parse(jsonString);
-
-                if (document.RootElement.TryGetProperty("query", out var query) &&
-                    query.TryGetProperty("pages", out var pages))
-                {
-                    foreach (var page in pages.EnumerateObject())
-                    {
-                        if (page.Value.TryGetProperty("extract", out var extract) && !string.IsNullOrWhiteSpace(extract.GetString()))
-                        {
-                            var summary = extract.GetString()!;
-                            summary = System.Text.RegularExpressions.Regex.Replace(summary, "<.*?>", String.Empty).Trim();
-                            return new WikipediaDto { Summary = summary, Url = $"https://en.wikipedia.org/wiki/{Uri.EscapeDataString(name)}" };
-                        }
-                    }
-                }
-            }
-            catch { }
-            return null;
-        }
-
-        private async Task<DuckDuckGoDto?> ScrapeDuckDuckGo(HttpClient client, string name)
-        {
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://html.duckduckgo.com/html/");
-                request.Content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("q", name) });
-                
                 var response = await client.SendAsync(request);
-                if (!response.IsSuccessStatusCode) return new DuckDuckGoDto { Snippet = "Error: " + response.StatusCode, Url = "" };
-
-                var html = await response.Content.ReadAsStringAsync();
-                var snippetStart = html.IndexOf("class=\"result__snippet");
-                if (snippetStart != -1)
-                {
-                    snippetStart = html.IndexOf(">", snippetStart) + 1;
-                    var snippetEnd = html.IndexOf("</a>", snippetStart);
-                    if (snippetEnd != -1)
-                    {
-                        var snippet = html.Substring(snippetStart, snippetEnd - snippetStart);
-                        snippet = System.Text.RegularExpressions.Regex.Replace(snippet, "<.*?>", String.Empty).Trim();
-                        return new DuckDuckGoDto { Snippet = snippet, Url = $"https://duckduckgo.com/?q={Uri.EscapeDataString(name)}" };
-                    }
-                }
-            }
-            catch { }
-            return null;
-        }
-
-        private async Task<OpenFdaDto?> ScrapeOpenFda(HttpClient client, string name)
-        {
-            try
-            {
-                var searchQ = $"openfda.brand_name:\"{Uri.EscapeDataString(name)}\"+openfda.generic_name:\"{Uri.EscapeDataString(name)}\"";
-                var url = $"https://api.fda.gov/drug/label.json?search={searchQ}&limit=1";
-                var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode) return null;
 
                 var jsonString = await response.Content.ReadAsStringAsync();
                 using var document = JsonDocument.Parse(jsonString);
 
-                if (document.RootElement.TryGetProperty("results", out var results) && results.GetArrayLength() > 0)
+                if (document.RootElement.TryGetProperty("choices", out var choices) && choices.GetArrayLength() > 0)
                 {
-                    var result = results[0];
-                    var fda = new OpenFdaDto();
-                    
-                    if (result.TryGetProperty("active_ingredient", out var activeArr) && activeArr.GetArrayLength() > 0)
-                        fda.ActiveIngredient = activeArr[0].GetString();
-
-                    if (result.TryGetProperty("purpose", out var purposeArr) && purposeArr.GetArrayLength() > 0)
-                        fda.Purpose = purposeArr[0].GetString();
-
-                    if (result.TryGetProperty("warnings", out var warnArr) && warnArr.GetArrayLength() > 0)
-                        fda.Warnings = warnArr[0].GetString();
-
-                    if (result.TryGetProperty("indications_and_usage", out var usageArr) && usageArr.GetArrayLength() > 0)
-                        fda.IndicationsAndUsage = usageArr[0].GetString();
-
-                    return fda;
+                    var firstChoice = choices[0];
+                    if (firstChoice.TryGetProperty("message", out var message) && message.TryGetProperty("content", out var content))
+                    {
+                        return new AiSummaryDto { Content = content.GetString() };
+                    }
                 }
             }
             catch { }
@@ -315,7 +212,8 @@ namespace MedicineBook.API.Controllers
                 ExpiryDate = model.ExpiryDate,
                 BatchNumber = model.BatchNumber,
                 Supplier = model.Supplier,
-                WorkflowData = model.WorkflowData
+                WorkflowData = model.WorkflowData,
+                TipsAndTricks = model.TipsAndTricks
             };
 
             _context.Medicines.Add(medicine);
@@ -341,6 +239,7 @@ namespace MedicineBook.API.Controllers
             medicine.BatchNumber = model.BatchNumber;
             medicine.Supplier = model.Supplier;
             medicine.WorkflowData = model.WorkflowData;
+            medicine.TipsAndTricks = model.TipsAndTricks;
 
             _context.Medicines.Update(medicine);
             await _context.SaveChangesAsync();
@@ -362,6 +261,90 @@ namespace MedicineBook.API.Controllers
             return Ok(new { Status = "Success", Message = "Medicine deleted successfully!" });
         }
 
+        [HttpGet("{id}/files")]
+        public async Task<IActionResult> GetMedicineFiles(int id)
+        {
+            var medicine = await _context.Medicines
+                .Include(m => m.Files)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            
+            if (medicine == null)
+                return NotFound(new { Status = "Error", Message = "Medicine not found!" });
+
+            return Ok(new { Status = "Success", Data = medicine.Files?.OrderByDescending(f => f.UploadedAt).ToList() ?? new List<MedicineFile>() });
+        }
+
+        [HttpPost("{id}/files")]
+        [Authorize(Roles = "Admin")]
+        [RequestSizeLimit(100_000_000)] // 100MB limit for video/large files
+        public async Task<IActionResult> UploadMedicineFiles(int id, List<IFormFile> files)
+        {
+            var medicine = await _context.Medicines.FindAsync(id);
+            if (medicine == null)
+                return NotFound(new { Status = "Error", Message = "Medicine not found!" });
+
+            if (files == null || files.Count == 0)
+                return BadRequest(new { Status = "Error", Message = "No files uploaded." });
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "medicines", id.ToString());
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var uploadedFiles = new List<MedicineFile>();
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    // Clean file name for safety and uniqueness
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName).Replace(" ", "_");
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var medicineFile = new MedicineFile
+                    {
+                        MedicineId = id,
+                        FileName = file.FileName,
+                        FilePath = $"/uploads/medicines/{id}/{uniqueFileName}",
+                        ContentType = file.ContentType,
+                        FileSize = file.Length,
+                        UploadedAt = DateTime.UtcNow
+                    };
+
+                    _context.MedicineFiles.Add(medicineFile);
+                    uploadedFiles.Add(medicineFile);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Status = "Success", Message = $"{uploadedFiles.Count} files uploaded successfully.", Data = uploadedFiles });
+        }
+
+        [HttpDelete("files/{fileId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteMedicineFile(int fileId)
+        {
+            var file = await _context.MedicineFiles.FindAsync(fileId);
+            if (file == null)
+                return NotFound(new { Status = "Error", Message = "File not found!" });
+
+            var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.FilePath.TrimStart('/'));
+            if (System.IO.File.Exists(physicalPath))
+            {
+                System.IO.File.Delete(physicalPath);
+            }
+
+            _context.MedicineFiles.Remove(file);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Status = "Success", Message = "File deleted successfully!" });
+        }
+
         private List<Medicine> MapToEntity(List<MedicineDto> dtos)
         {
             return dtos.Select(d => new Medicine
@@ -374,7 +357,8 @@ namespace MedicineBook.API.Controllers
                 ExpiryDate = d.ExpiryDate,
                 BatchNumber = d.BatchNumber,
                 Supplier = d.Supplier,
-                WorkflowData = d.WorkflowData
+                WorkflowData = d.WorkflowData,
+                TipsAndTricks = d.TipsAndTricks
             }).ToList();
         }
     }
@@ -390,5 +374,6 @@ namespace MedicineBook.API.Controllers
         public string? BatchNumber { get; set; }
         public string? Supplier { get; set; }
         public string? WorkflowData { get; set; }
+        public string? TipsAndTricks { get; set; }
     }
 }

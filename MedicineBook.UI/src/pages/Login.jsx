@@ -19,7 +19,12 @@ const Login = () => {
     
     const result = await login(username, password);
     if (result.success) {
-      navigate('/dashboard');
+      if (!localStorage.getItem('hasSeenAck')) {
+        localStorage.setItem('hasSeenAck', 'true');
+        navigate('/acknowledgements');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error);
       setLoading(false);
@@ -30,8 +35,8 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="glass-panel animate-fade-in w-full max-w-md p-8 md:p-10">
         <div className="text-center mb-8">
-          <Shield className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">Medicine Book</h2>
+          <img src="/logo.png" alt="Medicine Book Logo" className="w-16 h-16 mx-auto mb-4 rounded-2xl shadow-lg border border-white/20" />
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">NEXFLUX</h2>
           <p className="text-slate-600 dark:text-slate-300">Sign in to your account</p>
         </div>
 
@@ -69,7 +74,7 @@ const Login = () => {
       </div>
       
       <div className="absolute bottom-6 w-full text-center text-[10px] text-slate-400 dark:text-white/30 tracking-wider font-semibold uppercase pointer-events-none">
-        Concept & Design: Sayyid Muhammed
+        Quintessentially Conceived & Sculpted by Sayyid Muhammed
       </div>
     </div>
   );

@@ -98,6 +98,20 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
+
+    if (await userManager.FindByNameAsync("pharmacist") == null)
+    {
+        var pharmacistUser = new ApplicationUser
+        {
+            UserName = "pharmacist",
+            FullName = "Head Pharmacist"
+        };
+        var result = await userManager.CreateAsync(pharmacistUser, "Admin@2026");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(pharmacistUser, "Staff");
+        }
+    }
 }
 
 app.Run();

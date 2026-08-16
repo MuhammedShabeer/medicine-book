@@ -12,5 +12,8 @@ namespace MedicineBook.API.Models
         public string? BatchNumber { get; set; }
         public string? Supplier { get; set; }
         public string? WorkflowData { get; set; }
+        public string? TipsAndTricks { get; set; }
+
+        public ICollection<MedicineFile>? Files { get; set; }
     }
 }

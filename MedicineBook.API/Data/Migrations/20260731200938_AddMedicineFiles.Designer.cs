@@ -3,6 +3,7 @@ using System;
 using MedicineBook.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicineBook.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260731200938_AddMedicineFiles")]
+    partial class AddMedicineFiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -115,9 +118,6 @@ namespace MedicineBook.API.Data.Migrations
                     b.Property<string>("Supplier")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TipsAndTricks")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("WorkflowData")
                         .HasColumnType("TEXT");
 
@@ -158,35 +158,6 @@ namespace MedicineBook.API.Data.Migrations
                     b.HasIndex("MedicineId");
 
                     b.ToTable("MedicineFiles");
-                });
-
-            modelBuilder.Entity("MedicineBook.API.Models.UserActivityLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Details")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserActivityLogs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -326,17 +297,6 @@ namespace MedicineBook.API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Medicine");
-                });
-
-            modelBuilder.Entity("MedicineBook.API.Models.UserActivityLog", b =>
-                {
-                    b.HasOne("MedicineBook.API.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

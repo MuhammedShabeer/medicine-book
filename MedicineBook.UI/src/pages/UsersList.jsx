@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
 import { UserPlus, Edit, Trash2, X } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
+  const { addToast } = useToast();
   
   // Modal states
   const [showModal, setShowModal] = useState(false);
@@ -56,9 +60,10 @@ const UsersList = () => {
     
     try {
       await axios.delete(`/api/users/${id}`);
+      addToast('User deleted successfully', 'success');
       fetchUsers();
     } catch (err) {
-      alert(err.response?.data?.Message || 'Failed to delete user');
+      addToast(err.response?.data?.Message || 'Failed to delete user', 'error');
     }
   };
 
@@ -173,9 +178,10 @@ const UsersList = () => {
 
       {/* Modal */}
       {showModal && createPortal(
-        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
-          <div className="glass-panel w-full max-w-md p-6 relative bg-white/95 dark:bg-slate-800/95">
-            <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center p-0 md:p-6 overflow-hidden animate-fade-in">
+          <div className="glass-panel w-full max-w-md p-6 relative bg-white/95 dark:bg-slate-800/95 rounded-t-3xl md:rounded-2xl max-h-[95vh] overflow-y-auto animate-slide-up md:animate-scale-in">
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-6 md:hidden"></div>
+            <button className="absolute top-4 md:top-6 right-4 md:right-6 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
               <X size={24} />
             </button>
             <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">
