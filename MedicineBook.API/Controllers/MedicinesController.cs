@@ -262,7 +262,7 @@ namespace MedicineBook.API.Controllers
         }
 
         [HttpGet("{id}/files")]
-        public async Task<IActionResult> GetMedicineFiles(int id)
+        public async Task<IActionResult> GetMedicineFiles(int id, [FromQuery] string category = "General")
         {
             var medicine = await _context.Medicines
                 .Include(m => m.Files)
@@ -271,13 +271,18 @@ namespace MedicineBook.API.Controllers
             if (medicine == null)
                 return NotFound(new { Status = "Error", Message = "Medicine not found!" });
 
-            return Ok(new { Status = "Success", Data = medicine.Files?.OrderByDescending(f => f.UploadedAt).ToList() ?? new List<MedicineFile>() });
+            var files = medicine.Files?
+                .Where(f => string.IsNullOrEmpty(category) || f.Category == category)
+                .OrderByDescending(f => f.UploadedAt)
+                .ToList() ?? new List<MedicineFile>();
+
+            return Ok(new { Status = "Success", Data = files });
         }
 
         [HttpPost("{id}/files")]
         [Authorize(Roles = "Admin")]
         [RequestSizeLimit(100_000_000)] // 100MB limit for video/large files
-        public async Task<IActionResult> UploadMedicineFiles(int id, List<IFormFile> files)
+        public async Task<IActionResult> UploadMedicineFiles(int id, [FromForm] List<IFormFile> files, [FromForm] string category = "General")
         {
             var medicine = await _context.Medicines.FindAsync(id);
             if (medicine == null)
@@ -312,7 +317,8 @@ namespace MedicineBook.API.Controllers
                         FilePath = $"/uploads/medicines/{id}/{uniqueFileName}",
                         ContentType = file.ContentType,
                         FileSize = file.Length,
-                        UploadedAt = DateTime.UtcNow
+                        UploadedAt = DateTime.UtcNow,
+                        Category = category
                     };
 
                     _context.MedicineFiles.Add(medicineFile);

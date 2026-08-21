@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Link, useLocation, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator } from 'lucide-react';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
@@ -23,6 +23,10 @@ const Layout = () => {
       { name: 'Users', path: '/users', icon: Users },
       { name: 'Analytics', path: '/analytics', icon: Activity }
     ] : []),
+    { name: 'Quality', path: '/operations/quality', icon: AlertTriangle },
+    { name: 'Extemporaneous', path: '/operations/extemporaneous', icon: FlaskConical },
+    { name: 'Stock', path: '/operations/stock', icon: PackageOpen },
+      { name: 'References', path: '/references', icon: Heart },
     { name: 'About', path: '/acknowledgements', icon: Heart }
   ];
 

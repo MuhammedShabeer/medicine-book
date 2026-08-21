@@ -11,6 +11,7 @@ namespace MedicineBook.API.Models
         public required string ContentType { get; set; }
         public long FileSize { get; set; }
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+        public string Category { get; set; } = "General";
 
         [JsonIgnore]
         public Medicine? Medicine { get; set; }

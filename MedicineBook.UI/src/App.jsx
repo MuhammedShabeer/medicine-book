@@ -12,6 +12,9 @@ import MedicinesList from './pages/MedicinesList';
 import Acknowledgements from './pages/Acknowledgements';
 import UserAnalytics from './pages/UserAnalytics';
 import Calculator from './pages/Calculator';
+import QualityIssues from './pages/operations/QualityIssues';
+import ExtemporaneousPrep from './pages/operations/ExtemporaneousPrep';
+import ExpiryStock from './pages/operations/ExpiryStock';
 
 function App() {
   return (
@@ -31,6 +34,11 @@ function App() {
                 <Route path="users" element={<UsersList />} />
                 <Route path="analytics" element={<UserAnalytics />} />
                 <Route path="acknowledgements" element={<Acknowledgements />} />
+                
+                {/* Operations */}
+                <Route path="operations/quality" element={<QualityIssues />} />
+                <Route path="operations/extemporaneous" element={<ExtemporaneousPrep />} />
+                <Route path="operations/stock" element={<ExpiryStock />} />
               </Route>
               
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
