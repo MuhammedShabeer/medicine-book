@@ -2,12 +2,13 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Link, useLocation, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -103,12 +104,13 @@ const Layout = () => {
       {/* Mobile Bottom Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-surface/90 backdrop-blur-2xl border-t border-slate-200 dark:border-white/10 z-30 pb-safe">
         <div className="flex justify-around items-center p-2">
-          {navItems.map((item) => {
+          {navItems.slice(0, 3).map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link 
                 key={item.path} 
                 to={item.path} 
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex flex-col items-center p-2 rounded-xl transition-all duration-300 active:scale-95 min-w-[60px] ${
                   isActive ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
                 }`}
@@ -122,8 +124,55 @@ const Layout = () => {
               </Link>
             )
           })}
+          
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`flex flex-col items-center p-2 rounded-xl transition-all duration-300 active:scale-95 min-w-[60px] ${
+              isMobileMenuOpen ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
+            }`}
+          >
+            <div className={`p-1.5 rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'bg-primary/10' : ''}`}>
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </div>
+            <span className={`text-[10px] font-medium mt-1 ${isMobileMenuOpen ? 'font-bold' : ''}`}>
+              More
+            </span>
+          </button>
         </div>
       </div>
+
+      {/* Mobile Pop-up Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-20 bg-slate-900/20 backdrop-blur-sm animate-fade-in" onClick={() => setIsMobileMenuOpen(false)}>
+          <div 
+            className="absolute bottom-20 left-4 right-4 bg-white dark:bg-surface rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden animate-slide-up flex flex-col p-4 max-h-[70vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">More Options</h3>
+            <div className="grid grid-cols-4 gap-2">
+              {navItems.slice(3).map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link 
+                    key={item.path} 
+                    to={item.path} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-300 active:scale-95 ${
+                      isActive ? 'bg-primary/10 text-primary font-bold' : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                    }`}
+                  >
+                    <item.icon size={24} className="mb-2" />
+                    <span className="text-[10px] text-center leading-tight">
+                      {item.name}
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
       
     </div>
   );

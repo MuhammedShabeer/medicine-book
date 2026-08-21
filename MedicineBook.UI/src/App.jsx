@@ -15,6 +15,7 @@ import Calculator from './pages/Calculator';
 import QualityIssues from './pages/operations/QualityIssues';
 import ExtemporaneousPrep from './pages/operations/ExtemporaneousPrep';
 import ExpiryStock from './pages/operations/ExpiryStock';
+import References from './pages/references';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
                 <Route path="users" element={<UsersList />} />
                 <Route path="analytics" element={<UserAnalytics />} />
                 <Route path="acknowledgements" element={<Acknowledgements />} />
+                <Route path="references" element={<References />} />
                 
                 {/* Operations */}
                 <Route path="operations/quality" element={<QualityIssues />} />
