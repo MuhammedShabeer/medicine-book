@@ -272,7 +272,7 @@ namespace MedicineBook.API.Controllers
                 return NotFound(new { Status = "Error", Message = "Medicine not found!" });
 
             var files = medicine.Files?
-                .Where(f => string.IsNullOrEmpty(category) || f.Category == category)
+                .Where(f => string.IsNullOrEmpty(category) || f.Category == category || (category == "General" && string.IsNullOrEmpty(f.Category)))
                 .OrderByDescending(f => f.UploadedAt)
                 .ToList() ?? new List<MedicineFile>();
 
