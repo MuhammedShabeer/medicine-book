@@ -58,6 +58,7 @@ namespace MedicineBook.API.Controllers
             stock.BatchNumber = updatedStock.BatchNumber;
             stock.ExpiryDate = updatedStock.ExpiryDate;
             stock.Quantity = updatedStock.Quantity;
+            stock.Branch = updatedStock.Branch;
             stock.Notes = updatedStock.Notes;
             stock.LastUpdated = DateTime.UtcNow;
 

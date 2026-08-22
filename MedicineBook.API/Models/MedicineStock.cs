@@ -10,6 +10,7 @@ namespace MedicineBook.API.Models
         public required string BatchNumber { get; set; }
         public DateTime ExpiryDate { get; set; }
         public int Quantity { get; set; }
+        public string? Branch { get; set; }
         public string? Notes { get; set; }
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
     }
