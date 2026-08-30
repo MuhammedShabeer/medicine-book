@@ -16,5 +16,8 @@ namespace MedicineBook.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public string? CreatedBy { get; set; }
+        
+        public string? AttachmentName { get; set; }
+        public string? AttachmentPath { get; set; }
     }
 }
