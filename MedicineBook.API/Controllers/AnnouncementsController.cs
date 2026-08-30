@@ -36,10 +36,11 @@ namespace MedicineBook.API.Controllers
             if (string.IsNullOrWhiteSpace(announcement.Title) || string.IsNullOrWhiteSpace(announcement.Content))
                 return BadRequest("Title and Content are required.");
 
-            // Use the username or FullName from claims
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Admin";
+            var fullName = User.FindFirst(ClaimTypes.GivenName)?.Value;
+            if (string.IsNullOrEmpty(fullName))
+                fullName = User.FindFirst(ClaimTypes.Name)?.Value ?? "Admin";
             
-            announcement.CreatedBy = username;
+            announcement.CreatedBy = fullName;
             announcement.CreatedAt = DateTime.UtcNow;
 
             _context.Announcements.Add(announcement);
