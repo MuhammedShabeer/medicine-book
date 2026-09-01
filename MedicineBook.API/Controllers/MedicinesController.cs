@@ -364,7 +364,8 @@ The JSON object MUST strictly adhere to this schema:
                 {
                     try
                     {
-                        var request = new HttpRequestMessage(HttpMethod.Post, candidate.Endpoint);
+                        var endpoint = NormalizeEndpoint(candidate.Endpoint);
+                        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
                         request.Headers.Add("Authorization", $"Bearer {candidate.ApiKey}");
 
                         var payload = new
@@ -413,6 +414,17 @@ The JSON object MUST strictly adhere to this schema:
             }
             catch { }
             return null;
+        }
+
+        private static string NormalizeEndpoint(string endpoint)
+        {
+            if (string.IsNullOrWhiteSpace(endpoint)) return "https://api.deepseek.com/chat/completions";
+            endpoint = endpoint.Trim().TrimEnd('/');
+            if (!endpoint.EndsWith("/chat/completions", StringComparison.OrdinalIgnoreCase))
+            {
+                endpoint += "/chat/completions";
+            }
+            return endpoint;
         }
 
         private static string ExtractCleanJson(string raw)

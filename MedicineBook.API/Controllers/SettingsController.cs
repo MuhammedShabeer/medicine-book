@@ -122,6 +122,8 @@ namespace MedicineBook.API.Controllers
                     return BadRequest(new { Success = false, Message = "API Key is required to test." });
                 }
 
+                endpoint = NormalizeEndpoint(endpoint);
+
                 var client = _httpClientFactory.CreateClient();
                 client.Timeout = TimeSpan.FromSeconds(30);
 
@@ -146,7 +148,29 @@ namespace MedicineBook.API.Controllers
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return BadRequest(new { Success = false, Status = (int)response.StatusCode, Error = jsonString });
+                    string errorMessage = jsonString;
+                    try
+                    {
+                        using var errDoc = System.Text.Json.JsonDocument.Parse(jsonString);
+                        if (errDoc.RootElement.TryGetProperty("error", out var errObj))
+                        {
+                            if (errObj.ValueKind == System.Text.Json.JsonValueKind.Object && errObj.TryGetProperty("message", out var msg))
+                            {
+                                errorMessage = msg.GetString() ?? jsonString;
+                            }
+                            else if (errObj.ValueKind == System.Text.Json.JsonValueKind.String)
+                            {
+                                errorMessage = errObj.GetString() ?? jsonString;
+                            }
+                        }
+                        else if (errDoc.RootElement.TryGetProperty("message", out var directMsg))
+                        {
+                            errorMessage = directMsg.GetString() ?? jsonString;
+                        }
+                    }
+                    catch { }
+
+                    return BadRequest(new { Success = false, Status = (int)response.StatusCode, Error = errorMessage });
                 }
 
                 using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
@@ -169,8 +193,19 @@ namespace MedicineBook.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Success = false, Error = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Success = false, Error = ex.Message });
             }
+        }
+
+        private static string NormalizeEndpoint(string endpoint)
+        {
+            if (string.IsNullOrWhiteSpace(endpoint)) return "https://api.deepseek.com/chat/completions";
+            endpoint = endpoint.Trim().TrimEnd('/');
+            if (!endpoint.EndsWith("/chat/completions", StringComparison.OrdinalIgnoreCase))
+            {
+                endpoint += "/chat/completions";
+            }
+            return endpoint;
         }
     }
 }
