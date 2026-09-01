@@ -26,14 +26,20 @@ namespace MedicineBook.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSettings()
         {
-            var settings = await _context.SystemSettings.ToDictionaryAsync(s => s.Key, s => s.Value);
-            return Ok(settings);
+            var list = await _context.SystemSettings.ToListAsync();
+            var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var s in list)
+            {
+                dict[s.Key] = s.Value;
+            }
+            return Ok(dict);
         }
 
         [HttpGet("{key}")]
         public async Task<IActionResult> GetSetting(string key)
         {
-            var setting = await _context.SystemSettings.FindAsync(key);
+            var list = await _context.SystemSettings.ToListAsync();
+            var setting = list.FirstOrDefault(s => string.Equals(s.Key, key, StringComparison.OrdinalIgnoreCase));
             if (setting == null) return NotFound();
             return Ok(new { key = setting.Key, value = setting.Value });
         }
@@ -43,7 +49,8 @@ namespace MedicineBook.API.Controllers
         {
             if (string.IsNullOrEmpty(model.Key)) return BadRequest("Key is required.");
 
-            var setting = await _context.SystemSettings.FindAsync(model.Key);
+            var list = await _context.SystemSettings.ToListAsync();
+            var setting = list.FirstOrDefault(s => string.Equals(s.Key, model.Key, StringComparison.OrdinalIgnoreCase));
             if (setting == null)
             {
                 _context.SystemSettings.Add(model);
@@ -63,9 +70,11 @@ namespace MedicineBook.API.Controllers
         {
             if (settings == null) return BadRequest("Settings cannot be null.");
 
+            var existingList = await _context.SystemSettings.ToListAsync();
+
             foreach (var kvp in settings)
             {
-                var existing = await _context.SystemSettings.FindAsync(kvp.Key);
+                var existing = existingList.FirstOrDefault(s => string.Equals(s.Key, kvp.Key, StringComparison.OrdinalIgnoreCase));
                 if (existing == null)
                 {
                     _context.SystemSettings.Add(new SystemSetting { Key = kvp.Key, Value = kvp.Value ?? string.Empty });
