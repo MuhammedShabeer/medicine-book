@@ -205,41 +205,62 @@ namespace MedicineBook.API.Controllers
             {
                 var settings = await _context.SystemSettings.ToDictionaryAsync(s => s.Key, s => s.Value);
 
-                string apiKey = "";
-                if (settings.TryGetValue("AI:ApiKey", out var ak) && !string.IsNullOrEmpty(ak))
+                // Build candidate models list with multi-API support
+                var candidates = new List<AiModelConfig>();
+
+                if (settings.TryGetValue("AI:ModelList", out var modelListJson) && !string.IsNullOrWhiteSpace(modelListJson))
                 {
-                    apiKey = ak;
-                }
-                else if (settings.TryGetValue("OpenRouter:ApiKey", out var oak) && !string.IsNullOrEmpty(oak))
-                {
-                    apiKey = oak;
-                }
-                else
-                {
-                    apiKey = _configuration["OpenRouter:ApiKey"] ?? "";
+                    try
+                    {
+                        var list = JsonSerializer.Deserialize<List<AiModelConfig>>(modelListJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        if (list != null)
+                        {
+                            candidates = list.Where(m => m.IsActive && !string.IsNullOrWhiteSpace(m.ApiKey)).ToList();
+                        }
+                    }
+                    catch { }
                 }
 
-                if (string.IsNullOrEmpty(apiKey)) return null;
+                // If candidate list is empty, fallback to legacy settings
+                if (candidates.Count == 0)
+                {
+                    string apiKey = "";
+                    if (settings.TryGetValue("AI:ApiKey", out var ak) && !string.IsNullOrEmpty(ak)) apiKey = ak;
+                    else if (settings.TryGetValue("OpenRouter:ApiKey", out var oak) && !string.IsNullOrEmpty(oak)) apiKey = oak;
+                    else apiKey = _configuration["OpenRouter:ApiKey"] ?? "";
 
-                string endpoint = "https://integrate.api.nvidia.com/v1/chat/completions";
-                if (settings.TryGetValue("AI:Endpoint", out var ep) && !string.IsNullOrEmpty(ep))
-                {
-                    endpoint = ep;
-                }
-                else if (settings.TryGetValue("AI:Provider", out var prov) && prov == "OpenRouter")
-                {
-                    endpoint = "https://openrouter.ai/api/v1/chat/completions";
+                    if (!string.IsNullOrEmpty(apiKey))
+                    {
+                        string endpoint = "https://integrate.api.nvidia.com/v1/chat/completions";
+                        if (settings.TryGetValue("AI:Endpoint", out var ep) && !string.IsNullOrEmpty(ep)) endpoint = ep;
+                        else if (settings.TryGetValue("AI:Provider", out var prov) && prov == "OpenRouter") endpoint = "https://openrouter.ai/api/v1/chat/completions";
+
+                        string model = "deepseek-ai/deepseek-r1";
+                        if (settings.TryGetValue("AI:Model", out var m) && !string.IsNullOrEmpty(m)) model = m;
+                        else if (endpoint.Contains("openrouter.ai")) model = "openai/gpt-4o";
+
+                        candidates.Add(new AiModelConfig
+                        {
+                            Name = "Primary AI Model",
+                            Tier = "Paid",
+                            Endpoint = endpoint,
+                            ApiKey = apiKey,
+                            Model = model,
+                            IsActive = true
+                        });
+                    }
                 }
 
-                string model = "deepseek-ai/deepseek-r1";
-                if (settings.TryGetValue("AI:Model", out var m) && !string.IsNullOrEmpty(m))
+                if (candidates.Count == 0) return null;
+
+                // Sort candidates: Paid first, then Free, then Fallback
+                candidates = candidates.OrderBy(c => c.Tier switch
                 {
-                    model = m;
-                }
-                else if (endpoint.Contains("openrouter.ai"))
-                {
-                    model = "openai/gpt-4o";
-                }
+                    "Paid" => 1,
+                    "Free" => 2,
+                    "Fallback" => 3,
+                    _ => 4
+                }).ThenBy(c => c.Priority).ToList();
 
                 string systemPrompt = @"You are a clinical pharmacologist and medical AI specialist.
 You MUST output ONLY a valid, raw JSON object (with no markdown backticks, no code block markers, and no text outside the JSON).
@@ -336,36 +357,57 @@ The JSON object MUST strictly adhere to this schema:
 
                 userPromptBuilder.AppendLine("\nProvide the complete structured clinical overview strictly in the requested JSON format. Return ONLY the JSON object.");
 
-                var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-                request.Headers.Add("Authorization", $"Bearer {apiKey}");
+                var userPrompt = userPromptBuilder.ToString();
 
-                var payload = new
+                // Multi-model failover execution loop
+                foreach (var candidate in candidates)
                 {
-                    model = model,
-                    messages = new[]
+                    try
                     {
-                        new { role = "system", content = systemPrompt },
-                        new { role = "user", content = userPromptBuilder.ToString() }
-                    },
-                    temperature = 0.5
-                };
+                        var request = new HttpRequestMessage(HttpMethod.Post, candidate.Endpoint);
+                        request.Headers.Add("Authorization", $"Bearer {candidate.ApiKey}");
 
-                request.Content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
+                        var payload = new
+                        {
+                            model = candidate.Model,
+                            messages = new[]
+                            {
+                                new { role = "system", content = systemPrompt },
+                                new { role = "user", content = userPrompt }
+                            },
+                            temperature = 0.5
+                        };
 
-                var response = await client.SendAsync(request);
-                if (!response.IsSuccessStatusCode) return null;
+                        request.Content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                using var document = JsonDocument.Parse(jsonString);
+                        var response = await client.SendAsync(request);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            // Try next candidate model (e.g. rate limit, quota error, etc.)
+                            continue;
+                        }
 
-                if (document.RootElement.TryGetProperty("choices", out var choices) && choices.GetArrayLength() > 0)
-                {
-                    var firstChoice = choices[0];
-                    if (firstChoice.TryGetProperty("message", out var message) && message.TryGetProperty("content", out var content))
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        using var document = JsonDocument.Parse(jsonString);
+
+                        if (document.RootElement.TryGetProperty("choices", out var choices) && choices.GetArrayLength() > 0)
+                        {
+                            var firstChoice = choices[0];
+                            if (firstChoice.TryGetProperty("message", out var message) && message.TryGetProperty("content", out var content))
+                            {
+                                var rawText = content.GetString() ?? "";
+                                var cleanJson = ExtractCleanJson(rawText);
+                                if (!string.IsNullOrWhiteSpace(cleanJson))
+                                {
+                                    return new AiSummaryDto { Content = cleanJson };
+                                }
+                            }
+                        }
+                    }
+                    catch
                     {
-                        var rawText = content.GetString() ?? "";
-                        var cleanJson = ExtractCleanJson(rawText);
-                        return new AiSummaryDto { Content = cleanJson };
+                        // Failover to next candidate model in list
+                        continue;
                     }
                 }
             }
