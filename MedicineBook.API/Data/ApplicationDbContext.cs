@@ -17,5 +17,6 @@ namespace MedicineBook.API.Data
         public DbSet<UserActivityLog> UserActivityLogs { get; set; }
         public DbSet<MedicineStock> MedicineStocks { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<SystemSetting> SystemSettings { get; set; }
     }
 }

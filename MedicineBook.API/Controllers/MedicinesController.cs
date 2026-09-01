@@ -162,7 +162,12 @@ namespace MedicineBook.API.Controllers
         {
             try
             {
-                var apiKey = _configuration["OpenRouter:ApiKey"];
+                var apiKeySetting = await _context.SystemSettings.FindAsync("OpenRouter:ApiKey");
+                var apiKey = apiKeySetting?.Value;
+                
+                if (string.IsNullOrEmpty(apiKey)) 
+                    apiKey = _configuration["OpenRouter:ApiKey"];
+
                 if (string.IsNullOrEmpty(apiKey)) return null;
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://openrouter.ai/api/v1/chat/completions");
