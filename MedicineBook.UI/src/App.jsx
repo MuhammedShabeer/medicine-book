@@ -16,6 +16,7 @@ import QualityIssues from './pages/operations/QualityIssues';
 import ExtemporaneousPrep from './pages/operations/ExtemporaneousPrep';
 import ExpiryStock from './pages/operations/ExpiryStock';
 import References from './pages/references';
+import Announcements from './pages/Announcements';
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
                 <Route path="operations/quality" element={<QualityIssues />} />
                 <Route path="operations/extemporaneous" element={<ExtemporaneousPrep />} />
                 <Route path="operations/stock" element={<ExpiryStock />} />
+
+                <Route path="announcements" element={<Announcements />} />
               </Route>
               
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

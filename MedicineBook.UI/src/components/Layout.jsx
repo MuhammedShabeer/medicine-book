@@ -1,14 +1,37 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Link, useLocation, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [unreadAnnouncements, setUnreadAnnouncements] = useState(false);
+
+  React.useEffect(() => {
+    const checkAnnouncements = async () => {
+      try {
+        const res = await axios.get('/api/announcements');
+        if (res.data && res.data.length > 0) {
+          const latestDate = new Date(res.data[0].createdAt).getTime();
+          const lastViewed = localStorage.getItem('lastViewedAnnouncements');
+          if (!lastViewed || latestDate > parseInt(lastViewed)) {
+            setUnreadAnnouncements(true);
+          }
+        }
+      } catch (e) {}
+    };
+    checkAnnouncements();
+  }, []);
+
+  const handleAnnouncementClick = () => {
+    localStorage.setItem('lastViewedAnnouncements', Date.now().toString());
+    setUnreadAnnouncements(false);
+  };
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -18,6 +41,7 @@ const Layout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Announcements', path: '/announcements', icon: Megaphone, hasBadge: unreadAnnouncements },
     { name: 'Medicines', path: '/medicines', icon: Pill },
     { name: 'Calculator', path: '/calculator', icon: Calculator },
     ...(isAdmin ? [
@@ -73,13 +97,24 @@ const Layout = () => {
             <Link 
               key={item.path} 
               to={item.path} 
-              className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 active:scale-95 ${
+              onClick={() => {
+                if (item.name === 'Announcements') handleAnnouncementClick();
+              }}
+              className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 active:scale-95 relative ${
                 location.pathname === item.path 
                 ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-md shadow-primary/20' 
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium'
               }`}
             >
-              <item.icon size={20} />
+              <div className="relative">
+                <item.icon size={20} />
+                {item.hasBadge && (
+                  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                  </span>
+                )}
+              </div>
               {item.name}
             </Link>
           ))}
@@ -110,13 +145,22 @@ const Layout = () => {
               <Link 
                 key={item.path} 
                 to={item.path} 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex flex-col items-center p-2 rounded-xl transition-all duration-300 active:scale-95 min-w-[60px] ${
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (item.name === 'Announcements') handleAnnouncementClick();
+                }}
+                className={`flex flex-col items-center p-2 rounded-xl transition-all duration-300 active:scale-95 min-w-[60px] relative ${
                   isActive ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
                 }`}
               >
-                <div className={`p-1.5 rounded-full transition-all duration-300 ${isActive ? 'bg-primary/10' : ''}`}>
+                <div className={`p-1.5 rounded-full transition-all duration-300 relative ${isActive ? 'bg-primary/10' : ''}`}>
                   <item.icon size={22} className={isActive ? 'animate-bounce-subtle' : ''} />
+                  {item.hasBadge && (
+                    <span className="absolute top-1 right-1 flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                    </span>
+                  )}
                 </div>
                 <span className={`text-[10px] font-medium mt-1 ${isActive ? 'font-bold' : ''}`}>
                   {item.name}
