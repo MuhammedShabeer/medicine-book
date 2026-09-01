@@ -2,15 +2,29 @@ import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { Link, useLocation, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone } from 'lucide-react';
+import { Link, useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadAnnouncements, setUnreadAnnouncements] = useState(false);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'K' || e.key === 'k')) {
+        e.preventDefault();
+        if (user?.roles?.includes('Admin')) {
+          navigate('/config');
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [user, navigate]);
 
   React.useEffect(() => {
     const checkAnnouncements = async () => {
@@ -49,7 +63,7 @@ const Layout = () => {
       { name: 'Analytics', path: '/analytics', icon: Activity }
     ] : []),
     { name: 'Quality', path: '/operations/quality', icon: AlertTriangle },
-    { name: 'Extemporaneous', path: '/operations/extemporaneous', icon: FlaskConical },
+    { name: 'Extemporaneous Preparations', path: '/operations/extemporaneous', icon: BookOpen },
     { name: 'Stock', path: '/operations/stock', icon: PackageOpen },
       { name: 'References', path: '/references', icon: Heart },
     { name: 'About', path: '/acknowledgements', icon: Heart }

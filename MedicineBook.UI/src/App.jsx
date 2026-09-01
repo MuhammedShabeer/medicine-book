@@ -17,6 +17,7 @@ import ExtemporaneousPrep from './pages/operations/ExtemporaneousPrep';
 import ExpiryStock from './pages/operations/ExpiryStock';
 import References from './pages/references';
 import Announcements from './pages/Announcements';
+import AdminConfig from './pages/AdminConfig';
 
 function App() {
   return (
@@ -38,12 +39,18 @@ function App() {
                 <Route path="acknowledgements" element={<Acknowledgements />} />
                 <Route path="references" element={<References />} />
                 
-                {/* Operations */}
+                {/* Operations & Preparations */}
                 <Route path="operations/quality" element={<QualityIssues />} />
                 <Route path="operations/extemporaneous" element={<ExtemporaneousPrep />} />
+                <Route path="extemporaneous" element={<ExtemporaneousPrep />} />
+                <Route path="extemporaneous-preparations" element={<ExtemporaneousPrep />} />
                 <Route path="operations/stock" element={<ExpiryStock />} />
 
                 <Route path="announcements" element={<Announcements />} />
+                
+                {/* Admin System Config */}
+                <Route path="config" element={<AdminConfig />} />
+                <Route path="admin/config" element={<AdminConfig />} />
               </Route>
               
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

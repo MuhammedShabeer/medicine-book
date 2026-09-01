@@ -178,8 +178,8 @@ const UsersList = () => {
 
       {/* Modal */}
       {showModal && createPortal(
-        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center p-0 md:p-6 overflow-hidden animate-fade-in">
-          <div className="glass-panel w-full max-w-md p-6 relative bg-white/95 dark:bg-slate-800/95 rounded-t-3xl md:rounded-2xl max-h-[95vh] overflow-y-auto animate-slide-up md:animate-scale-in">
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/60 backdrop-blur-sm z-[9999] flex flex-col justify-end md:justify-center items-center p-0 md:p-6 overflow-hidden animate-fade-in">
+          <div className="glass-panel w-full max-w-md p-6 relative bg-white/95 dark:bg-slate-800/95 rounded-t-3xl md:rounded-2xl max-h-[95vh] overflow-y-auto animate-slide-up md:animate-scale-in mx-auto shadow-2xl">
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-6 md:hidden"></div>
             <button className="absolute top-4 md:top-6 right-4 md:right-6 text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors" onClick={() => setShowModal(false)}>
               <X size={24} />
