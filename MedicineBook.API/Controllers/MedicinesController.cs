@@ -241,16 +241,37 @@ namespace MedicineBook.API.Controllers
                     model = "openai/gpt-4o";
                 }
 
-                string systemPrompt = @"You are a clinical pharmacologist and medical information specialist.
-Provide a clear, highly structured, and concise clinical overview for the specified medicine.
-Structure your response in clean Markdown with the following sections:
-### 1. Clinical Overview & Indications
-### 2. Pharmacology & Mechanism of Action
-### 3. Dosage & Administration
-### 4. Precautions, Warnings & Contraindications
-### 5. Practical Workflow & Dispensing Insights (incorporate provided workflow and tips if given)
+                string systemPrompt = @"You are a clinical pharmacologist and medical AI specialist.
+You MUST output ONLY a valid, raw JSON object (with no markdown backticks, no code block markers, and no text outside the JSON).
 
-Ensure all points are concise, professional, and practical for healthcare workers.";
+The JSON object MUST strictly adhere to this schema:
+{
+  ""summary"": ""Concise 1-2 sentence clinical summary of the medicine."",
+  ""classification"": ""Therapeutic drug class / category"",
+  ""indications"": [
+    ""Primary indication 1"",
+    ""Indication 2""
+  ],
+  ""mechanismOfAction"": ""Clinical mechanism of action and pharmacodynamics."",
+  ""dosageAndAdministration"": [
+    { ""indicationOrRoute"": ""Adult Dosage / Route"", ""dosage"": ""Specific dosage, frequency, and administration instructions"" }
+  ],
+  ""precautionsAndWarnings"": [
+    ""Key clinical warning or monitoring requirement"",
+    ""Black box warning if applicable""
+  ],
+  ""contraindications"": [
+    ""Key contraindication 1"",
+    ""Key contraindication 2""
+  ],
+  ""commonSideEffects"": [
+    ""Common side effect 1"",
+    ""Side effect 2""
+  ],
+  ""workflowAndDispensingNotes"": [
+    ""Storage, handling, or dispensing safety notes based on provided workflow & tips""
+  ]
+}";
 
                 if (settings.TryGetValue("AI:SystemPrompt", out var sp) && !string.IsNullOrWhiteSpace(sp))
                 {
@@ -313,7 +334,7 @@ Ensure all points are concise, professional, and practical for healthcare worker
                     }
                 }
 
-                userPromptBuilder.AppendLine("\nPlease provide a comprehensive, structured clinical overview based on the above information.");
+                userPromptBuilder.AppendLine("\nProvide the complete structured clinical overview strictly in the requested JSON format. Return ONLY the JSON object.");
 
                 var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
                 request.Headers.Add("Authorization", $"Bearer {apiKey}");
@@ -326,7 +347,7 @@ Ensure all points are concise, professional, and practical for healthcare worker
                         new { role = "system", content = systemPrompt },
                         new { role = "user", content = userPromptBuilder.ToString() }
                     },
-                    temperature = 0.6
+                    temperature = 0.5
                 };
 
                 request.Content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
@@ -342,17 +363,63 @@ Ensure all points are concise, professional, and practical for healthcare worker
                     var firstChoice = choices[0];
                     if (firstChoice.TryGetProperty("message", out var message) && message.TryGetProperty("content", out var content))
                     {
-                        var text = content.GetString() ?? "";
-                        if (text.Contains("</think>"))
-                        {
-                            text = text.Substring(text.IndexOf("</think>") + 8).Trim();
-                        }
-                        return new AiSummaryDto { Content = text };
+                        var rawText = content.GetString() ?? "";
+                        var cleanJson = ExtractCleanJson(rawText);
+                        return new AiSummaryDto { Content = cleanJson };
                     }
                 }
             }
             catch { }
             return null;
+        }
+
+        private static string ExtractCleanJson(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "";
+
+            var text = raw.Trim();
+            if (text.Contains("</think>"))
+            {
+                text = text.Substring(text.IndexOf("</think>") + 8).Trim();
+            }
+
+            if (text.StartsWith("```json", StringComparison.OrdinalIgnoreCase))
+            {
+                text = text.Substring(7);
+            }
+            else if (text.StartsWith("```"))
+            {
+                text = text.Substring(3);
+            }
+
+            if (text.EndsWith("```"))
+            {
+                text = text.Substring(0, text.Length - 3);
+            }
+
+            text = text.Trim();
+
+            try
+            {
+                using var doc = JsonDocument.Parse(text);
+                return text;
+            }
+            catch
+            {
+                int firstBrace = text.IndexOf('{');
+                int lastBrace = text.LastIndexOf('}');
+                if (firstBrace >= 0 && lastBrace > firstBrace)
+                {
+                    var candidate = text.Substring(firstBrace, lastBrace - firstBrace + 1);
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(candidate);
+                        return candidate;
+                    }
+                    catch { }
+                }
+                return text;
+            }
         }
 
         [HttpPost]
