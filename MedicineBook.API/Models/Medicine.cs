@@ -13,6 +13,8 @@ namespace MedicineBook.API.Models
         public string? Supplier { get; set; }
         public string? WorkflowData { get; set; }
         public string? TipsAndTricks { get; set; }
+        public string? AiOverview { get; set; }
+        public DateTime? AiOverviewGeneratedAt { get; set; }
 
         public ICollection<MedicineFile>? Files { get; set; }
     }

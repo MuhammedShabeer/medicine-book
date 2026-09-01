@@ -129,26 +129,69 @@ namespace MedicineBook.API.Controllers
         }
 
         [HttpGet("scrape")]
-        public async Task<IActionResult> ScrapeMedicineInfo([FromQuery] string name)
+        public async Task<IActionResult> ScrapeMedicineInfo([FromQuery] int? id, [FromQuery] string? name, [FromQuery] bool refresh = false)
         {
-            if (string.IsNullOrEmpty(name)) return BadRequest(new { Status = "Error", Message = "Name is required" });
-            
+            Medicine? medicine = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                medicine = await _context.Medicines.FindAsync(id.Value);
+            }
+            else if (!string.IsNullOrEmpty(name))
+            {
+                medicine = await _context.Medicines.FirstOrDefaultAsync(m => m.Name == name || m.Category == name);
+            }
+
+            if (medicine == null && string.IsNullOrEmpty(name))
+            {
+                return BadRequest(new { Status = "Error", Message = "Medicine ID or Name is required" });
+            }
+
+            // Return cached / saved overview if available and not explicitly refreshing
+            if (!refresh && medicine != null && !string.IsNullOrEmpty(medicine.AiOverview))
+            {
+                return Ok(new
+                {
+                    Status = "Success",
+                    Source = "Saved Database Overview",
+                    IsCached = true,
+                    GeneratedAt = medicine.AiOverviewGeneratedAt,
+                    Data = new AggregatedScrapeResultDto
+                    {
+                        AiSummary = new AiSummaryDto { Content = medicine.AiOverview }
+                    }
+                });
+            }
+
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                // Use a standard bot user-agent to avoid being blocked by Wikipedia's policy
+                client.Timeout = TimeSpan.FromSeconds(45);
                 client.DefaultRequestHeaders.Add("User-Agent", "MedicineBookApp/1.0 (contact@tafawsolutions.com)");
 
-                var aiTask = ScrapeAiOverview(client, name);
+                var targetName = medicine?.Category ?? medicine?.Name ?? name ?? "";
+                var summary = await GenerateStructuredAiOverview(client, medicine, targetName);
 
-                await aiTask;
+                if (summary != null && !string.IsNullOrEmpty(summary.Content) && medicine != null)
+                {
+                    medicine.AiOverview = summary.Content;
+                    medicine.AiOverviewGeneratedAt = DateTime.UtcNow;
+                    _context.Medicines.Update(medicine);
+                    await _context.SaveChangesAsync();
+                }
 
                 var aggregatedResult = new AggregatedScrapeResultDto
                 {
-                    AiSummary = aiTask.Result
+                    AiSummary = summary
                 };
 
-                return Ok(new { Status = "Success", Source = "AI Insights", Data = aggregatedResult });
+                return Ok(new
+                {
+                    Status = "Success",
+                    Source = "AI Insights",
+                    IsCached = false,
+                    GeneratedAt = DateTime.UtcNow,
+                    Data = aggregatedResult
+                });
             }
             catch (Exception ex)
             {
@@ -156,9 +199,7 @@ namespace MedicineBook.API.Controllers
             }
         }
 
-
-
-        private async Task<AiSummaryDto?> ScrapeAiOverview(HttpClient client, string name)
+        private async Task<AiSummaryDto?> GenerateStructuredAiOverview(HttpClient client, Medicine? medicine, string targetName)
         {
             try
             {
@@ -200,15 +241,90 @@ namespace MedicineBook.API.Controllers
                     model = "openai/gpt-4o";
                 }
 
+                string systemPrompt = @"You are a clinical pharmacologist and medical information specialist.
+Provide a clear, highly structured, and concise clinical overview for the specified medicine.
+Structure your response in clean Markdown with the following sections:
+### 1. Clinical Overview & Indications
+### 2. Pharmacology & Mechanism of Action
+### 3. Dosage & Administration
+### 4. Precautions, Warnings & Contraindications
+### 5. Practical Workflow & Dispensing Insights (incorporate provided workflow and tips if given)
+
+Ensure all points are concise, professional, and practical for healthcare workers.";
+
+                if (settings.TryGetValue("AI:SystemPrompt", out var sp) && !string.IsNullOrWhiteSpace(sp))
+                {
+                    systemPrompt = sp;
+                }
+
+                // Build contextual prompt from Medicine data (Workflow Card + Tips)
+                var userPromptBuilder = new System.Text.StringBuilder();
+                userPromptBuilder.AppendLine($"Medicine: {targetName}");
+
+                if (medicine != null)
+                {
+                    if (!string.IsNullOrEmpty(medicine.Name) && medicine.Name != targetName)
+                    {
+                        userPromptBuilder.AppendLine($"Medicine Code / Identifier: {medicine.Name}");
+                    }
+                    if (!string.IsNullOrEmpty(medicine.Description))
+                    {
+                        userPromptBuilder.AppendLine($"Existing Description: {medicine.Description}");
+                    }
+                    if (!string.IsNullOrEmpty(medicine.TipsAndTricks))
+                    {
+                        userPromptBuilder.AppendLine($"Staff Tips & Tricks:\n{medicine.TipsAndTricks}");
+                    }
+
+                    // Parse WorkflowData if available
+                    if (!string.IsNullOrEmpty(medicine.WorkflowData))
+                    {
+                        try
+                        {
+                            using var wfDoc = JsonDocument.Parse(medicine.WorkflowData);
+                            var wfRoot = wfDoc.RootElement;
+                            var wfNotes = new List<string>();
+
+                            if (wfRoot.TryGetProperty("steps", out var steps) && steps.ValueKind == JsonValueKind.Array)
+                            {
+                                foreach (var step in steps.EnumerateArray())
+                                {
+                                    if (step.TryGetProperty("title", out var stTitle))
+                                    {
+                                        var desc = step.TryGetProperty("description", out var stDesc) ? stDesc.GetString() : "";
+                                        wfNotes.Add($"- {stTitle.GetString()}: {desc}");
+                                    }
+                                }
+                            }
+                            if (wfRoot.TryGetProperty("precautions", out var precautions) && precautions.ValueKind == JsonValueKind.Array)
+                            {
+                                foreach (var p in precautions.EnumerateArray())
+                                {
+                                    wfNotes.Add($"- Precaution: {p.GetString()}");
+                                }
+                            }
+
+                            if (wfNotes.Count > 0)
+                            {
+                                userPromptBuilder.AppendLine($"Workflow Guidelines & Steps:\n{string.Join("\n", wfNotes)}");
+                            }
+                        }
+                        catch { }
+                    }
+                }
+
+                userPromptBuilder.AppendLine("\nPlease provide a comprehensive, structured clinical overview based on the above information.");
+
                 var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
                 request.Headers.Add("Authorization", $"Bearer {apiKey}");
-                
+
                 var payload = new
                 {
                     model = model,
                     messages = new[]
                     {
-                        new { role = "user", content = $"Give a brief, professional clinical overview (2-3 short paragraphs) of the medicine: {name}. Highlight its main uses, mechanism, and any major warnings." }
+                        new { role = "system", content = systemPrompt },
+                        new { role = "user", content = userPromptBuilder.ToString() }
                     },
                     temperature = 0.6
                 };
