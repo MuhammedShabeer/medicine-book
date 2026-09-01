@@ -162,24 +162,55 @@ namespace MedicineBook.API.Controllers
         {
             try
             {
-                var apiKeySetting = await _context.SystemSettings.FindAsync("OpenRouter:ApiKey");
-                var apiKey = apiKeySetting?.Value;
-                
-                if (string.IsNullOrEmpty(apiKey)) 
-                    apiKey = _configuration["OpenRouter:ApiKey"];
+                var settings = await _context.SystemSettings.ToDictionaryAsync(s => s.Key, s => s.Value);
+
+                string apiKey = "";
+                if (settings.TryGetValue("AI:ApiKey", out var ak) && !string.IsNullOrEmpty(ak))
+                {
+                    apiKey = ak;
+                }
+                else if (settings.TryGetValue("OpenRouter:ApiKey", out var oak) && !string.IsNullOrEmpty(oak))
+                {
+                    apiKey = oak;
+                }
+                else
+                {
+                    apiKey = _configuration["OpenRouter:ApiKey"] ?? "";
+                }
 
                 if (string.IsNullOrEmpty(apiKey)) return null;
 
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://openrouter.ai/api/v1/chat/completions");
+                string endpoint = "https://integrate.api.nvidia.com/v1/chat/completions";
+                if (settings.TryGetValue("AI:Endpoint", out var ep) && !string.IsNullOrEmpty(ep))
+                {
+                    endpoint = ep;
+                }
+                else if (settings.TryGetValue("AI:Provider", out var prov) && prov == "OpenRouter")
+                {
+                    endpoint = "https://openrouter.ai/api/v1/chat/completions";
+                }
+
+                string model = "deepseek-ai/deepseek-r1";
+                if (settings.TryGetValue("AI:Model", out var m) && !string.IsNullOrEmpty(m))
+                {
+                    model = m;
+                }
+                else if (endpoint.Contains("openrouter.ai"))
+                {
+                    model = "openai/gpt-4o";
+                }
+
+                var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
                 request.Headers.Add("Authorization", $"Bearer {apiKey}");
                 
                 var payload = new
                 {
-                    model = "openai/gpt-4o",
+                    model = model,
                     messages = new[]
                     {
                         new { role = "user", content = $"Give a brief, professional clinical overview (2-3 short paragraphs) of the medicine: {name}. Highlight its main uses, mechanism, and any major warnings." }
-                    }
+                    },
+                    temperature = 0.6
                 };
 
                 request.Content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
@@ -195,7 +226,12 @@ namespace MedicineBook.API.Controllers
                     var firstChoice = choices[0];
                     if (firstChoice.TryGetProperty("message", out var message) && message.TryGetProperty("content", out var content))
                     {
-                        return new AiSummaryDto { Content = content.GetString() };
+                        var text = content.GetString() ?? "";
+                        if (text.Contains("</think>"))
+                        {
+                            text = text.Substring(text.IndexOf("</think>") + 8).Trim();
+                        }
+                        return new AiSummaryDto { Content = text };
                     }
                 }
             }
