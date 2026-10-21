@@ -26,7 +26,7 @@ const ExtemporaneousPrep = () => {
   const isAdmin = user?.roles?.includes('Admin');
 
   const [activePdfUrl, setActivePdfUrl] = useState('');
-  const [activePdfName, setActivePdfName] = useState('Extemporaneous Preparations Book');
+  const [activePdfName, setActivePdfName] = useState('Magistral Preparations Book');
   const [documentList, setDocumentList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +51,7 @@ const ExtemporaneousPrep = () => {
       const activeRes = await axios.get('/api/preparations/active');
       if (activeRes.data?.activePdfPath) {
         setActivePdfUrl(activeRes.data.activePdfPath);
-        setActivePdfName(activeRes.data.activePdfName || 'Extemporaneous Preparations Book');
+        setActivePdfName(activeRes.data.activePdfName || 'Magistral Preparations Book');
       }
 
       // 2. Fetch list of available documents
@@ -147,10 +147,10 @@ const ExtemporaneousPrep = () => {
         <div>
           <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
             <BookOpen className="text-primary" size={36} />
-            Extemporaneous Preparations
+            Magistral
           </h1>
           <p className="text-slate-600 dark:text-slate-300 mt-1">
-            Pharmacy compounding formulas, standard recipes, and preparation manuals in interactive 2-page book format.
+            Compounding formulas, magistral preparations, and pharmacy manuals in interactive 2-page book format.
           </p>
         </div>
 
@@ -276,7 +276,7 @@ const ExtemporaneousPrep = () => {
             <div className="p-6 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <BookOpen size={20} className="text-primary" />
-                Upload Preparation Book PDF
+                Upload Magistral Book PDF
               </h3>
               <button onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
                 <X size={20} />
@@ -292,7 +292,7 @@ const ExtemporaneousPrep = () => {
                   type="text"
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
-                  placeholder="e.g. Standard Extemporaneous Compounding Manual 2026"
+                  placeholder="e.g. Standard Magistral Compounding Manual 2026"
                   className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none dark:text-white"
                 />
               </div>

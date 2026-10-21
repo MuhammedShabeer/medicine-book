@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'NEXFLUX',
-        short_name: 'NEXFLUX',
-        description: 'NEXFLUX Inventory Management',
+        name: 'Hulool360',
+        short_name: 'Hulool360',
+        description: 'Hulool360 Inventory Management',
         theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',

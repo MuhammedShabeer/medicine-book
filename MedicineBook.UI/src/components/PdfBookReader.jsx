@@ -16,13 +16,19 @@ import {
   Sparkles,
   Loader2,
   FileUp,
-  X
+  X,
+  Search,
+  ArrowUp,
+  ArrowDown,
+  ListFilter,
+  CheckCircle2,
+  Bookmark
 } from 'lucide-react';
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version || '3.11.174'}/pdf.worker.min.js`;
 
-const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onUploadClick, isAdmin, documentList = [], onSelectDocument }) => {
+const PdfBookReader = ({ pdfUrl, title = "Magistral Preparations Book", onUploadClick, isAdmin, documentList = [], onSelectDocument }) => {
   const [pdfDoc, setPdfDoc] = useState(null);
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,10 +41,20 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
   const [pageInput, setPageInput] = useState('1');
   const [flipAnimation, setFlipAnimation] = useState('');
 
+  // Search States
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentResultIndex, setCurrentResultIndex] = useState(-1);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResultsDrawer, setShowResultsDrawer] = useState(false);
+
   const containerRef = useRef(null);
   const leftCanvasRef = useRef(null);
   const rightCanvasRef = useRef(null);
   const singleCanvasRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const pageTextCacheRef = useRef({});
 
   // Auto-detect mobile screen and default to single page
   useEffect(() => {
@@ -60,11 +76,17 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
       setLoading(false);
       setPdfDoc(null);
       setNumPages(0);
+      pageTextCacheRef.current = {};
+      setSearchResults([]);
+      setCurrentResultIndex(-1);
       return;
     }
 
     setLoading(true);
     setError(null);
+    pageTextCacheRef.current = {};
+    setSearchResults([]);
+    setCurrentResultIndex(-1);
 
     const loadingTask = pdfjsLib.getDocument(pdfUrl);
     loadingTask.promise
@@ -89,6 +111,101 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
       isCancelled = true;
     };
   }, [pdfUrl]);
+
+  // Full-Text Search Handler
+  const handlePerformSearch = async (queryToSearch) => {
+    const query = (queryToSearch !== undefined ? queryToSearch : searchQuery).trim();
+    if (!pdfDoc || !query) {
+      setSearchResults([]);
+      setCurrentResultIndex(-1);
+      return;
+    }
+
+    setIsSearching(true);
+    const results = [];
+    const lowerQuery = query.toLowerCase();
+
+    try {
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        let pageText = pageTextCacheRef.current[i];
+
+        if (!pageText) {
+          const page = await pdfDoc.getPage(i);
+          const textContent = await page.getTextContent();
+          pageText = textContent.items.map(item => item.str).join(' ');
+          pageTextCacheRef.current[i] = pageText;
+        }
+
+        const lowerPageText = pageText.toLowerCase();
+        let matchPos = lowerPageText.indexOf(lowerQuery);
+
+        while (matchPos !== -1) {
+          // Extract a preview snippet around the match
+          const start = Math.max(0, matchPos - 40);
+          const end = Math.min(pageText.length, matchPos + query.length + 50);
+          const snippetPrefix = start > 0 ? '...' : '';
+          const snippetSuffix = end < pageText.length ? '...' : '';
+          const snippet = snippetPrefix + pageText.substring(start, end).replace(/\s+/g, ' ') + snippetSuffix;
+
+          results.push({
+            pageNum: i,
+            snippet: snippet,
+            matchIndex: matchPos
+          });
+
+          // Look for next match on the same page
+          matchPos = lowerPageText.indexOf(lowerQuery, matchPos + lowerQuery.length + 1);
+        }
+      }
+
+      setSearchResults(results);
+
+      if (results.length > 0) {
+        setCurrentResultIndex(0);
+        goToPage(results[0].pageNum);
+      } else {
+        setCurrentResultIndex(-1);
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleNextSearchMatch = () => {
+    if (searchResults.length === 0) return;
+    const nextIdx = (currentResultIndex + 1) % searchResults.length;
+    setCurrentResultIndex(nextIdx);
+    goToPage(searchResults[nextIdx].pageNum);
+  };
+
+  const handlePrevSearchMatch = () => {
+    if (searchResults.length === 0) return;
+    const prevIdx = (currentResultIndex - 1 + searchResults.length) % searchResults.length;
+    setCurrentResultIndex(prevIdx);
+    goToPage(searchResults[prevIdx].pageNum);
+  };
+
+  const handleSelectSearchResult = (index) => {
+    setCurrentResultIndex(index);
+    goToPage(searchResults[index].pageNum);
+    setShowResultsDrawer(false);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setCurrentResultIndex(-1);
+    setShowResultsDrawer(false);
+  };
+
+  const toggleSearchBar = () => {
+    setShowSearchBar(!showSearchBar);
+    if (!showSearchBar) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  };
 
   // Render a specific page to a canvas
   const renderPageToCanvas = useCallback(async (pageNum, canvasRef) => {
@@ -157,21 +274,23 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
     performRender();
   }, [pdfDoc, currentPage, scale, isTwoPage, loading, numPages, renderPageToCanvas]);
 
+  const goToPage = (pageNum) => {
+    const target = Math.max(1, Math.min(numPages, pageNum));
+    setCurrentPage(target);
+    setPageInput(target.toString());
+  };
+
   // Page Turn Actions
   const handlePrevPage = () => {
     if (isTwoPage) {
       if (currentPage <= 1) return;
       setFlipAnimation('flip-right');
       const step = currentPage === 2 || currentPage === 3 ? 1 : 2;
-      const target = Math.max(1, currentPage - step);
-      setCurrentPage(target);
-      setPageInput(target.toString());
+      goToPage(currentPage - step);
     } else {
       if (currentPage <= 1) return;
       setFlipAnimation('flip-right');
-      const target = currentPage - 1;
-      setCurrentPage(target);
-      setPageInput(target.toString());
+      goToPage(currentPage - 1);
     }
   };
 
@@ -180,15 +299,11 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
       if (currentPage >= numPages) return;
       setFlipAnimation('flip-left');
       const step = currentPage === 1 ? 1 : 2;
-      const target = Math.min(numPages, currentPage + step);
-      setCurrentPage(target);
-      setPageInput(target.toString());
+      goToPage(currentPage + step);
     } else {
       if (currentPage >= numPages) return;
       setFlipAnimation('flip-left');
-      const target = currentPage + 1;
-      setCurrentPage(target);
-      setPageInput(target.toString());
+      goToPage(currentPage + 1);
     }
   };
 
@@ -196,16 +311,25 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
     e.preventDefault();
     const pageNum = parseInt(pageInput, 10);
     if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= numPages) {
-      setCurrentPage(pageNum);
+      goToPage(pageNum);
     } else {
       setPageInput(currentPage.toString());
     }
   };
 
-  // Keyboard navigation
+  // Keyboard navigation & Ctrl+F search shortcut
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Ctrl+F or Cmd+F -> Toggle Search Bar
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
+        e.preventDefault();
+        setShowSearchBar(true);
+        setTimeout(() => searchInputRef.current?.focus(), 100);
+        return;
+      }
+
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
         handleNextPage();
@@ -216,7 +340,7 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentPage, numPages, isTwoPage]);
+  }, [currentPage, numPages, isTwoPage, searchResults, currentResultIndex]);
 
   // Toggle Fullscreen
   const toggleFullscreen = () => {
@@ -245,10 +369,15 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
   const leftPageNum = isTwoPage ? (currentPage === 1 ? null : (currentPage % 2 === 0 ? currentPage : currentPage - 1)) : null;
   const rightPageNum = isTwoPage ? (currentPage === 1 ? 1 : (leftPageNum ? leftPageNum + 1 : null)) : null;
 
+  // Check if current page has search matches
+  const leftPageHasMatch = leftPageNum && searchResults.some(r => r.pageNum === leftPageNum);
+  const rightPageHasMatch = rightPageNum && searchResults.some(r => r.pageNum === rightPageNum);
+  const singlePageHasMatch = !isTwoPage && searchResults.some(r => r.pageNum === currentPage);
+
   return (
     <div 
       ref={containerRef} 
-      className={`flex flex-col bg-slate-900 text-slate-100 rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 transition-all ${
+      className={`flex flex-col bg-slate-900 text-slate-100 rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 transition-all relative ${
         isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'w-full min-h-[750px]'
       }`}
     >
@@ -316,8 +445,29 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
           </div>
         )}
 
-        {/* Right Tools (Zoom, Mode, Upload, Fullscreen) */}
+        {/* Right Tools (Search, Zoom, Mode, Upload, Fullscreen) */}
         <div className="flex items-center gap-2">
+          
+          {/* Full-Text Search Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleSearchBar}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+              showSearchBar || searchResults.length > 0
+                ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40 shadow-sm'
+                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+            }`}
+            title="Search in PDF (Ctrl + F)"
+          >
+            <Search size={14} />
+            <span className="hidden sm:inline">Search</span>
+            {searchResults.length > 0 && (
+              <span className="px-1.5 py-0.2 bg-cyan-500 text-slate-950 font-bold rounded-full text-[10px]">
+                {searchResults.length}
+              </span>
+            )}
+          </button>
+
           {/* 2-Page / 1-Page Switcher */}
           <button
             type="button"
@@ -374,7 +524,7 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
               type="button"
               onClick={onUploadClick}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 rounded-xl text-xs font-bold border border-cyan-500/40 transition-all shadow-sm"
-              title="Upload new Extemporaneous Preparations PDF"
+              title="Upload new Magistral Preparations PDF"
             >
               <FileUp size={14} />
               <span className="hidden md:inline">Upload Book</span>
@@ -393,12 +543,148 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
         </div>
       </div>
 
+      {/* Expandable Interactive Search Bar */}
+      {showSearchBar && (
+        <div className="bg-slate-900/95 backdrop-blur-md px-6 py-2.5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 animate-slide-down z-20">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              handlePerformSearch();
+            }}
+            className="flex items-center gap-2 flex-1 max-w-xl"
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search formulas, medicines, compounding instructions..."
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-9 pr-8 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSearching || !searchQuery.trim()}
+              className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-40 flex items-center gap-1.5"
+            >
+              {isSearching ? <Loader2 size={13} className="animate-spin" /> : <Search size={13} />}
+              Find
+            </button>
+          </form>
+
+          {/* Match Navigation Controls */}
+          {searchResults.length > 0 && (
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-mono text-cyan-400 font-bold bg-cyan-950/60 px-2.5 py-1 rounded-lg border border-cyan-800/60">
+                Match {currentResultIndex + 1} of {searchResults.length}
+              </span>
+
+              <button
+                type="button"
+                onClick={handlePrevSearchMatch}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700"
+                title="Previous Match"
+              >
+                <ArrowUp size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={handleNextSearchMatch}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700"
+                title="Next Match"
+              >
+                <ArrowDown size={14} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowResultsDrawer(!showResultsDrawer)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-semibold ${
+                  showResultsDrawer
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                }`}
+              >
+                <ListFilter size={13} />
+                All Snippets
+              </button>
+            </div>
+          )}
+
+          {searchResults.length === 0 && searchQuery && !isSearching && (
+            <span className="text-xs text-amber-400 italic">No matches found in this document.</span>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowSearchBar(false);
+              setShowResultsDrawer(false);
+            }}
+            className="text-slate-400 hover:text-white p-1"
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* Search Results Drawer / Snippet Panel */}
+      {showResultsDrawer && searchResults.length > 0 && (
+        <div className="absolute top-[90px] right-6 z-40 w-80 sm:w-96 max-h-[420px] bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col animate-slide-down">
+          <div className="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex justify-between items-center text-xs">
+            <span className="font-bold text-white flex items-center gap-1.5">
+              <Search size={13} className="text-cyan-400" />
+              Found {searchResults.length} matches for "{searchQuery}"
+            </span>
+            <button onClick={() => setShowResultsDrawer(false)} className="text-slate-400 hover:text-white">
+              <X size={14} />
+            </button>
+          </div>
+
+          <div className="overflow-y-auto p-2 divide-y divide-slate-800/60">
+            {searchResults.map((res, i) => (
+              <div
+                key={i}
+                onClick={() => handleSelectSearchResult(i)}
+                className={`p-3 rounded-xl cursor-pointer transition-all text-xs flex flex-col gap-1 ${
+                  currentResultIndex === i 
+                    ? 'bg-cyan-950/60 text-cyan-200 border border-cyan-500/30 shadow-sm'
+                    : 'hover:bg-slate-800/60 text-slate-300'
+                }`}
+              >
+                <div className="flex justify-between items-center font-bold">
+                  <span className="text-cyan-400 flex items-center gap-1">
+                    <Bookmark size={12} /> Page {res.pageNum}
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-mono">Match #{i + 1}</span>
+                </div>
+                <p className="text-[11px] leading-relaxed line-clamp-2 text-slate-300/90 font-serif italic">
+                  {res.snippet}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Main Book Stage Area */}
       <div className="flex-1 overflow-auto flex items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 relative">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-            <p className="font-bold text-base text-white">Opening Extemporaneous Formulary...</p>
+            <p className="font-bold text-base text-white">Opening Magistral Formulary...</p>
             <p className="text-xs text-slate-500 mt-1">Rendering high-resolution book pages</p>
           </div>
         ) : error || !pdfUrl ? (
@@ -407,10 +693,10 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
               <BookOpen size={48} />
             </div>
             <h3 className="text-xl font-bold text-white mb-2">
-              Extemporaneous Preparations Book
+              Magistral Preparations Book
             </h3>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-              {error || "No compounding formulary PDF has been loaded yet. Upload your pharmacy's standard preparations manual to view it as an open book."}
+              {error || "No compounding formulary PDF has been loaded yet. Upload your pharmacy's standard magistral preparations manual to view it as an open book."}
             </p>
             {isAdmin && (
               <button
@@ -437,16 +723,24 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
                     <BookOpen size={40} className="text-stone-300 mb-3" />
                     <p className="text-xs font-serif uppercase tracking-widest text-stone-400">Pharmacy Formulary</p>
                     <div className="w-16 h-0.5 bg-stone-300 my-4"></div>
-                    <p className="text-[11px] text-stone-400 italic text-center">Extemporaneous Preparations & Compounding Guide</p>
+                    <p className="text-[11px] text-stone-400 italic text-center">Magistral Preparations & Compounding Guide</p>
                   </div>
                 ) : (
                   <>
                     {/* Spine gradient shadow on left page */}
                     <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/25 via-black/5 to-transparent pointer-events-none z-10"></div>
                     <canvas ref={leftCanvasRef} className="block max-w-full h-auto" />
+                    
                     {leftPageNum && (
-                      <div className="absolute bottom-2 left-4 text-[10px] font-mono text-stone-500 font-bold select-none">
-                        {leftPageNum}
+                      <div className="absolute bottom-2 left-4 flex items-center gap-2 select-none">
+                        <span className="text-[10px] font-mono text-stone-500 font-bold">
+                          {leftPageNum}
+                        </span>
+                        {leftPageHasMatch && (
+                          <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-700 text-[9px] font-bold border border-cyan-500/40">
+                            Search Match
+                          </span>
+                        )}
                       </div>
                     )}
                   </>
@@ -463,9 +757,17 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
                 {/* Spine gradient shadow on right page */}
                 <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/25 via-black/5 to-transparent pointer-events-none z-10"></div>
                 <canvas ref={rightCanvasRef} className="block max-w-full h-auto" />
+                
                 {rightPageNum && (
-                  <div className="absolute bottom-2 right-4 text-[10px] font-mono text-stone-500 font-bold select-none">
-                    {rightPageNum}
+                  <div className="absolute bottom-2 right-4 flex items-center gap-2 select-none">
+                    {rightPageHasMatch && (
+                      <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-700 text-[9px] font-bold border border-cyan-500/40">
+                        Search Match
+                      </span>
+                    )}
+                    <span className="text-[10px] font-mono text-stone-500 font-bold">
+                      {rightPageNum}
+                    </span>
                   </div>
                 )}
               </div>
@@ -500,8 +802,15 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
             <div className="relative bg-white dark:bg-slate-100 p-2 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-slate-700 overflow-hidden">
               <canvas ref={singleCanvasRef} className="block max-w-full h-auto rounded-lg" />
               
-              <div className="absolute bottom-3 right-4 text-xs font-mono text-stone-600 font-bold bg-stone-200/80 px-2 py-0.5 rounded shadow-sm">
-                Page {currentPage} / {numPages}
+              <div className="absolute bottom-3 right-4 flex items-center gap-2">
+                {singlePageHasMatch && (
+                  <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-700 text-[10px] font-bold border border-cyan-500/40">
+                    Search Match
+                  </span>
+                )}
+                <span className="text-xs font-mono text-stone-600 font-bold bg-stone-200/80 px-2 py-0.5 rounded shadow-sm">
+                  Page {currentPage} / {numPages}
+                </span>
               </div>
 
               {currentPage > 1 && (
@@ -539,8 +848,7 @@ const PdfBookReader = ({ pdfUrl, title = "Extemporaneous Preparations Book", onU
             value={currentPage}
             onChange={(e) => {
               const val = parseInt(e.target.value, 10);
-              setCurrentPage(val);
-              setPageInput(val.toString());
+              goToPage(val);
             }}
             className="flex-1 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-primary"
           />

@@ -36,7 +36,7 @@ const Login = () => {
       <div className="glass-panel animate-fade-in w-full max-w-md p-8 md:p-10">
         <div className="text-center mb-8">
           <img src="/logo.png" alt="Medicine Book Logo" className="w-16 h-16 mx-auto mb-4 rounded-2xl shadow-lg border border-white/20" />
-          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">NEXFLUX</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">Hulool360</h2>
           <p className="text-slate-600 dark:text-slate-300">Sign in to your account</p>
         </div>
 

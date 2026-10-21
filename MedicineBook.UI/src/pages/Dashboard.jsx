@@ -28,7 +28,7 @@ const Dashboard = () => {
   return (
     <div className="animate-fade-in pb-8 min-h-[calc(100vh-64px)] md:min-h-screen flex flex-col">
       <h1 className="text-3xl md:text-4xl mb-2 text-slate-900 dark:text-white">Dashboard</h1>
-      <p className="text-slate-600 dark:text-slate-300 mb-8">Overview of NEXFLUX</p>
+      <p className="text-slate-600 dark:text-slate-300 mb-8">Overview of Hulool360</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
         <div 

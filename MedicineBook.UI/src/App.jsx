@@ -18,6 +18,7 @@ import ExpiryStock from './pages/operations/ExpiryStock';
 import References from './pages/references';
 import Announcements from './pages/Announcements';
 import AdminConfig from './pages/AdminConfig';
+import BugDrugNavigator from './pages/BugDrugNavigator';
 
 function App() {
   return (
@@ -33,6 +34,10 @@ function App() {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="medicines" element={<MedicinesList />} />
+                <Route path="spectra" element={<BugDrugNavigator />} />
+                <Route path="bug-drug-navigator" element={<BugDrugNavigator />} />
+                <Route path="bug-drug" element={<BugDrugNavigator />} />
+                <Route path="antibiogram" element={<BugDrugNavigator />} />
                 <Route path="calculator" element={<Calculator />} />
                 <Route path="users" element={<UsersList />} />
                 <Route path="analytics" element={<UserAnalytics />} />
@@ -41,6 +46,8 @@ function App() {
                 
                 {/* Operations & Preparations */}
                 <Route path="operations/quality" element={<QualityIssues />} />
+                <Route path="magistral" element={<ExtemporaneousPrep />} />
+                <Route path="operations/magistral" element={<ExtemporaneousPrep />} />
                 <Route path="operations/extemporaneous" element={<ExtemporaneousPrep />} />
                 <Route path="extemporaneous" element={<ExtemporaneousPrep />} />
                 <Route path="extemporaneous-preparations" element={<ExtemporaneousPrep />} />

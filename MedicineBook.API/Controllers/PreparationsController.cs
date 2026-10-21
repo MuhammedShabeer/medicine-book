@@ -27,7 +27,7 @@ namespace MedicineBook.API.Controllers
             var nameSetting = await _context.SystemSettings.FirstOrDefaultAsync(s => s.Key == "Preparations:ActivePdfName");
 
             var activePath = pathSetting?.Value;
-            var activeName = nameSetting?.Value ?? "Extemporaneous Preparations Book.pdf";
+            var activeName = nameSetting?.Value ?? "Magistral Preparations Book.pdf";
 
             // If not set, check if any PDF exists in uploads/preparations
             var uploadsFolder = Path.Combine(_environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", "preparations");
@@ -130,7 +130,7 @@ namespace MedicineBook.API.Controllers
             return Ok(new
             {
                 Status = "Success",
-                Message = "Extemporaneous Preparation PDF uploaded and set as active book!",
+                Message = "Magistral Preparation PDF uploaded and set as active book!",
                 ActivePdfPath = relativePath,
                 ActivePdfName = displayName
             });

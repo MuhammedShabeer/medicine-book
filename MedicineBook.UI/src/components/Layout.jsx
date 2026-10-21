@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Link, useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen, ShieldAlert } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
@@ -57,13 +57,14 @@ const Layout = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Announcements', path: '/announcements', icon: Megaphone, hasBadge: unreadAnnouncements },
     { name: 'Medicines', path: '/medicines', icon: Pill },
+    { name: 'Spectra', path: '/spectra', icon: ShieldAlert },
     { name: 'Calculator', path: '/calculator', icon: Calculator },
     ...(isAdmin ? [
       { name: 'Users', path: '/users', icon: Users },
       { name: 'Analytics', path: '/analytics', icon: Activity }
     ] : []),
     { name: 'Quality', path: '/operations/quality', icon: AlertTriangle },
-    { name: 'Extemporaneous Preparations', path: '/operations/extemporaneous', icon: BookOpen },
+    { name: 'Magistral', path: '/magistral', icon: BookOpen },
     { name: 'Stock', path: '/operations/stock', icon: PackageOpen },
       { name: 'References', path: '/references', icon: Heart },
     { name: 'About', path: '/acknowledgements', icon: Heart }
@@ -76,7 +77,7 @@ const Layout = () => {
       <div className="md:hidden flex items-center justify-between p-4 bg-white/80 dark:bg-surface backdrop-blur-2xl border-b border-white/20 dark:border-white/10 z-20 sticky top-0 shadow-sm transition-all duration-300">
         <h2 className="flex items-center gap-3 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
           <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-xl shadow-md" />
-          NEXFLUX
+          Hulool360
         </h2>
         <div className="flex items-center gap-3">
           <button onClick={toggleTheme} className="p-2 text-slate-500 dark:text-slate-300 hover:text-primary transition-colors active:scale-95">
@@ -94,7 +95,7 @@ const Layout = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="flex items-center gap-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
               <img src="/logo.png" alt="Logo" className="w-10 h-10 rounded-xl shadow-md" />
-              NEXFLUX
+              Hulool360
             </h2>
             <button onClick={toggleTheme} className="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
