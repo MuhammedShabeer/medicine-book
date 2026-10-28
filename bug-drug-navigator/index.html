@@ -12,14 +12,16 @@
 <div class="wrap">
 <header>
   <h1>Bug–Drug Navigator</h1>
-  <p>Tap a bacterium to see which antibiotics are active, or tap an antibiotic to see its spectrum. Colours follow the Gram stain: violet for Gram-positive, pink for Gram-negative.</p>
+  <div class="grplab" id="grpLabel">Drug group</div>
+  <div class="grp" id="grpRow" role="group" aria-labelledby="grpLabel"></div>
+  <p id="intro"></p>
   <div class="legend" id="legend"></div>
 </header>
 
-<div class="ver" role="group" aria-label="Chart version"><span style="font-size:14px;font-weight:700;color:var(--muted)">Version</span><button data-ver="2026" aria-pressed="true">2026 update</button><button data-ver="2019" aria-pressed="false">Original 2019</button></div>
+<div class="ver" id="verRow" role="group" aria-label="Chart version"><span style="font-size:14px;font-weight:700;color:var(--muted)">Version</span><button data-ver="2026" aria-pressed="true">2026 update</button><button data-ver="2019" aria-pressed="false">Original 2019</button></div>
 <div class="tabs" role="tablist" aria-label="View">
-  <button role="tab" aria-selected="true" data-v="bug">Pick a bacterium</button>
-  <button role="tab" aria-selected="false" data-v="drug">Pick an antibiotic</button>
+  <button role="tab" aria-selected="true" data-v="bug" id="tab-bug">Pick a bacterium</button>
+  <button role="tab" aria-selected="false" data-v="drug" id="tab-drug">Pick an antibiotic</button>
   <button role="tab" aria-selected="false" data-v="map">Full coverage map</button>
   <button role="tab" aria-selected="false" data-v="tk">Pharmacist toolkit</button>
   <button role="tab" aria-selected="false" data-v="chg">What changed</button>
@@ -33,7 +35,7 @@
 
 <section id="v-drug" class="grid2 hide">
   <div class="panel">
-    <label for="q" style="font-size:14px;font-weight:700;display:block;margin-bottom:6px">Find an antibiotic</label>
+    <label for="q" id="lblq" style="font-size:14px;font-weight:700;display:block;margin-bottom:6px">Find an antibiotic</label>
     <input id="q" class="search" type="search" placeholder="Meropenem" autocomplete="off">
     <div class="dlist" id="drugList"></div>
   </div>
@@ -41,19 +43,19 @@
 </section>
 
 <section id="v-map" class="hide">
-  <p style="margin:0 0 10px;color:var(--muted)">Filled dot = active. Ring = active with a limitation. × = removed in the 2026 update. A small orange corner marks every updated cell; hover to read the change and its source.</p>
+  <p id="mapnote" style="margin:0 0 10px;color:var(--muted)">Filled dot = active. Ring = active with a limitation. × = removed in the 2026 update. A small orange corner marks every updated cell; hover to read the change and its source.</p>
   <div class="mx"><table id="matrix"></table></div>
 </section>
 
 <section id="v-tk" class="hide"><div id="toolkit"></div></section>
 <section id="v-ref" class="hide panel"><h2 style="margin-top:0">References</h2><div id="refs"></div></section>
 <section id="v-chg" class="hide">
-  <p style="margin:0 0 10px;color:var(--muted);max-width:80ch">Every change made to the November 2019 chart, checked against current guidance on 26 September 2026. Hover a 2026 badge anywhere in the navigator to see its source.</p>
+  <p style="margin:0 0 10px;color:var(--muted);max-width:80ch">Every change made to the November 2019 antibacterial chart (checked 26 September 2026), and the antifungal, antiviral, TB and antiparasitic sections added on 4 October 2026.</p>
   <div class="mx" id="changeList"></div>
 </section>
 
 <footer>
-  Source: "The 'Best' Antibiotic Sensitivity Chart Ever", James McCormack, PharmD and Fawziah Lalji, PharmD, with Tim Lau, Faculty of Pharmaceutical Sciences, University of British Columbia (November 2019). Reorganised here for quick reference and updated in September 2026 against IDSA AMR Guidance (2026), EUCAST Expected Resistant Phenotypes, IDSA/SHEA C. difficile (2021), CDC STI (2021) and the IDSA intra-abdominal guideline. IDSA AMR guidance is written for US practice. It shows general activity only: always check the local HMC antibiogram, culture results and antimicrobial stewardship or ID guidance before choosing therapy.
+  Antibacterial section updated in September 2026 and re-checked in October 2026 against IDSA AMR Guidance (2026), IDSA/SHEA C. difficile (2021), CDC STI (2021), the IDSA/SIS intra-abdominal guideline (2010), FDA labels and AHFS monographs. IDSA AMR guidance is written for US practice. It shows general activity only: always check the local HMC antibiogram, culture results and antimicrobial stewardship or ID guidance before choosing therapy.<br><br>Antifungal, antiviral, TB/mycobacterial and antiparasitic sections added October 2026 from ECMM/ISHAM/ASM, IDSA, CDC, WHO, AASLD-IDSA, DHHS, ATS/ERS/ESCMID/IDSA and product labelling (see References). They are a quick reference, not a dosing guide: confirm regimens with ID, the HIV/TB/transplant teams and the current product information.<br><br>Original antibacterial chart: "The 'Best' Antibiotic Sensitivity Chart Ever", James McCormack, PharmD and Fawziah Lalji, PharmD, with Tim Lau, Faculty of Pharmaceutical Sciences, University of British Columbia (November 2019).
 </footer>
 </div>
 
