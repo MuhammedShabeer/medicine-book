@@ -1,0 +1,2318 @@
+[
+ {
+  "id": "acyclovir-250-mg",
+  "name": "Acyclovir 250 mg",
+  "form": "Injection",
+  "drugClass": "Antiviral",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002009"
+  ],
+  "product": "250 mg (vial); Item No on Cerner: 8900002009",
+  "maxConc": "7 mg/mL",
+  "storage": "",
+  "reconstitution": "Powder: Reconstitute with 5 mL of SWFI to give 50 mg/mL.",
+  "diluents": "NS, D5W.",
+  "dilution": "For Pediatrics: Up to 350 mg: 50 mL; 351–700 mg: 100 mL\nFor Adults: Up to 700 mg: 100 mL; 701–1750 mg: 250 mL",
+  "rate": "60 minutes",
+  "stability": "24 hours at Room Temperature. Note: Refrigeration of reconstituted solutions may result in formation of a precipitate which will redissolve at room temperature.",
+  "comments": "Solution Form: Withdraw directly calculated Dose. Do Not Use Bacteriostatic Water for Injection Containing Benzyl Alcohol.",
+  "extra": [],
+  "aliases": "Aciclovir, Zovirax",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Acyclovir Sodium Injection – FDA prescribing information",
+    "url": "https://medlibrary.org/lib/rx/meds/acyclovir-sodium-1/page/4/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: acyclovir",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=acyclovir"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — matches labeling (≈7 mg/mL max, 1-hour infusion). No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "amikacin",
+  "name": "Amikacin",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002081",
+   "8900002080"
+  ],
+  "product": "250 mg/mL (2 mL); Item No on Cerner: 8900002081\n50 mg/mL (2 mL); Item No on Cerner: 8900002080",
+  "maxConc": "5 mg/mL",
+  "storage": "",
+  "reconstitution": "Ready-to-use 500 mg/2 mL. Faint yellowing of the injection does NOT indicate loss of potency",
+  "diluents": "NS, D5W",
+  "dilution": "Dilute to final concentration of 0.25 to 5 mg/mL.\nUp to 250 mg: 50 mL; 251-500 mg: 100 mL\n501-1250 mg: 250 mL; 1251-1500 mg: 500 mL",
+  "rate": "Infuse over 30–60 minutes (label).\nHGH: up to 100 mL over 30 minutes; 250–500 mL over 60 minutes.",
+  "stability": "Label: stable 24 hours at room temperature at 0.25–5 mg/mL in NS, D5W and other listed fluids.\nHGH: 14 days refrigerated (2–8°C) — within label data (60 days at 4°C followed by 24 h at 25°C).",
+  "comments": "",
+  "extra": [],
+  "aliases": "Amikin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Amikacin Sulfate Injection – FDA prescribing information (Hikma)",
+    "url": "https://medlibrary.org/lib/rx/meds/amikacin-sulfate-4/page/5/"
+   },
+   {
+    "title": "Amikacin 250 mg/mL – UK SmPC",
+    "url": "https://www.medicines.org.uk/emc/product/14189/smpc"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: amikacin",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=amikacin"
+   }
+  ],
+  "reviewNote": "Verified. Infusion time aligned with label (30–60 min); label stability statement added.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "amphotericin-b-liposomal",
+  "name": "Amphotericin B (liposomal)",
+  "form": "Injection",
+  "drugClass": "Antifungal",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002042"
+  ],
+  "product": "50 mg (vial); Item No on Cerner: 8900002042",
+  "maxConc": "2 mg/mL",
+  "storage": "",
+  "reconstitution": "Add 12 mL SWFI ONLY (no saline, no bacteriostatic water) → 4 mg/mL. Shake vigorously for 30 seconds until fully dispersed; inspect.\nDraw dose and pass through the supplied 5-micron filter into D5W (one filter per vial).",
+  "diluents": "D5W ONLY. (Incompatible with normal saline and other electrolyte solutions).",
+  "dilution": "Final concentration 1–2 mg/mL (0.2–0.5 mg/mL may be used for infants and small children).\nHGH: 50–200 mg in 100 mL; 250–500 mg in 500 mL.",
+  "rate": "Approximately 120 minutes; may be reduced to about 60 minutes if well tolerated (label).\nAn in-line filter may be used if mean pore size is ≥1 micron.",
+  "stability": "Reconstituted vial (4 mg/mL): up to 24 hours at 2–8°C (US label). Do not freeze.\nDiluted in D5W: US label — start infusion within 6 hours of dilution. EU SmPC provides longer in-use data under validated aseptic conditions; follow the source your policy adopts.",
+  "comments": "Flush line with D5W prior to administration or use a separate new line.",
+  "extra": [],
+  "aliases": "AmBisome, Ampho B, L-AmB",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "AmBisome – SmPC user manual (Gilead, eMC)",
+    "url": "https://www.medicines.org.uk/emc/files/usermanual.1022.pdf"
+   },
+   {
+    "title": "AmBisome – NZ Medsafe data sheet",
+    "url": "https://www.medsafe.govt.nz/profs/Datasheet/a/AmBisomeinj.pdf"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: AmBisome",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=AmBisome"
+   }
+  ],
+  "reviewNote": "Corrected: added 4 mg/mL reconstituted strength; stability split into US label vs EU SmPC; infusion-time note added.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "ampicillin-1-g-2-g",
+  "name": "Ampicillin 1 g/2 g",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "1 g (vial); Item No on Cerner: [to be confirmed]\n2 g (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "Infusion: 30 mg/mL (NS, SWFI, LR). D5W: 20 mg/mL max with only 1-hour stability.",
+  "storage": "",
+  "reconstitution": "Volumes differ by manufacturer — use the vial label.\nDirect IV (common labeling): 1 g + 7.4 mL SWFI; 2 g + 14.8 mL SWFI → ~125 mg/mL.\nFor infusion: reconstitute, then dilute within 1 hour.",
+  "diluents": "NS (preferred), SWFI, LR. D5W only if given within 1 hour.",
+  "dilution": "Dilute to ≤30 mg/mL.\nUp to 1 g: 50 mL; >1 g to 2 g: 100 mL.",
+  "rate": "Infusion: 15–30 minutes.\nDirect IV (1–2 g): slowly over 10–15 minutes — faster injection may cause convulsions (label).",
+  "stability": "NS ≤30 mg/mL: 8 hours at 25°C; 24 hours at 4°C (≤20 mg/mL: 48 hours at 4°C).\nLR ≤30 mg/mL: 8 hours at 25°C; 24 hours at 4°C.\nD5W 10–20 mg/mL: 1 hour at 25°C.",
+  "comments": "Do not mix with aminoglycosides in the same bag. Contains about 2.9 mEq sodium per gram.",
+  "extra": [],
+  "aliases": "Penbritin, Amp",
+  "references": [
+   {
+    "title": "Ampicillin for Injection – FDA label (stability tables)",
+    "url": "https://ndclist.com/ndc/0463-1118/label"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: ampicillin for injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=ampicillin%20for%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US labeling. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "ampicillin-sulbactam-1-5-gm",
+  "name": "Ampicillin/Sulbactam 1.5 gm",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002205"
+  ],
+  "product": "1.5 gm (vial); Item No on Cerner: 8900002205",
+  "maxConc": "45 mg/mL total (30 mg/mL ampicillin + 15 mg/mL sulbactam)",
+  "storage": "",
+  "reconstitution": "1.5 g vial: add 3.2 mL SWFI → ~4 mL; 375 mg/mL total (250 mg/mL ampicillin + 125 mg/mL sulbactam).\nDilute immediately after reconstitution.",
+  "diluents": "NS (preferred), D5W (short stability), LR.",
+  "dilution": "Up to 1.5 gm: 50 mL; More than 1.5 gm: 100 mL. (Note: Pediatric dosage recommendations are expressed as mg of the ampicillin component.)",
+  "rate": "15–30 minutes as infusion in 50–100 mL (label); slow IV injection over ≥10–15 minutes also permitted.",
+  "stability": "NS ≤45 mg/mL: 8 h at 25°C; 48 h at 4°C. NS ≤30 mg/mL: 72 h at 4°C.\nD5W ≤30 mg/mL: only 2 h at 25°C; 4 h at 4°C.\nLR ≤45 mg/mL: 8 h at 25°C; 24 h at 4°C.",
+  "comments": "Pediatric doses are expressed as mg of the ampicillin component (label states mg/kg of total product in some regimens — confirm order basis).\nHGH: 1.5 g supplied in MINI-BAG Plus.",
+  "extra": [],
+  "aliases": "Unasyn",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "UNASYN – Pfizer prescribing information (preparation & stability)",
+    "url": "https://www.pfizermedical.com/unasyn/other"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: ampicillin and sulbactam",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=ampicillin%20and%20sulbactam"
+   }
+  ],
+  "reviewNote": "Corrected: max concentration (label is 45 mg/mL total = 30 mg/mL ampicillin), reconstitution timing, and diluent-specific stability (D5W is much shorter).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "anidulafungin-100-mg",
+  "name": "Anidulafungin 100 mg",
+  "form": "Injection",
+  "drugClass": "Antifungal",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900003102"
+  ],
+  "product": "100 mg (vial); Item No on Cerner: 8900003102",
+  "maxConc": "0.77 mg/mL",
+  "storage": "",
+  "reconstitution": "Reconstitute with 30 mL of SWFI ONLY to give 3.33 mg/mL.",
+  "diluents": "NS, D5W.",
+  "dilution": "50 mg dose: 65 mL (15 mL of drug and 50 mL of solution).\n100 mg dose: 130 mL (30 mL of drug and 100 mL of solution).\n200 mg dose: 260 mL (60 mL of drug and 200 mL of solution).",
+  "rate": "50 mg: 45 minutes; 100 mg: 90 minutes; 200 mg: 180 minutes. (Infusion rate should not exceed 1.1 mg/minute or 1.4 mL/minute).",
+  "stability": "Reconstituted vial: up to 24 hours at ≤25°C.\nInfusion solution: up to 48 hours at ≤25°C (US label). Do not freeze.",
+  "comments": "Storage: Refrigerate unopened vials (2°C–8°C) to maintain stability.\nDosing: Cap intravenous administration at 1.1 mg/minute.\nFlow: Limit volumetric rate to 1.4 mL/minute (84 mL/hour).",
+  "extra": [],
+  "aliases": "Eraxis, Ecalta",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: anidulafungin",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=anidulafungin"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): anidulafungin",
+    "url": "https://www.medicines.org.uk/emc/search?q=anidulafungin"
+   }
+  ],
+  "reviewNote": "Corrected stability wording to label (room-temperature storage permitted).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "antithymocyte-rabbit",
+  "name": "Antithymocyte (Rabbit)",
+  "form": "Injection",
+  "drugClass": "Immunosuppressant",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "25 mg (vial); Item No on Cerner:",
+  "maxConc": "0.5 mg/mL (infusion concentration)",
+  "storage": "",
+  "reconstitution": "Reconstitute each 25 mg vial with 5 mL of Sterile Water for Injection (SWFI) to yield 5 mg/mL. Rotate gently; do not shake.",
+  "diluents": "Normal Saline (0.9% NaCl) or Dextrose 5% in Water (D5W).",
+  "dilution": "50 mL of NS or D5W per vial (total usually 50–500 mL) ≈ 0.5 mg/mL. Invert bag gently once or twice — do not shake.",
+  "rate": "First dose: over at least 6 hours. Subsequent doses: over at least 4 hours. Infuse through a 0.22-micron in-line filter into a high-flow vein.",
+  "stability": "Use as soon as practicable after dilution. If storage is necessary: ≤24 hours at 2–8°C, protected from light (AU PI). Room-temperature storage of reconstituted vials is not recommended (US label).",
+  "comments": "Premedication (e.g., corticosteroids, acetaminophen, diphenhydramine) is usually required to minimize infusion-related reactions. Administer through a 0.22-micron in-line filter. Monitor for anaphylaxis.",
+  "extra": [],
+  "aliases": "Thymoglobulin, ATG, rATG",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "THYMOGLOBULIN – FDA prescribing information (DailyMed, rev. 6/2026)",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bbd8ab99-552e-4b81-aca4-6b0c7af8b9ae"
+   },
+   {
+    "title": "Thymoglobuline – Australian PI",
+    "url": "https://www.medsinfo.com.au/api/documents/Thymoglobuline_PI?format=pdf"
+   }
+  ],
+  "reviewNote": "CORRECTED: infusion time per label (first dose ≥6 h, then ≥4 h); dilution volume per vial; storage after dilution. ⚠ Cerner item number missing.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "artificial-tears",
+  "name": "Artificial Tears (eye drops)",
+  "form": "Eye drops",
+  "drugClass": "Ophthalmic",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "Eye drops; Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "N/A (ready to use).",
+  "diluents": "N/A",
+  "dilution": "N/A",
+  "rate": "1–2 drops in the affected eye(s) as needed or as prescribed.",
+  "stability": "Multi-dose bottle: discard 28 days after opening (or per label). Preservative-free unit-dose: discard after single use.",
+  "comments": "Apply 5 minutes apart from other eye drops; contact-lens wearers should use preservative-free products.",
+  "extra": [],
+  "aliases": "Lubricant eye drops, Hypromellose, Carmellose, Tears Naturale",
+  "references": [
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): hypromellose eye drops",
+    "url": "https://www.medicines.org.uk/emc/search?q=hypromellose%20eye%20drops"
+   }
+  ],
+  "reviewNote": "New entry. ⚠ Product/brand not specified — confirm. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "azithromycin-500-mg",
+  "name": "Azithromycin 500 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002083"
+  ],
+  "product": "500 mg (vial); Item No on Cerner: 8900002083",
+  "maxConc": "2 mg/mL",
+  "storage": "",
+  "reconstitution": "Reconstitute with 4.8 mL of Sterile Water for Injection (SWFI) to yield a final volume of 5 mL (100 mg/mL).",
+  "diluents": "NS, D5W",
+  "dilution": "Dilute to a final concentration of 2 mg/mL (e.g., 500 mg in 250 mL).",
+  "rate": "2 mg/mL (250 mL): over 1 hour.\n1 mg/mL (500 mL): over 3 hours.\nDo not give as bolus or IM.",
+  "stability": "Reconstituted vial: 24 hours at ≤30°C.\nDiluted: 24 hours at ≤30°C or 7 days refrigerated (5°C).",
+  "comments": "Ensure proper admixture concentration prior to infusion.",
+  "extra": [],
+  "aliases": "Zithromax",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: azithromycin injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=azithromycin%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified. Added the 1 mg/mL / 3-hour option from labeling.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "aztreonam-1000-mg",
+  "name": "Aztreonam 1000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002045"
+  ],
+  "product": "1000 mg (vial); Item No on Cerner: 8900002045",
+  "maxConc": "20 mg/mL",
+  "storage": "",
+  "reconstitution": "Reconstitute with 10 mL of Sterile Water for Injection (SWFI) to yield a final concentration of 100 mg/mL.",
+  "diluents": "NS, D5W",
+  "dilution": "For doses up to 1 gm, dilute to 50 mL. For doses exceeding 1 gm, dilute to 100 mL.",
+  "rate": "1 gm (50 mL): 30 minutes; 2 gm (100 mL): 60 minutes.",
+  "stability": "2 days at Room Temperature (25°C); 7 days Refrigerated (4°C).",
+  "comments": "• Renal: Monitor function and adjust dose if impaired.\n• Incompatibilities: Do not mix with nafcillin, cephradine, or metronidazole.\n• Administration: Flush IV line before and after use.\n• Appearance: A slight pink tint upon standing does not affect potency.",
+  "extra": [],
+  "aliases": "Azactam",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: aztreonam",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=aztreonam"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — matches labeling (≤20 mg/mL for infusion; 48 h RT / 7 days refrigerated). No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "basiliximab-20-mg",
+  "name": "Basiliximab 20 mg",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "20 mg (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "0.4 mg/mL (20 mg in 50 mL) for infusion.",
+  "storage": "",
+  "reconstitution": "Add 5 mL SWFI → 4 mg/mL. Swirl gently — do not shake.",
+  "diluents": "NS, D5W.",
+  "dilution": "Dilute 20 mg to 50 mL.",
+  "rate": "Infusion over 20–30 minutes. Bolus injection also labeled.",
+  "stability": "Use immediately. If needed: 24 hours at 2–8°C or 4 hours at room temperature.",
+  "comments": "Usual dose: 20 mg within 2 hours before transplant, then 20 mg on day 4.",
+  "extra": [],
+  "aliases": "Simulect",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Simulect",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Simulect"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Simulect",
+    "url": "https://www.medicines.org.uk/emc/search?q=Simulect"
+   }
+  ],
+  "reviewNote": "New entry built from US label and UK SmPC. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "calcium-gluconate-100-mg-ml",
+  "name": "Calcium Gluconate 100 mg/mL",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002415"
+  ],
+  "product": "100 mg/mL (10 mL Amp); Item No on Cerner: 8900002415",
+  "maxConc": "Bolus/intermittent: dilute to 10–50 mg/mL\nContinuous infusion: 5.8–10 mg/mL",
+  "storage": "",
+  "reconstitution": "N/A (Solution for injection)",
+  "diluents": "NS, D5W",
+  "dilution": "Up to 1 gm: 50 mL; 2 gm: 100 mL",
+  "rate": "Administer bolus slowly (not to exceed 200 mg/minute in adults or 100 mg/minute in pediatric patients). In acute symptomatic hypocalcemia, infusions over 5-10 minutes have been used in pediatric patients. For continuous infusions, adjust the rate based on serum calcium levels. For intermittent infusions, refer to local guidelines.",
+  "stability": "Current US labeling: use the diluted solution immediately after preparation.",
+  "comments": "1 g calcium gluconate = 10 mL = 93 mg elemental calcium = 4.65 mEq = 2.33 mmol.\n• Do not mix with phosphate- or bicarbonate-containing fluids (precipitation).\n• Ceftriaxone: never co-administer in neonates; in older patients give sequentially with line flush.\n• For stat bolus doses, dispense in a syringe; do not supply as an ampoule (HGH).",
+  "extra": [],
+  "aliases": "Ca Gluconate",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Calcium Gluconate Injection – FDA prescribing information",
+    "url": "https://medlibrary.org/lib/rx/meds/calcium-gluconate-5/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: calcium gluconate",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=calcium%20gluconate"
+   }
+  ],
+  "reviewNote": "Corrected: concentration limits added from label; diluted-solution stability per current label (use immediately).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "caspofungin-50-mg-70-mg",
+  "name": "Caspofungin 50 mg/70 mg",
+  "form": "Injection",
+  "drugClass": "Antifungal",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900003103",
+   "8900003104"
+  ],
+  "product": "50 mg (vial); Item No on Cerner: 8900003103\n70 mg (vial); Item No on Cerner: 8900003104",
+  "maxConc": "0.5 mg/mL",
+  "storage": "",
+  "reconstitution": "Bring the vial to room temperature. Reconstitute with 10.5 mL of Sterile Water for Injection (SWFI) and mix gently until dissolved. Withdrawing 10 mL of the reconstituted solution provides the full 50 mg or 70 mg dose as a clear solution.",
+  "diluents": "NS, 0.45% or 0.225% NaCl, or LR. Do NOT use dextrose-containing solutions.",
+  "dilution": "35-75 mg dose: 250 mL NS. In cases of fluid restriction, 35-50 mg doses may be diluted in 100 mL NS.",
+  "rate": "60 minutes.",
+  "stability": "Reconstituted vial: Store for up to one hour at room temperature.\nAdmixture: 24 hours at Room Temperature; 48 hours Refrigerated (2-8°C).",
+  "comments": "",
+  "extra": [],
+  "aliases": "Cancidas",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: caspofungin",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=caspofungin"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — matches labeling. Added LR as compatible fluid.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "cefazolin-1000-mg",
+  "name": "Cefazolin 1000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002466"
+  ],
+  "product": "1000 mg (vial); Item No on Cerner: 8900002466",
+  "maxConc": "HGH: 40 mg/mL (label: dilute dose in 50–100 mL)",
+  "storage": "",
+  "reconstitution": "Reconstitute with 9.6 mL of NS or SWFI to give 100 mg/mL.",
+  "diluents": "NS, D5W",
+  "dilution": "≤ 2 gm: 50 mL",
+  "rate": "Infusion: 30 minutes (HGH).\nLabel also permits direct IV injection over 3–5 minutes after further dilution.",
+  "stability": "Reconstituted or diluted: 24 hours at room temperature or 10 days refrigerated (5°C).\nRefrigerated reconstituted vials may crystallise — warm and agitate until clear.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Ancef, Kefzol",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Cefazolin for Injection – FDA prescribing information (Hikma)",
+    "url": "https://medlibrary.org/lib/rx/meds/cefazolin-16/page/5/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: cefazolin",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=cefazolin"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Corrected stability: label is 24 h room temperature / 10 days refrigerated (the 7-day room-temperature figure was not supported).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "cefepime-2000-mg",
+  "name": "Cefepime 2000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002462"
+  ],
+  "product": "2000 mg (vial); Item No on Cerner: 8900002462",
+  "maxConc": "40 mg/mL (label: 1–40 mg/mL)",
+  "storage": "",
+  "reconstitution": "Use the volume printed on the vial in use.\nMaxipime label: 2 g + 10 mL → ~160 mg/mL.\nHGH product: 7.6 mL → 10 mL (200 mg/mL).",
+  "diluents": "NS, D5W.",
+  "dilution": "For doses less than 2 gm: 50 mL; For 2 gm: 100 mL.",
+  "rate": "30 minutes",
+  "stability": "24 hours at Room Temperature; 7 days Refrigerated (2-8°C).",
+  "comments": "",
+  "extra": [],
+  "aliases": "Maxipime",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: cefepime",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=cefepime"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified. Reconstitution volume depends on manufacturer — label value added.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "cefiderocol-1-g",
+  "name": "Cefiderocol 1 g",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "1 g (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "2 g in 100 mL (~20 mg/mL).",
+  "storage": "Store vials refrigerated (2–8°C), protected from light.",
+  "reconstitution": "Add 10 mL NS or D5W (take it from the 100 mL bag that will be used) → ~11.2 mL, 89 mg/mL. Shake gently; let stand until foam disappears (~2 minutes).\nUse within 1 hour at room temperature.",
+  "diluents": "NS or D5W only.",
+  "dilution": "Add dose to 100 mL NS or D5W:\n2 g = 22.4 mL (2 vials); 1.5 g = 16.8 mL; 1 g = 11.2 mL; 0.75 g = 8.4 mL.",
+  "rate": "Over 3 hours.",
+  "stability": "Reconstituted vial: 1 hour at room temperature.\nInfusion bag: 6 hours at room temperature, OR up to 24 hours at 2–8°C protected from light — then complete within 6 hours of removal.",
+  "comments": "Renal dose adjustment needed for CrCl <60 mL/min; 2 g q6h when CrCl ≥120 mL/min.",
+  "extra": [],
+  "aliases": "Fetroja",
+  "references": [
+   {
+    "title": "FETROJA – FDA prescribing information",
+    "url": "https://www.drugs.com/pro/fetroja.html"
+   },
+   {
+    "title": "Fetroja – Australian PI (TGA, Oct 2026)",
+    "url": "https://www.tga.gov.au/sites/default/files/2026-10/auspar-fetroja-261008-pi.pdf"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Fetroja",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Fetroja"
+   }
+  ],
+  "reviewNote": "New entry built from US label and Australian PI (Oct 2026). ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "cefotaxime-1-g",
+  "name": "Cefotaxime 1 g",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "1 g (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "No fixed maximum for infusion; IV push up to ~100 mg/mL (1 g in 10 mL).",
+  "storage": "",
+  "reconstitution": "IV: add 10 mL SWFI → ~95 mg/mL (10.4 mL).\nIM: add 3 mL SWFI → 300 mg/mL.",
+  "diluents": "NS, D5W, D10W, D5W/NS, D5W/0.45% NaCl, LR. Do NOT use sodium bicarbonate (pH >7.5).",
+  "dilution": "Up to 2 g: 50–100 mL (label allows 50–1000 mL).",
+  "rate": "Infusion: 20–60 minutes (SmPC: short infusion 20 min).\nIV push: 3–5 minutes — faster injection via central line has caused life-threatening arrhythmia.",
+  "stability": "Reconstituted vial (1 g/10 mL): 24 hours at ≤22°C; 7 days at ≤5°C.\nDiluted in up to 1000 mL: 24 hours at ≤22°C; at least 5 days at ≤5°C.\nSolutions may darken; protect from heat and light.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Claforan",
+  "references": [
+   {
+    "title": "Cefotaxime for Injection – FDA label",
+    "url": "https://medlibrary.org/lib/rx/meds/cefotaxime/page/4/"
+   },
+   {
+    "title": "Cefotaxime 1 g – UK SmPC (hameln, 2025)",
+    "url": "https://www.medicines.org.uk/emc/product/101457/smpc"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US label and UK SmPC (2025). ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "ceftazidime-1000-mg",
+  "name": "Ceftazidime 1000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002446"
+  ],
+  "product": "1000 mg (vial); Item No on Cerner: 8900002446",
+  "maxConc": "40 mg/mL",
+  "storage": "",
+  "reconstitution": "Reconstitute with 9 mL of NS or SWFI to give 100 mg/mL.",
+  "diluents": "NS, D5W",
+  "dilution": "Up to 1 gm: 50 mL; Over 1 gm: 100 mL",
+  "rate": "15-30 minutes",
+  "stability": "24 hours at room temperature; 7 days under refrigeration.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Fortum, Fortaz",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: ceftazidime",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=ceftazidime"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — matches labeling (1–40 mg/mL; 24 h RT / 7 days refrigerated). No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "ceftazidime-avibactam-2-5-g-2000-mg-500-mg",
+  "name": "Ceftazidime/Avibactam 2.5 g (2000 mg/500 mg)",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "2.5 g (2000 mg/500 mg) vial",
+  "maxConc": "40 mg/mL (ceftazidime component)",
+  "storage": "",
+  "reconstitution": "Add 10 mL SWFI, NS, D5W or LR → ~12 mL; ~167 mg/mL ceftazidime + ~42 mg/mL avibactam. Dilute within 30 minutes.",
+  "diluents": "NS, D5W, LR (also D2.5W/0.45% NaCl).",
+  "dilution": "Dilute to 50–250 mL with the same fluid used for reconstitution (not SWFI) → 8–40 mg/mL ceftazidime.\n2.5 g dose: whole vial (12 mL). 1.25 g: 6 mL. 0.94 g: 4.5 mL.",
+  "rate": "Over 2 hours.",
+  "stability": "Infusion bag: use within 12 hours at room temperature; or refrigerate up to 24 hours (2–8°C), then use within 12 hours at room temperature.",
+  "comments": "• Protect vials from light.\n• Verify concentration before dilution.",
+  "extra": [],
+  "aliases": "Avycaz, Zavicefta, CZA",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "AVYCAZ – FDA prescribing information",
+    "url": "https://www.drugs.com/dosage/avycaz.html"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Avycaz",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Avycaz"
+   }
+  ],
+  "reviewNote": "CORRECTED: reconstituted concentration is ~167 mg/mL ceftazidime (not 250 mg/mL); must be diluted within 30 minutes; storage per label. ⚠ Cerner item number missing.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "ceftriaxone-1000-mg-2000-mg",
+  "name": "CefTRIAXone 1000 mg/2000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002303",
+   "8900002302"
+  ],
+  "product": "1000 mg (vial); Item No on Cerner: 8900002303\n2000 mg (vial); Item No on Cerner: 8900002302",
+  "maxConc": "40 mg/mL",
+  "storage": "",
+  "reconstitution": "1 g: Reconstitute with 9.6 mL of NS or SWFI (Final volume = 10 mL; 100 mg/mL).\n2 g: Reconstitute with 19.2 mL of NS or SWFI (Final volume = 20 mL; 100 mg/mL).",
+  "diluents": "NS, D5W",
+  "dilution": "Up to 2 gm: 50 mL.",
+  "rate": "30 minutes",
+  "stability": "48 hours at Room Temperature; 10 days Refrigerated (2-8°C)",
+  "comments": "• Do not admix with aminoglycosides in the same bag.\n• Do not mix or co-administer with calcium-containing solutions via Y-site. Contraindicated with IV calcium in neonates ≤28 days; in older patients give sequentially with thorough line flush.",
+  "extra": [],
+  "aliases": "Rocephin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: ceftriaxone",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=ceftriaxone"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — matches labeling (10–40 mg/mL; 2 days RT / 10 days refrigerated). Neonatal calcium warning added.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "cefuroxime-750-mg-1-5-g",
+  "name": "Cefuroxime 750 mg/1.5 g",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "750 mg (vial); Item No on Cerner: [to be confirmed]\n1.5 g (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "IV push: 90 mg/mL. Infusion: usually 7.5–30 mg/mL.",
+  "storage": "",
+  "reconstitution": "IV: 750 mg + 8.3 mL SWFI; 1.5 g + 16 mL SWFI → ~90 mg/mL. Withdraw entire contents.\nIM (750 mg): 3 mL SWFI → suspension 225 mg/mL.",
+  "diluents": "NS, D5W, D10W, D5W/NS, D5W/0.45% NaCl, 0.45% NaCl, LR, Ringer's. Do NOT use sodium bicarbonate.",
+  "dilution": "750 mg: 50 mL; 1.5 g: 100 mL.",
+  "rate": "Infusion: 15–60 minutes.\nIV push: 3–5 minutes.",
+  "stability": "Reconstituted vial: 24 hours at room temperature; 48 hours refrigerated (5°C).\nDiluted in 50–100 mL NS or D5W: 24 hours at room temperature; 7 days refrigerated.",
+  "comments": "Pause other infusions at the same site while cefuroxime runs. Give aminoglycosides separately.",
+  "extra": [],
+  "aliases": "Zinacef",
+  "references": [
+   {
+    "title": "Cefuroxime for Injection – FDA label",
+    "url": "https://medlibrary.org/lib/rx/meds/cefuroxime-sodium/page/4/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: cefuroxime",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=cefuroxime"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US labeling. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "clindamycin-150-mg-ml-2-ml",
+  "name": "Clindamycin 150 mg/mL (2 mL)",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002371"
+  ],
+  "product": "150 mg/mL (2 mL ampoules); Item No on Cerner: 8900002371",
+  "maxConc": "18 mg/mL",
+  "storage": "",
+  "reconstitution": "N/A",
+  "diluents": "NS, D5W",
+  "dilution": "< 900 mg : 50 mL; 900 mg and more : 100 mL",
+  "rate": "Up to 600 mg: 30 minutes; 900 mg: 45 minutes (Max: 30 mg/minute)",
+  "stability": "14 days refrigerated (2-8°C)",
+  "comments": "Infusion rate must not exceed 30 mg/minute (do not exceed 1200 mg/hour). Never administer a bolus.",
+  "extra": [],
+  "aliases": "Dalacin, Cleocin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: clindamycin injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=clindamycin%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — max 18 mg/mL and ≤30 mg/min match labeling. HGH infusion times are slower than the label minimum (acceptable).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "cloxacillin-500-mg",
+  "name": "Cloxacillin 500 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900003934"
+  ],
+  "product": "500 mg (vial); Item No on Cerner: 8900003934",
+  "maxConc": "40 mg/mL",
+  "storage": "",
+  "reconstitution": "Reconstitute with 4.8 mL of Sterile Water for Injection (SWFI) to give 100 mg/mL.",
+  "diluents": "NS, D5W",
+  "dilution": "Up to 500 mg: 50 mL; More than 500 mg: 100 mL.",
+  "rate": "Infuse over 30–40 minutes (SmPC/ASHP).\nHGH: up to 500 mg over 30 min; >500 mg over 60 min.",
+  "stability": "NS: 24 hours at 23°C, 7 days at 4°C. D5W: 4 days at 23°C, 7 days at 4°C.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Orbenin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Cloxacillin sodium 500 mg – SmPC (Rwanda FDA)",
+    "url": "https://rwandafda.gov.rw/wp-content/uploads/2024/02/Kareclox_500mg_Cloxaciclin sodium_500mg_SmPC.pdf"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified reconstitution (4.8 mL → 100 mg/mL) and infusion time. Stability figures are from published stability data — confirm against your Trissel's/ASHP edition.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "colistin-methanesulfonate-colistimethate-2-million-units",
+  "name": "Colistin Methanesulfonate (Colistimethate) 2 Million units",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900005011"
+  ],
+  "product": "2 Million Units (vial); Item No on Cerner: 8900005011",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "Reconstitute with 2 mL of SWFI or Saline to yield 1 million units/mL. Swirl gently to avoid frothing.",
+  "diluents": "NS, D5W.",
+  "dilution": "All Doses in 50 mL.",
+  "rate": "30 minutes.",
+  "stability": "24 hours under refrigeration.",
+  "comments": "1 million units = 80 mg as colistimethate sodium = 33.3 mg colistin base activity (CBA)",
+  "extra": [],
+  "aliases": "Colomycin, Colistimethate, CMS",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): colistimethate",
+    "url": "https://www.medicines.org.uk/emc/search?q=colistimethate"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: colistimethate",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=colistimethate"
+   }
+  ],
+  "reviewNote": "Verified conversion (1 MIU ≈ 80 mg CMS ≈ 33 mg CBA). No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "cyclosporine-50-mg-ml-5-ml",
+  "name": "cycloSPORINE 50 mg/mL (5 mL)",
+  "form": "Injection",
+  "drugClass": "Immunosuppressant",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "50 mg/mL (5 mL ampoule); Item No on Cerner: [to be confirmed]",
+  "maxConc": "2.5 mg/mL (1 mL concentrate in at least 20 mL).",
+  "storage": "",
+  "reconstitution": "N/A (concentrate — must be diluted).",
+  "diluents": "NS, D5W.",
+  "dilution": "Dilute each 1 mL (50 mg) in 20–100 mL. Prefer glass or non-PVC (polyolefin) containers and DEHP-free sets.",
+  "rate": "Over 2–6 hours.",
+  "stability": "Diluted: discard after 24 hours.",
+  "comments": "Contains polyoxyethylated castor oil (Cremophor EL) — anaphylaxis risk. Observe continuously for the first 30 minutes and keep adrenaline and oxygen available.\nSwitch to oral as soon as possible (IV dose ≈ ⅓ of oral dose).",
+  "extra": [],
+  "aliases": "Ciclosporin, Sandimmune, Cyclosporin",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Sandimmune injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Sandimmune%20injection"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Sandimmun concentrate for solution for infusion",
+    "url": "https://www.medicines.org.uk/emc/search?q=Sandimmun%20concentrate%20for%20solution%20for%20infusion"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US label and UK SmPC. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "daptomycin-500-mg",
+  "name": "DAPTOmycin 500 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002536"
+  ],
+  "product": "Cubicin RF 500 mg (Qatari RF); Item No on Cerner: 8900002536\nDaptomycin 500 mg generic (Docine); Item No on Cerner: [to be confirmed]",
+  "maxConc": "20 mg/mL",
+  "storage": "Cubicin RF vials: room temperature. Original Cubicin and most generics: refrigerate (2–8°C).",
+  "reconstitution": "Cubicin RF: add 10 mL SWFI or bacteriostatic water ONLY (not saline) → 50 mg/mL; rotate/swirl a few minutes until dissolved.\nCubicin (original) and generics such as Docine: 10 mL NS → 50 mg/mL; let stand 10 minutes then swirl gently — follow each vial label.",
+  "diluents": "Cubicin RF: dilute in NS only. Original/generic: NS or LR. NOT compatible with dextrose-containing solutions.",
+  "dilution": "Up to 500 mg: 50 mL",
+  "rate": "IV infusion over 30 minutes, or IV injection over 2 minutes (adults; label).",
+  "stability": "Depends on brand — check the vial in use.\nCubicin RF (label): reconstituted vial 1 day at room temperature / 3 days refrigerated; diluted in NS 19 hours at room temperature / 3 days refrigerated.\nOriginal formulation/generic: 12 hours at room temperature; 48 hours refrigerated (combined vial + bag).",
+  "comments": "Storage: Intact vials should be stored under refrigeration at 2 to 8 °C. Note: Ensure powder is completely dissolved.",
+  "extra": [],
+  "aliases": "Cubicin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "CUBICIN RF – FDA prescribing information (in-use storage table)",
+    "url": "https://medlibrary.org/lib/rx/meds/cubicin-rf/page/2/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: daptomycin",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=daptomycin"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Two brands added from the full IV list (2026-11-10): Cubicin RF and generic Docine — preparation and stability differ. ⚠ Docine Cerner number missing; verify Docine against its own label.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "eculizumab-bkemv-10-mg-ml",
+  "name": "Eculizumab 10 mg/mL (Bkemv)",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "300 mg/30 mL (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "5 mg/mL (final)",
+  "storage": "Store vials at 2–8°C in the carton.",
+  "reconstitution": "N/A (solution — must be diluted).",
+  "diluents": "NS, 0.45% NaCl, D5W, Ringer's.",
+  "dilution": "Add an equal volume of diluent → 5 mg/mL:\n300 mg: 30 + 30 = 60 mL; 600 mg: 120 mL; 900 mg: 180 mL; 1200 mg: 240 mL.\nInvert gently.",
+  "rate": "Adults: over 35 minutes (25–45 min). Children: 1–4 hours. If slowed for a reaction, total time must not exceed 2 hours in adults.\nNever IV push or bolus.",
+  "stability": "Diluted: per label, up to 24 hours at 2–8°C or room temperature. Allow refrigerated admixture to reach room temperature (do not heat).",
+  "comments": "BOXED WARNING: serious meningococcal infections. Confirm meningococcal vaccination (REMS) before dispensing. Observe 1 hour after infusion.",
+  "extra": [],
+  "aliases": "Bkemv, Bekemv, Soliris, eculizumab-aeeb",
+  "references": [
+   {
+    "title": "BKEMV – FDA prescribing information",
+    "url": "https://medlibrary.org/lib/rx/meds/bkemv/page/2/"
+   },
+   {
+    "title": "BEKEMV – UK SmPC (emc, 2026)",
+    "url": "https://www.medicines.org.uk/emc/product/15378/smpc"
+   }
+  ],
+  "reviewNote": "New entry built from US label and UK SmPC (2026). Admixture stability copied from reference product labeling — confirm with Bkemv label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "ertapenem-1000-mg",
+  "name": "Ertapenem 500 mg/1000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900004229"
+  ],
+  "product": "500 mg (vial); Item No on Cerner: [to be confirmed]\n1000 mg (vial); Item No on Cerner: 8900004229",
+  "maxConc": "20 mg/mL",
+  "storage": "",
+  "reconstitution": "1 g: add 10 mL NS or SWFI → 100 mg/mL.\n500 mg: follow the vial label of the generic in stock (same 100 mg/mL principle).",
+  "diluents": "NS (only). Do NOT use dextrose-containing solutions.",
+  "dilution": "Up to 1 g: 50 mL",
+  "rate": "30 minutes",
+  "stability": "Diluted in NS: use within 6 hours at room temperature (25°C), OR refrigerate up to 24 hours (5°C) and use within 4 hours after removal. Do not freeze.\nComplete the infusion within 6 hours of reconstitution.",
+  "comments": "Do not mix or co-infuse with other medications. Do not use dextrose-containing diluents.",
+  "extra": [],
+  "aliases": "Invanz",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "INVANZ – FDA prescribing information (Merck)",
+    "url": "https://medlibrary.org/lib/rx/meds/invanz-1/page/8/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: ertapenem",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=ertapenem"
+   }
+  ],
+  "reviewNote": "CORRECTED: stability per label (6 h RT / 24 h refrigerated then 4 h). 500 mg strength added from the full IV list (2026-11-10) — ⚠ verify with the 500 mg product's label and add its Cerner number.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "ganciclovir-500-mg",
+  "name": "Ganciclovir 500 mg",
+  "form": "Injection",
+  "drugClass": "Antiviral",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "500 mg (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "10 mg/mL",
+  "storage": "",
+  "reconstitution": "Add 10 mL SWFI → 50 mg/mL. Do NOT use bacteriostatic water (parabens precipitate). Shake to dissolve.",
+  "diluents": "NS, D5W, LR, Ringer's.",
+  "dilution": "Dilute dose to ≤10 mg/mL (usually 100 mL).",
+  "rate": "Over 1 hour (constant rate). Never IV push or rapid infusion.",
+  "stability": "Reconstituted vial: 12 hours at room temperature — do NOT refrigerate.\nDiluted infusion: refrigerate and use within 24 hours. Do not freeze.",
+  "comments": "Hazardous drug (carcinogenic/teratogenic): prepare in a biological safety cabinet with chemo gloves and dispose as cytotoxic waste.\nRenal dose adjustment required. Alkaline (pH ~11) — avoid extravasation.",
+  "extra": [],
+  "aliases": "Cytovene, GCV",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: ganciclovir injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=ganciclovir%20injection"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Cymevene",
+    "url": "https://www.medicines.org.uk/emc/search?q=Cymevene"
+   },
+   {
+    "title": "NIOSH List of Hazardous Drugs in Healthcare Settings",
+    "url": "https://www.cdc.gov/niosh/healthcare/hazardous-drugs/"
+   }
+  ],
+  "reviewNote": "New entry built from US labeling. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "gentamicin",
+  "extra": [],
+  "photos": [],
+  "storage": "",
+  "updatedAt": null,
+  "highAlert": false,
+  "name": "Gentamicin 0.3% eye drops / fortified 14 mg/mL",
+  "form": "Fortified eye drops",
+  "drugClass": "Ophthalmic",
+  "aliases": "Fortified gentamicin, Genticin eye drops, Gentamicin ophthalmic",
+  "product": "Gentamicin 0.3% (3 mg/mL) eye drops 5 mL; Item No on Cerner: [to be confirmed]\nFortified preparation uses Gentamicin 40 mg/mL (2 mL) injection, Cerner 8900003081",
+  "maxConc": "Fortified: ~14 mg/mL",
+  "reconstitution": "Fortified (14 mg/mL): aseptically add 2 mL of gentamicin 40 mg/mL injection (80 mg) to a 5 mL bottle of gentamicin 0.3% eye drops (15 mg) → 95 mg/7 mL ≈ 13.6 mg/mL. Prepare in a laminar-airflow hood.",
+  "diluents": "Commercial gentamicin 0.3% eye drops (vehicle). Alternative per local policy: artificial tears.",
+  "dilution": "See preparation. Label: 'Fortified — for ophthalmic use only', concentration, expiry, and 'Refrigerate'.",
+  "rate": "As prescribed — loading often every 15–60 minutes for keratitis, then tapered.",
+  "stability": "Fortified drops: refrigerate (2–8°C); commonly assigned up to 14 days (published compounding data). Follow HGH compounding policy.\nCommercial 0.3%: discard 28 days after opening.",
+  "comments": "Corneal toxicity possible with prolonged use of fortified aminoglycoside drops. Use a separate bottle per eye if infection is unilateral.",
+  "references": [
+   {
+    "title": "ASHP Handbook on Extemporaneous Formulations / Trissel's Stability of Compounded Formulations",
+    "url": ""
+   },
+   {
+    "title": "DailyMed – gentamicin ophthalmic solution",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=gentamicin%20ophthalmic"
+   }
+  ],
+  "reviewNote": "Filled in the blank 'gentamicin' ophthalmic entry. Fortified recipe is standard practice (no licensed label) — confirm against HGH compounding policy. ⚠ Cerner number for 0.3% drops missing.",
+  "lastReviewed": "2026-11-10",
+  "cernerCodes": []
+ },
+ {
+  "id": "gentamicin-40-mg-ml-2-ml",
+  "name": "Gentamicin 40 mg/mL (2 mL)",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900003081"
+  ],
+  "product": "40 mg/mL (2 mL amp); Item No on Cerner: 8900003081",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "N/A",
+  "diluents": "NS, D5W",
+  "dilution": "Up to 80 mg: 50 mL; > 80 mg: 100 mL",
+  "rate": "30 – 120 minutes",
+  "stability": "48 hours at Room Temperature; 48 hours Refrigerated (2-8°C).",
+  "comments": "Administer other antibiotics (especially penicillin) 1 hr before or after. For adults, intravenous administration in 50 to 200 mL of sodium chloride 0.9% or dextrose 5% is recommended.",
+  "extra": [],
+  "aliases": "Gent, Genta",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: gentamicin injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=gentamicin%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — 30 min–2 h infusion in 50–200 mL matches labeling. No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "heparin-1-000-units-ml",
+  "name": "Heparin 1,000 units/mL",
+  "form": "Injection",
+  "drugClass": "Anticoagulant",
+  "highAlert": true,
+  "cernerCodes": [
+   "89000023170"
+  ],
+  "product": "1000 units/mL (5 mL vials); Item No on Cerner: 89000023170",
+  "maxConc": "",
+  "storage": "IV Room refrigerator only",
+  "reconstitution": "",
+  "diluents": "NS",
+  "dilution": "For flushing:\nPediatric: 500 units/0.5 mL in 50 mL NS, then in 5 mL syringes (50 units/5 mL).\nAdult: 5000 units/5 mL in 50 mL.",
+  "rate": "",
+  "stability": "14 days Refrigerated (2-8°C).",
+  "comments": "For topical preparation: Add 5 mL from 1000 units/mL to 50 mL bag NS (Stability: 24 hours at Room Temperature).",
+  "extra": [],
+  "aliases": "UFH, Unfractionated heparin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: heparin sodium injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=heparin%20sodium%20injection"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "Local preparation standard (HGH). ⚠ Cerner item number has 11 digits (89000023170) — please verify.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "heparin-5-000-units-ml-5-ml",
+  "name": "Heparin 5,000 units/mL (5 mL)",
+  "form": "Injection",
+  "drugClass": "Anticoagulant",
+  "highAlert": true,
+  "cernerCodes": [
+   "8900003171"
+  ],
+  "product": "5000 units/mL (5 mL vials); Item No on Cerner: 8900003171",
+  "maxConc": "",
+  "storage": "IV refrigerator only",
+  "reconstitution": "",
+  "diluents": "NS, D5W",
+  "dilution": "25,000 UNITS in 250 mL (100 units/mL)",
+  "rate": "Titrate",
+  "stability": "24 hours at Room Temperature",
+  "comments": "Stored Only in Inpatient Pharmacy",
+  "extra": [],
+  "aliases": "UFH, Unfractionated heparin",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: heparin sodium injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=heparin%20sodium%20injection"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "Local preparation standard (HGH). Concentration 100 units/mL matches common standard concentration.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "ivig-10-percent-10-g-100-ml",
+  "name": "Immune Globulin IV 10% (10 g/100 mL)",
+  "form": "Infusion",
+  "drugClass": "Immunoglobulin",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "10 g/100 mL (100 mg/mL) bottle; Item No on Cerner: [to be confirmed]",
+  "maxConc": "100 mg/mL (ready to use)",
+  "storage": "Per brand: most 10% products at 2–8°C or ≤25°C — check the label.",
+  "reconstitution": "N/A (ready to use). Bring to room temperature. Do not shake.",
+  "diluents": "Do not dilute routinely. If needed, only the diluent named in the brand's label (usually D5W).",
+  "dilution": "Give undiluted.",
+  "rate": "Brand-specific — check the brand stocked. Examples:\n• Privigen: start 0.5 mg/kg/min (0.005 mL/kg/min), up to 8 mg/kg/min.\n• Octagam 10%: start 1 mg/kg/min for 30 min, up to 12 mg/kg/min.\n• Gamunex-C: start 2 mg/kg/min, up to 8 mg/kg/min.\nUse the minimum practical rate in patients at risk of thrombosis or renal failure.",
+  "stability": "Once the bottle is entered, use promptly and discard any unused portion.",
+  "comments": "BOXED WARNING: thrombosis, renal dysfunction and acute renal failure. Ensure hydration.\nInfuse through a separate line; do not mix with other drugs. Monitor vital signs, especially during the first infusion and at rate changes.",
+  "extra": [],
+  "aliases": "IVIG, IVIg, Privigen, Octagam, Gamunex, Kiovig",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Privigen",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Privigen"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Octagam 10%",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Octagam%2010%"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Gamunex-C",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Gamunex-C"
+   }
+  ],
+  "reviewNote": "New entry. ⚠ Brand stocked at HGH not specified — confirm the brand and keep only its rate. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "infliximab-100-mg",
+  "name": "inFLIXimab 100 mg (Remicade)",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "100 mg (vial; 10 mg/mL after reconstitution); Item No on Cerner: [to be confirmed]",
+  "maxConc": "4 mg/mL (range 0.4–4 mg/mL).",
+  "storage": "Store vials at 2–8°C.",
+  "reconstitution": "Add 10 mL SWFI aimed at the vial wall → 10 mg/mL. Swirl gently; do NOT shake. Let stand 5 minutes (foaming is normal).",
+  "diluents": "NS only.",
+  "dilution": "Withdraw from a 250 mL NS bag a volume equal to the dose volume, add the dose, mix gently → 250 mL total.",
+  "rate": "Over at least 2 hours, through a sterile, non-pyrogenic, low-protein-binding in-line filter (pore size ≤1.2 micron).",
+  "stability": "Start infusion within 3 hours of reconstitution and dilution (US label).",
+  "comments": "Do not infuse with other agents in the same line. Monitor for infusion reactions; premedication per protocol.",
+  "extra": [],
+  "aliases": "Remicade, Infliximab",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Remicade",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Remicade"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Remicade",
+    "url": "https://www.medicines.org.uk/emc/search?q=Remicade"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "insulin-regular-100-units-ml-10-ml",
+  "name": "Insulin Regular (Human) 100 units/mL (10 mL)",
+  "form": "Injection",
+  "drugClass": "Endocrine",
+  "highAlert": true,
+  "cernerCodes": [],
+  "product": "100 units/mL (10 mL vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "IV infusion: 0.05–1 unit/mL.",
+  "storage": "Unopened vials at 2–8°C.",
+  "reconstitution": "N/A",
+  "diluents": "NS (standard). Label also lists D5W and D10W (with KCl).",
+  "dilution": "Common standard: 100 units in 100 mL NS (1 unit/mL) — follow the HGH standard concentration.\nPrime/flush the line with ~20 mL of the infusion to saturate insulin binding to tubing.",
+  "rate": "Titrate per insulin-infusion protocol (e.g., DKA 0.1 unit/kg/hour). IV bolus only per protocol.",
+  "stability": "Infusion bag (0.05–1 unit/mL in polypropylene): 24 hours at room temperature (Actrapid SmPC).\nOpened vial: 28 days below 25–30°C.",
+  "comments": "Only regular (soluble) insulin may be given IV. Monitor glucose hourly and potassium closely. Independent double-check required.",
+  "extra": [],
+  "aliases": "Actrapid, Humulin R, Regular insulin, Soluble insulin",
+  "references": [
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Actrapid",
+    "url": "https://www.medicines.org.uk/emc/search?q=Actrapid"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Humulin R U-100",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Humulin%20R%20U-100"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "New entry built from UK SmPC and US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "iron-saccharate-20-mg-ml-5-ml",
+  "name": "Iron Saccharate 20 mg/mL (5 mL)",
+  "form": "Injection",
+  "drugClass": "Hematologic",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002963"
+  ],
+  "product": "20 mg/mL (5 mL Amp); Item No on Cerner: 8900002963",
+  "maxConc": "2 mg/mL",
+  "storage": "",
+  "reconstitution": "",
+  "diluents": "NS (only)",
+  "dilution": "NS only. Do not dilute below 1 mg/mL.\n100–200 mg: in max 100 mL NS. 300–500 mg: in max 250 mL NS.\nHGH: 50 mg/50 mL; 100 mg/100 mL; 200 mg/100 mL.",
+  "rate": "100–200 mg: at least 15 minutes (HGH: 100 mg 30 min; 200 mg 60 min).\n300 mg: 1.5 hours. 400 mg: 2.5 hours. 500 mg: 3.5–4 hours (limited experience).\nUndiluted slow IV injection of 100–200 mg over 2–5 minutes is also labeled.",
+  "stability": "In NS at 1–2 mg/mL: 7 days at controlled room temperature (25°C ± 2°C) (label).",
+  "comments": "Observe for hypersensitivity during and for at least 30 minutes after administration.\nDo not mix with other medications or add to parenteral nutrition.",
+  "extra": [],
+  "aliases": "Venofer, Iron sucrose",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "VENOFER – FDA prescribing information (2026)",
+    "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/021135Orig1s042lbl.pdf"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Venofer",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Venofer"
+   }
+  ],
+  "reviewNote": "Corrected: rates and admixture stability per label (7 days at controlled room temperature, not refrigerated).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "magnesium-sulfate-10-50",
+  "name": "Magnesium Sulfate 10% & 50%",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": true,
+  "cernerCodes": [
+   "8900003663",
+   "8900003653"
+  ],
+  "product": "10%: 100 mg/mL (10-20 mL ampoules); Item No: 8900003663 (Stored in IP + Pyxis)\n50%: 500 mg/mL (5-10 mL ampoules); Item No: 8900003653 (Stored in IV Pharmacy)",
+  "maxConc": "200 mg/mL",
+  "storage": "",
+  "reconstitution": "Dilute with D5W or NS to a concentration of 20% (200 mg/mL) or less.",
+  "diluents": "NS, D5W.",
+  "dilution": "1g: 50 mL; 2g: 100 mL; 3g: 100 mL; 4g: 250 mL",
+  "rate": "For hypomagnesemia: 1 g/hour infusion rate (varies by patient status). Max rate 150 mg/min (1 g/7 min) in emergency.",
+  "stability": "24 hours at room temperature.",
+  "comments": "1 g Magnesium Sulfate = 98.6 mg elemental magnesium = 8.12 mEq = 4.06 mmol. Must be diluted.",
+  "extra": [],
+  "aliases": "MgSO4, Mag sulfate",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: magnesium sulfate injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=magnesium%20sulfate%20injection"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "Verified — ≤20% for IV use and ≤150 mg/min (except eclampsia) match labeling. No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "meropenem-500-mg-1000-mg",
+  "name": "Meropenem 500 mg/1000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900004226",
+   "8900004224"
+  ],
+  "product": "500 mg (vial); Item No on Cerner: 8900004226\n1000 mg (vial); Item No on Cerner: 8900004224",
+  "maxConc": "Infusion: 1–20 mg/mL. IV bolus: up to 50 mg/mL.",
+  "storage": "",
+  "reconstitution": "500 mg: add 10 mL SWFI → 50 mg/mL.\n1 g: add 20 mL SWFI → 50 mg/mL.\nShake and let stand until clear.",
+  "diluents": "NS (preferred). D5W only if used immediately.",
+  "dilution": "Less than 1 gm: 50 mL; 1 gm and more: 100 mL",
+  "rate": "Infusion over 15–30 minutes (HGH: 30 minutes). IV bolus over 3–5 minutes also labeled.",
+  "stability": "Vial reconstituted with SWFI (≤50 mg/mL): 3 hours at ≤25°C or 13 hours at ≤5°C.\nInfusion in NS (1–20 mg/mL): 1 hour at ≤25°C or 15 hours at ≤5°C.\nInfusion in D5W: use immediately. Do not freeze.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Meronem, Mero",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Meropenem for Injection – FDA prescribing information",
+    "url": "https://medlibrary.org/lib/rx/meds/meropenem-7/page/2/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: meropenem",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=meropenem"
+   }
+  ],
+  "reviewNote": "CORRECTED: 1 g vial uses 20 mL (50 mg/mL), and infusion stability is hours, not 5 days (NS: 1 h RT / 15 h refrigerated; D5W: use immediately).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "methylprednisolone-sodium-succinate-125-mg-500-mg",
+  "name": "methylPREDNISolone Sodium Succinate 125 mg/500 mg",
+  "form": "Injection",
+  "drugClass": "Corticosteroid",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900003648",
+   "8900003695"
+  ],
+  "product": "125 mg (vial); Item No on Cerner: 8900003648\n500 mg (vial); Item No on Cerner: 8900003695",
+  "maxConc": "5 mg/mL",
+  "storage": "",
+  "reconstitution": "125 mg: Reconstitute with 2 mL Bacteriostatic WFI.\n500 mg: Reconstitute with 7.8 mL Bacteriostatic WFI to give 8 mL.",
+  "diluents": "NS, D5W.",
+  "dilution": "≤ 125 mg: 50 mL; 126 – 500 mg: 100 mL; 501 – 1250 mg: 250 mL.",
+  "rate": "Up to 500 mg: 30 minutes; More than 500 mg: 60 minutes.",
+  "stability": "2 days Refrigerated (2-8°C).",
+  "comments": "• Bacteriostatic WFI contains Benzyl alcohol.\n• For newborn: SWFI without preservatives.",
+  "extra": [],
+  "aliases": "Solu-Medrol, MP",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Solu-Medrol",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Solu-Medrol"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — use within 48 hours after mixing matches labeling. No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "multivitamin-adult-10-ml",
+  "name": "Multivitamin Infusion (Adult) 10 mL",
+  "form": "Infusion",
+  "drugClass": "Nutrition",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "10 mL daily dose (e.g., 2 × 5 mL vials); Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "Store at 2–8°C.",
+  "reconstitution": "If supplied as two vials, combine both (vial 1 + vial 2) for one 10 mL daily dose.",
+  "diluents": "D5W, NS, or parenteral nutrition.",
+  "dilution": "Add 10 mL to not less than 500 mL (preferably 1000 mL) of infusion or to the PN bag.",
+  "rate": "With the carrier infusion (not as a direct IV injection).",
+  "stability": "Use within 24 hours after adding; protect from light.",
+  "comments": "Contains vitamin K — monitor INR in patients on warfarin. Do not give undiluted IV.",
+  "extra": [],
+  "aliases": "MVI, Infuvite, M.V.I. Adult, Vitamins IV",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Infuvite Adult",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Infuvite%20Adult"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: M.V.I. Adult",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=M.V.I.%20Adult"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry. ⚠ Brand not specified — confirm product. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "mycophenolate-mofetil-500-mg",
+  "name": "Mycophenolate Mofetil 500 mg",
+  "form": "Injection",
+  "drugClass": "Immunosuppressant",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "500 mg (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "6 mg/mL",
+  "storage": "",
+  "reconstitution": "Add 14 mL D5W to each 500 mg vial; shake gently. Do NOT use NS or SWFI.",
+  "diluents": "D5W ONLY.",
+  "dilution": "Dilute to 6 mg/mL with D5W:\n1 g (2 vials) → 140 mL total; 1.5 g (3 vials) → 210 mL total.",
+  "rate": "Over at least 2 hours. Never IV push or rapid infusion.",
+  "stability": "Start infusion within 4 hours of reconstitution and dilution (label).",
+  "comments": "Teratogenic: avoid skin contact; wear gloves when preparing. Do not mix with other drugs or infusion solutions.",
+  "extra": [],
+  "aliases": "CellCept, MMF",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: CellCept intravenous",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=CellCept%20intravenous"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): CellCept 500 mg powder for concentrate",
+    "url": "https://www.medicines.org.uk/emc/search?q=CellCept%20500%20mg%20powder%20for%20concentrate"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "ocrelizumab-30-mg-ml-10-ml",
+  "name": "Ocrelizumab 30 mg/mL (10 mL) – Ocrevus",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "300 mg/10 mL (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "~1.2 mg/mL",
+  "storage": "Store vials at 2–8°C.",
+  "reconstitution": "N/A (solution — must be diluted).",
+  "diluents": "NS only.",
+  "dilution": "300 mg (10 mL) into 250 mL NS; 600 mg (20 mL) into 500 mL NS → ~1.2 mg/mL. Bring bag to room temperature before infusion.",
+  "rate": "Doses 1 & 2 (300 mg): start 30 mL/hour; +30 mL/hour every 30 minutes; max 180 mL/hour (≥2.5 hours).\n600 mg (option 1): start 40 mL/hour; +40 mL/hour every 30 minutes; max 200 mL/hour (≥3.5 hours).\n600 mg (option 2, ~2 hours — only if no previous serious infusion reaction): 100 mL/hour × 15 min → 200 × 15 min → 250 × 30 min → 300 mL/hour for 60 min.",
+  "stability": "Use immediately. If not: up to 24 hours at 2–8°C, then 8 hours at room temperature (includes infusion time).",
+  "comments": "Premedicate with methylprednisolone 100 mg IV and an antihistamine (± antipyretic). Observe for at least 1 hour after infusion.",
+  "extra": [],
+  "aliases": "Ocrevus",
+  "references": [
+   {
+    "title": "OCREVUS – prescribing information (PDR summary)",
+    "url": "https://pdr.net/drug-summary/Ocrevus-ocrelizumab-24064"
+   },
+   {
+    "title": "Ocrevus – NZ Medsafe data sheet (2025)",
+    "url": "https://medsafe.govt.nz/profs/Datasheet/o/Ocrevusinf.pdf"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Ocrevus",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Ocrevus"
+   }
+  ],
+  "reviewNote": "New entry built from US label and NZ data sheet (2025). ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "phenylephrine-1-mg-ml",
+  "name": "Phenylephrine 1 mg/mL (1 mL)",
+  "form": "Injection",
+  "drugClass": "Vasopressor",
+  "highAlert": true,
+  "cernerCodes": [],
+  "product": "1 mg/mL (1 mL ampoule); Item No on Cerner: [to be confirmed]",
+  "maxConc": "Bolus: 100 mcg/mL. Infusion: e.g. 40–80 mcg/mL (higher for fluid-restricted, central line).",
+  "storage": "",
+  "reconstitution": "N/A (concentrate — must be diluted).",
+  "diluents": "NS, D5W.",
+  "dilution": "Bolus: 1 mg (1 mL) + 9 mL NS → 100 mcg/mL.\nInfusion: 10 mg in 250 mL → 40 mcg/mL (or 20 mg in 250 mL → 80 mcg/mL).",
+  "rate": "Bolus: 40–100 mcg every 1–2 minutes as needed (max 200 mcg per dose).\nInfusion: start 10–35 mcg/minute; titrate to BP (max 200 mcg/minute).",
+  "stability": "Diluted: 4 hours at room temperature or 24 hours refrigerated (US label).",
+  "comments": "Use a large vein or central line; extravasation causes necrosis — treat with phentolamine.\nReflex bradycardia is common. Infusion pump and double-check required.",
+  "extra": [],
+  "aliases": "Neo-Synephrine, Biorphen, PE",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: phenylephrine hydrochloride injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=phenylephrine%20hydrochloride%20injection"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): phenylephrine 10 mg/mL",
+    "url": "https://www.medicines.org.uk/emc/search?q=phenylephrine%2010%20mg/mL"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "New entry built from US label. Cerner list states 1 mg/mL — confirm (10 mg/mL ampoules also exist). ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "piperacillin-tazobactam-2-25-gm-4-5-gm",
+  "name": "Piperacillin/Tazobactam 2.25 gm/4.5 gm",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900004181",
+   "8900004185"
+  ],
+  "product": "2.25 gm (vial); Item No on Cerner: 8900004181\n4.5 gm (vial); Item No on Cerner: 8900004185",
+  "maxConc": "80 mg/mL (piperacillin)",
+  "storage": "",
+  "reconstitution": "2.25 g: Reconstitute with 8.5 mL of SWFI to give 10 mL.\n4.5 g: Reconstitute with 16.7 mL of SWFI to give 20 mL.",
+  "diluents": "NS, D5W",
+  "dilution": "≤ 2.25 g: 50 mL; > 2.25 to 4.5 g: 100 mL. (750 mg for dialysis based on total components).",
+  "rate": "30 minutes",
+  "stability": "24 hours at Room Temperature; 7 days Refrigerated (2-8°C).",
+  "comments": "• Dose in pediatrics is based on Piperacillin only. Select this product to calculate mL by Piperacillin/Tazobactam 200 mg/25 mg/mL (200 mg/mL) 20 mL INJ.\n• Available in Pyxis both 2.25 g and 4.5 g (update 2026).",
+  "extra": [],
+  "aliases": "Tazocin, Zosyn, Pip-Tazo, TZP",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: piperacillin and tazobactam",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=piperacillin%20and%20tazobactam"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — 50–150 mL, 30-min infusion, 24 h RT / 7 days refrigerated match labeling. No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "potassium-acetate-2-meq-ml",
+  "name": "Potassium Acetate 2 mEq/mL",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": true,
+  "cernerCodes": [],
+  "product": "2 mEq/mL (K⁺ 2 mEq + acetate 2 mEq per mL) vial; Item No on Cerner: [to be confirmed]",
+  "maxConc": "Same potassium limits as potassium chloride (see KCl monograph / HGH policy).",
+  "storage": "",
+  "reconstitution": "N/A (concentrate — must be diluted). Never IV push.",
+  "diluents": "NS, D5W; commonly added to PN.",
+  "dilution": "Must be diluted before use; mix bag well (invert ≥10 times).",
+  "rate": "Usual ≤10 mEq K/hour peripherally; higher rates only centrally with ECG monitoring (as for KCl).",
+  "stability": "24 hours at room temperature after admixture.",
+  "comments": "Acetate is converted to bicarbonate — useful in metabolic acidosis or where chloride must be limited. Monitor K⁺, acid–base and renal function.\nConcentrated potassium: store separately, label clearly, double-check.",
+  "extra": [],
+  "aliases": "K acetate, KAc",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: potassium acetate injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=potassium%20acetate%20injection"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US labeling. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "potassium-chloride-2-mmol-ml-10-ml",
+  "name": "Potassium Chloride 2 mmol/mL (10 mL)",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": true,
+  "cernerCodes": [
+   "8900004053"
+  ],
+  "product": "2 mmol/mL (10 mL ampoules); Item No on Cerner: 8900004053",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "",
+  "diluents": "NS, D5W",
+  "dilution": "Must be diluted before IV use. Never give IV push. Mix bag thoroughly (invert ≥10 times).\nLabel (K >2.5 mEq/L): up to 40 mEq/L at ≤10 mEq/hour.\nHGH policy: peripheral up to 100 mEq/L; central up to 200 mEq/L.",
+  "rate": "Usual: ≤10 mEq/hour (max 200 mEq/24 h when K >2.5 mEq/L) — label.\nUrgent (K <2 mEq/L with ECG changes/paralysis): up to 40 mEq/hour, central line, continuous ECG monitoring.",
+  "stability": "24 hours at Room Temperature.",
+  "comments": "",
+  "extra": [],
+  "aliases": "KCl",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Potassium Chloride for Injection Concentrate – FDA label (Hospira)",
+    "url": "https://medlibrary.org/lib/rx/meds/potassium-chloride-110/page/2/"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: potassium chloride injection concentrate",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=potassium%20chloride%20injection%20concentrate"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "Label limits added. ⚠ HGH peripheral limit (100 mEq/L) is higher than the concentrate label (40 mEq/L when K >2.5) — keep only if approved by your P&T policy.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "kcl-20-meq-d5-0-45-nacl-1-l",
+  "name": "Potassium Chloride 20 mEq in D5% + 0.45% NaCl (1 L)",
+  "form": "Infusion",
+  "drugClass": "Electrolyte",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "Premixed 1000 mL bag (KCl 20 mEq/L, dextrose 5%, NaCl 0.45%); Item No on Cerner: [to be confirmed]",
+  "maxConc": "20 mEq/L (ready to use)",
+  "storage": "",
+  "reconstitution": "N/A (premixed — ready to use).",
+  "diluents": "N/A",
+  "dilution": "Do not add more potassium to the bag.",
+  "rate": "Per prescribed maintenance rate (e.g., 4-2-1 rule in pediatrics). Potassium delivery should stay ≤10 mEq/hour unless monitored.",
+  "stability": "Use once the overwrap is removed within the period stated on the bag; do not use if cloudy or leaking. Do not connect in series (air embolism).",
+  "comments": "Premixed potassium is preferred over adding concentrate on wards. Check K⁺ and glucose.",
+  "extra": [],
+  "aliases": "KCl premix, D5 1/2NS + 20 KCl, D5/0.45 with KCl",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: potassium chloride in dextrose and sodium chloride injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=potassium%20chloride%20in%20dextrose%20and%20sodium%20chloride%20injection"
+   },
+   {
+    "title": "ISMP List of High-Alert Medications in Acute Care Settings",
+    "url": "https://www.ismp.org/recommendations/high-alert-medications-acute-list"
+   }
+  ],
+  "reviewNote": "New entry built from US labeling. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "potassium-phosphate-3-mmol-ml-50-ml",
+  "name": "Potassium Phosphate 3 mmol/mL (50 mL)",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": true,
+  "cernerCodes": [
+   "8900004051"
+  ],
+  "product": "3 mmol phosphate / 1 mL (50 mL vial); Item No on Cerner: 8900004051. Potassium content is 4.4 mEq/mL",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "",
+  "diluents": "NS, D5W",
+  "dilution": "Must be diluted (usually in 100–250 mL NS or D5W).\nLabel max concentration (adults, ≥12 y): peripheral 6.8 mmol P/100 mL; central 18 mmol P/100 mL.\nHGH peripheral bag sizes:\n• Up to 6.7 mmol / 100 mL\n• 6.8–17 mmol / 250 mL\n• 17.1–34 mmol / 500 mL\n• 34.1–68 mmol / 1000 mL\nHGH central: 13.4 mmol / 100 mL",
+  "rate": "Label max rate: peripheral 6.8 mmol P/hour (10 mEq K/hour); central 15 mmol P/hour (22 mEq K/hour).\nContinuous ECG + central line if potassium >10 mEq/hour.",
+  "stability": "24 hours at Room Temperature.",
+  "comments": "Potassium 4.4 mEq/mL. Use only if serum K <4 mEq/L. Max single dose 45 mmol phosphorus.\nmEq phosphate = mmol × valence; 1 mmol phosphorus = 31 mg.\nWithdraw from vial using a 5-micron filter needle (HGH).",
+  "extra": [],
+  "aliases": "KPhos, K-Phos",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Potassium Phosphates Injection (4.4 mEq K/mL) – FDA prescribing information",
+    "url": "https://prescriberpoint.com/therapies/potassium-phosphates-125121b"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: potassium phosphates injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=potassium%20phosphates%20injection"
+   }
+  ],
+  "reviewNote": "Corrected: replaced 'over 4–6 hours' with the labeled maximum rates and concentrations.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "rasburicase-1-5-mg",
+  "name": "Rasburicase 1.5 mg (Elitek/Fasturtec)",
+  "form": "Injection",
+  "drugClass": "Metabolic",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "1.5 mg (vial) with 1 mL diluent; Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "Store vials at 2–8°C, protected from light.",
+  "reconstitution": "Add 1 mL of the supplied diluent → 1.5 mg/mL. Swirl very gently — do not shake or vortex.",
+  "diluents": "NS only (no dextrose).",
+  "dilution": "Add dose to NS to a total volume of 50 mL.",
+  "rate": "Over 30 minutes. No bolus. Do NOT use an in-line filter. Separate line, or flush with ≥15 mL NS before and after.",
+  "stability": "Reconstituted or diluted: store 2–8°C; discard 24 hours after reconstitution.",
+  "comments": "Contraindicated in G6PD deficiency (hemolysis, methemoglobinemia) — screen high-risk patients.\nUric acid samples: pre-chilled tubes, on ice, to lab within 4 hours.",
+  "extra": [],
+  "aliases": "Elitek, Fasturtec",
+  "references": [
+   {
+    "title": "ELITEK – FDA prescribing information",
+    "url": "https://www.drugs.com/pro/elitek.html"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Fasturtec",
+    "url": "https://www.medicines.org.uk/emc/search?q=Fasturtec"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Elitek",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Elitek"
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "rituximab-10-mg-ml-50-ml",
+  "name": "riTUXimab 10 mg/mL (50 mL) – MabThera / Ruxience",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "MabThera 500 mg/50 mL; Item No on Cerner: [to be confirmed]\nRuxience (biosimilar) 500 mg/50 mL; Item No on Cerner: [to be confirmed]",
+  "maxConc": "4 mg/mL (range 1–4 mg/mL).",
+  "storage": "Store vials at 2–8°C, protected from light.",
+  "reconstitution": "N/A (solution — must be diluted).",
+  "diluents": "NS, D5W.",
+  "dilution": "Dilute to 1–4 mg/mL. Invert gently — do not shake.",
+  "rate": "First infusion: start 50 mg/hour; increase by 50 mg/hour every 30 minutes to max 400 mg/hour.\nLater infusions: start 100 mg/hour; increase by 100 mg/hour every 30 minutes to max 400 mg/hour.\n90-minute option (eligible patients, not first infusion): 20% of dose over 30 minutes, remaining 80% over 60 minutes.\nNever IV push or bolus.",
+  "stability": "Diluted: up to 24 hours at 2–8°C, then up to 24 hours at room temperature (US labels).",
+  "comments": "Premedicate with acetaminophen and antihistamine (plus steroid per protocol). The two brands are not interchangeable without prescriber approval — dispense the brand ordered.",
+  "extra": [],
+  "aliases": "Rituximab, MabThera, Ruxience, Rituxan",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: rituximab",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=rituximab"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): MabThera",
+    "url": "https://www.medicines.org.uk/emc/search?q=MabThera"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Ruxience",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Ruxience"
+   }
+  ],
+  "reviewNote": "New entry built from US labels. Both brands share the same preparation. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "sodium-acetate-2-meq-ml",
+  "name": "Sodium Acetate 2 mEq/mL",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "2 mEq/mL (Na⁺ 2 mEq + acetate 2 mEq per mL) vial; Item No on Cerner: [to be confirmed]",
+  "maxConc": "Concentrate (4 mOsm/mL) — must be diluted.",
+  "storage": "",
+  "reconstitution": "N/A (concentrate — must be diluted). Never IV push.",
+  "diluents": "NS, D5W, SWFI-based admixtures; commonly added to PN.",
+  "dilution": "Must be diluted to an appropriate tonicity before use (e.g., to make isotonic sodium acetate, or as PN additive).",
+  "rate": "Per prescriber and serum sodium/bicarbonate. Avoid correcting sodium faster than recommended limits.",
+  "stability": "24 hours at room temperature after admixture.",
+  "comments": "Acetate is converted to bicarbonate — alternative to sodium bicarbonate (e.g., during shortages). Monitor sodium, acid–base and fluid status.",
+  "extra": [],
+  "aliases": "Na acetate, NaAc",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: sodium acetate injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=sodium%20acetate%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US labeling. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "sodium-bicarbonate-8-4-1mmol-ml-50-ml",
+  "name": "Sodium bicarbonate 8.4% 1mmol/mL (50 mL)",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900004485"
+  ],
+  "product": "8.4% 1 mmol/mL (50 mL); Item No on Cerner: 8900004485",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "",
+  "diluents": "NS, D5W",
+  "dilution": "Ordered dose: dilute in 50-1000 mL. Remove equal dose volume from bag before adding medication.",
+  "rate": "Infuse as directed (Do not exceed 50 mEq/hr).",
+  "stability": "24 hours at Room Temperature.",
+  "comments": "Average dose for most indications is 2 to 5 mEq/kg/24 hr in adults and pediatric patients.",
+  "extra": [],
+  "aliases": "NaHCO3, Bicarb",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: sodium bicarbonate injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=sodium%20bicarbonate%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified against labeling. No changes.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "sodium-chloride-3",
+  "name": "Sodium Chloride 3%",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": true,
+  "cernerCodes": [
+   "8900004470"
+  ],
+  "product": "SOD.CHLORIDE 23.4% (30-50 mL); Item No on Cerner: 8900004470",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "",
+  "diluents": "",
+  "dilution": "",
+  "rate": "",
+  "stability": "Nebulization: 2 days Refrigerated (2-8°C). IV Administration: 1 day at Room Temperature.",
+  "comments": "",
+  "extra": [
+   {
+    "label": "Nebulization preparation",
+    "value": "Remove 4.7 mL from 50 mL NS bag, then add 4.7 mL Sodium Chloride 23.4% to the bag. Label as \"For Nebulization Only\" and \"High Alert\"."
+   },
+   {
+    "label": "IV administration (500 mL)",
+    "value": "Remove 46.7 mL from 500 mL NS bag, then add 46.7 mL 23.4% Sodium Chloride."
+   }
+  ],
+  "aliases": "Hypertonic saline, NaCl 23.4%, NaCl 3%",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Calculation check (in-app): 45.3 mL NS + 4.7 mL NaCl 23.4% = 1.51 g/50 mL = 3.0%",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Recipe verified by calculation (both preparations give 3.0% w/v), assuming nominal bag volume — bag overfill will lower the final concentration slightly.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "sodium-glycerophosphate-2-meq-sodium-1-mmol-phosphate-ml-20-",
+  "name": "Sodium Glycerophosphate 1 mmol phosphate + 2 mmol sodium/mL (20 mL)",
+  "form": "Injection",
+  "drugClass": "Electrolyte",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "Glycophos 20 mL (1 mmol phosphate + 2 mmol sodium per mL); Item No on Cerner: [to be confirmed]",
+  "maxConc": "Must not be given undiluted. HGH: peripheral ≤0.05 mmol phosphate/mL; central ≤0.12 mmol/mL (institutional).",
+  "storage": "",
+  "reconstitution": "",
+  "diluents": "NS (0.9% Sodium Chloride), D5W",
+  "dilution": "Dilute before IV administration. Commonly dilute the required dose in 100–500 mL of NS or D5W depending on the prescribed phosphate dose, patient age, and fluid requirements. Do not administer undiluted by peripheral IV.",
+  "rate": "Infuse over at least 8 hours (SmPC).",
+  "stability": "Add under aseptic conditions; store diluted product at 2–8°C and complete the infusion within 24 hours of preparation.",
+  "comments": "Monitor serum phosphate, calcium, potassium, magnesium, sodium, and renal function before and during therapy. Avoid rapid infusion due to risk of hypocalcemia and calcium-phosphate precipitation. Do not mix with calcium-containing solutions unless compatibility has been verified. Use caution in patients with renal impairment or hyperphosphatemia.",
+  "extra": [],
+  "aliases": "Glycophos, NaGP",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Glycophos – NZ Medsafe data sheet",
+    "url": "https://medsafe.govt.nz/Profs/datasheet/g/Glycophosinf.pdf"
+   },
+   {
+    "title": "Sodium Glycerophosphate 21.6% – UK SmPC (B. Braun)",
+    "url": "https://www.medicines.org.uk/emc/product/102739/smpc"
+   }
+  ],
+  "reviewNote": "CORRECTED: product line (was copied from sodium bicarbonate), infusion time (SmPC: at least 8 hours), and stability (24 h at 2–8°C).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "sodium-phenylacetate-sodium-benzoate-10-10",
+  "name": "Sodium Phenylacetate/Sodium Benzoate 10%/10% (Ammonul)",
+  "form": "Injection",
+  "drugClass": "Metabolic",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "10%/10% (50 mL vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "Must be diluted (≥25 mL/kg of D10W).",
+  "storage": "",
+  "reconstitution": "N/A (concentrate).",
+  "diluents": "D10W ONLY.",
+  "dilution": "Dilute each dose in ≥25 mL/kg of D10W.\nDose ≤20 kg: 2.5 mL/kg; >20 kg: 55 mL/m² (loading = maintenance dose). Arginine HCl 10% is added per urea-cycle defect.",
+  "rate": "Loading dose: over 90–120 minutes.\nMaintenance: same dose over 24 hours.\nDo NOT repeat the loading dose (neurotoxicity).",
+  "stability": "Diluted solution: 24 hours at room temperature.",
+  "comments": "CENTRAL LINE ONLY — peripheral administration may cause burns; extravasation causes necrosis.\nHigh sodium load (30.5 mg Na/mL undiluted). Give an antiemetic. Do not co-infuse other drugs.",
+  "extra": [],
+  "aliases": "Ammonul, Sodium benzoate, Phenylacetate",
+  "references": [
+   {
+    "title": "AMMONUL – FDA prescribing information",
+    "url": "https://drugs.com/pro/ammonul.html"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Ammonul",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Ammonul"
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "tacrolimus-5-mg-ml-1-ml",
+  "name": "Tacrolimus 5 mg/mL (1 mL)",
+  "form": "Injection",
+  "drugClass": "Immunosuppressant",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "5 mg/mL (1 mL ampoule); Item No on Cerner: [to be confirmed]",
+  "maxConc": "0.02 mg/mL (range 0.004–0.02 mg/mL).",
+  "storage": "",
+  "reconstitution": "N/A (concentrate — must be diluted).",
+  "diluents": "NS, D5W.",
+  "dilution": "Dilute to 0.004–0.02 mg/mL in glass or polyethylene/polyolefin containers. Do NOT use PVC (DEHP leaching and adsorption).",
+  "rate": "Continuous infusion over 24 hours.",
+  "stability": "Diluted: use within 24 hours.",
+  "comments": "Contains polyoxyl 60 hydrogenated castor oil — anaphylaxis risk. Observe continuously for the first 30 minutes.\nDo not mix with alkaline solutions (e.g., acyclovir, ganciclovir) in the same line.\nSwitch to oral as soon as tolerated.",
+  "extra": [],
+  "aliases": "Prograf, FK506",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Prograf injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Prograf%20injection"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Prograf concentrate for infusion",
+    "url": "https://www.medicines.org.uk/emc/search?q=Prograf%20concentrate%20for%20infusion"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "teicoplanin-200-mg",
+  "name": "Teicoplanin 200 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900004720"
+  ],
+  "product": "200 mg (vial); Item No on Cerner: 8900004720",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "Add the supplied water for injections (3.14 mL) slowly down the vial wall; roll gently — do not shake. If foam forms, stand ~15 minutes. Gives 200 mg in 3 mL.",
+  "diluents": "NS, D5W, D10, Ringer's, LR, 0.18% NaCl/4% glucose, 0.45% NaCl/5% glucose.",
+  "dilution": "Up to 200 mg: 50 mL; > 200 mg: 100 mL.",
+  "rate": "30-minute infusion, or IV bolus over 3–5 minutes. Neonates: infusion only.",
+  "stability": "Reconstituted and diluted solutions: use immediately; otherwise not longer than 24 hours at 2–8°C (SmPC).",
+  "comments": "Reconstitute by adding the diluent slowly down the side of the vial and rolling gently until the powder is completely dissolved. Do not shake. If foam forms, allow the solution to stand.",
+  "extra": [],
+  "aliases": "Targocid",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Targocid – EMA harmonised SmPC (Annex III)",
+    "url": "https://www.ema.europa.eu/documents/referral/targocid-article-30-referral-annex-iii_cs-0.pdf"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Targocid",
+    "url": "https://www.medicines.org.uk/emc/search?q=Targocid"
+   }
+  ],
+  "reviewNote": "CORRECTED: stability per SmPC is 24 h at 2–8°C (the 6-day figure was not supported); bolus option and diluent list added.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "tigecycline-50-mg",
+  "name": "Tigecycline 50 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900003701"
+  ],
+  "product": "50 mg (vial); Item No on Cerner: 8900003701",
+  "maxConc": "1 mg/mL",
+  "storage": "",
+  "reconstitution": "Add 5.3 mL NS, D5W or LR → 10 mg/mL. Swirl gently.",
+  "diluents": "NS, D5W",
+  "dilution": "50 mg: 50–100 mL; 100 mg: 100 mL",
+  "rate": "30 minutes",
+  "stability": "6 hours at room temp after reconstitution, plus an additional 18 hours after dilution in infusion solution. 48 hours under refrigeration if mixed immediately after reconstitution.",
+  "comments": "Ensure proper diluent (NS/D5W only).",
+  "extra": [],
+  "aliases": "Tygacil",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: tigecycline",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=tigecycline"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — matches labeling. Added LR as reconstitution option.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "tocilizumab-20-mg-ml",
+  "name": "Tocilizumab 20 mg/mL (Actemra) – 10 mL & 20 mL",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "80 mg/4 mL; 200 mg/10 mL; 400 mg/20 mL vials; Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "Store vials at 2–8°C, protected from light.",
+  "reconstitution": "N/A (solution — must be diluted).",
+  "diluents": "NS or 0.45% NaCl.",
+  "dilution": "≥30 kg: dilute to 100 mL (withdraw volume equal to dose from the bag first).\n<30 kg: dilute to 50 mL.\nInvert gently — do not shake.",
+  "rate": "Over 60 minutes. Never IV push or bolus.",
+  "stability": "Diluted: up to 24 hours at 2–8°C or room temperature, protected from light (US label).",
+  "comments": "Max single dose 800 mg (RA/CRS). Do not co-infuse with other drugs.",
+  "extra": [],
+  "aliases": "Actemra, RoActemra, TCZ",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Actemra",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Actemra"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): RoActemra 20 mg/mL concentrate",
+    "url": "https://www.medicines.org.uk/emc/search?q=RoActemra%2020%20mg/mL%20concentrate"
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "trace-elements-adult-10-ml",
+  "name": "Trace Elements (Adult) 10 mL",
+  "form": "Infusion",
+  "drugClass": "Nutrition",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "10 mL ampoule/vial (e.g., Addaven); Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "",
+  "reconstitution": "N/A (concentrate — must be diluted).",
+  "diluents": "Parenteral nutrition, D5W, NS (per brand).",
+  "dilution": "Add 10 mL (adult daily dose) to the PN or a compatible infusion. Never give undiluted.",
+  "rate": "Infuse with the carrier over the PN/infusion period — follow the brand SmPC for the minimum infusion time.",
+  "stability": "Use within 24 hours after adding to the infusion.",
+  "comments": "Review dose in cholestasis (copper, manganese) and renal failure (selenium, zinc, chromium).",
+  "extra": [],
+  "aliases": "Addaven, Tracutil, Multitrace, TE",
+  "references": [
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Addaven",
+    "url": "https://www.medicines.org.uk/emc/search?q=Addaven"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Tralement",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Tralement"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "New entry. ⚠ Brand not specified — confirm product and its minimum infusion time. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "ustekinumab-130-mg",
+  "name": "Ustekinumab 130 mg/26 mL (Stelara IV)",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "130 mg/26 mL (5 mg/mL) vial; Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "Store vials at 2–8°C; do not freeze or shake.",
+  "reconstitution": "N/A (solution — must be diluted).",
+  "diluents": "NS or 0.45% NaCl.",
+  "dilution": "From a 250 mL bag remove 26 mL per vial needed (2 vials 52 mL; 3 vials 78 mL; 4 vials 104 mL), add 26 mL per vial → 250 mL. Mix gently.\nDose: ≤55 kg 260 mg; >55–85 kg 390 mg; >85 kg 520 mg.",
+  "rate": "Over at least 1 hour, with an in-line, low-protein-binding 0.2-micron filter. Do not co-infuse with other agents.",
+  "stability": "US label (2025): complete infusion within 8 hours of dilution. Some SmPCs allow storage only up to 4 hours before infusion — follow the label of the product you stock.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Stelara",
+  "references": [
+   {
+    "title": "STELARA – Janssen prescribing information",
+    "url": "https://www.janssenlabels.com/package-insert/product-monograph/prescribing-information/STELARA-pi.pdf"
+   },
+   {
+    "title": "Janssen Medical Information – Stelara IV infusion (2025)",
+    "url": "https://www.jnjmedicalconnect.com/products/stelara/medical-content/infusion-rate-of-stelara-for-induction-therapy-in-crohns-disease-or-ulcerative-colitis"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Stelara",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Stelara"
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "vancomycin-500-mg",
+  "name": "Vancomycin 500 mg/1000 mg",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900005010"
+  ],
+  "product": "500 mg (vial); Item No on Cerner: 8900005010\n1000 mg (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "5 mg/mL (10 mg/mL for fluid restriction)",
+  "storage": "",
+  "reconstitution": "500 mg: add 9.7 mL SWFI ONLY.\n1 g: add 20 mL SWFI ONLY → 50 mg/mL (check vial label — some brands differ).",
+  "diluents": "NS, D5W",
+  "dilution": "Up to 500 mg: 100 mL; 501–1250 mg: 250 mL; 1251–2500 mg: 500 mL.",
+  "rate": "Not faster than 10 mg/minute and not less than 60 minutes (label).\nHGH: ≤1 g 60 min; >1–1.5 g 90 min; >1.5–2 g 120 min; >2–3 g 180 min.",
+  "stability": "4 days Refrigerated (2-8°C).",
+  "comments": "Note: Risk of infusion-related side effects may be increased with higher concentrations (e.g., 10 mg/mL used for fluid restriction).",
+  "extra": [],
+  "aliases": "Vanco",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: vancomycin hydrochloride for injection",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=vancomycin%20hydrochloride%20for%20injection"
+   },
+   {
+    "title": "ASHP Handbook on Injectable Drugs (Trissel's), current edition",
+    "url": ""
+   }
+  ],
+  "reviewNote": "Verified — ≤5 mg/mL and ≥60 min (≤10 mg/min) match labeling. 1 g strength added from the full IV list (2026-11-10). ⚠ Cerner number for 1 g missing.",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "vedolizumab-300-mg",
+  "name": "Vedolizumab 300 mg (Entyvio)",
+  "form": "IV infusion (biologic)",
+  "drugClass": "Monoclonal antibody",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "300 mg (vial); Item No on Cerner: [to be confirmed]",
+  "maxConc": "",
+  "storage": "Store vials at 2–8°C.",
+  "reconstitution": "Add 4.8 mL SWFI using a 21–25 G needle aimed at the vial wall → 60 mg/mL. Swirl gently for ≥15 seconds; do not shake. Let stand up to 20 minutes until dissolved.",
+  "diluents": "NS or LR.",
+  "dilution": "Withdraw 5 mL (300 mg) and add to 250 mL NS or LR. Mix gently.",
+  "rate": "Over 30 minutes. Flush with 30 mL NS after the infusion. Never IV push or bolus.",
+  "stability": "Reconstituted and diluted solution: use as soon as possible. Combined storage up to 24 hours at 2–8°C or 12 hours at room temperature (includes infusion time). Do not freeze.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Entyvio",
+  "references": [
+   {
+    "title": "DailyMed (US NLM) – FDA labels: Entyvio",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=Entyvio"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Entyvio 300 mg powder",
+    "url": "https://www.medicines.org.uk/emc/search?q=Entyvio%20300%20mg%20powder"
+   }
+  ],
+  "reviewNote": "New entry built from US label. ⚠ Cerner item number missing — please add.",
+  "lastReviewed": "2026-11-10",
+  "updatedAt": null,
+  "photos": []
+ },
+ {
+  "id": "voriconazole-200-mg",
+  "name": "Voriconazole 200 mg",
+  "form": "Injection",
+  "drugClass": "Antifungal",
+  "highAlert": false,
+  "cernerCodes": [
+   "8900002918"
+  ],
+  "product": "200 mg (vial); Item No on Cerner: 8900002918",
+  "maxConc": "5 mg/mL",
+  "storage": "",
+  "reconstitution": "Add exactly 19 mL SWFI (standard non-automated 20 mL syringe) → 10 mg/mL, 20 mL extractable. Discard vial if vacuum does not pull in the diluent.",
+  "diluents": "NS, LR, D5W, D5W/0.45% NaCl, D5W/NS, 0.45% NaCl, D5W + KCl 20 mEq. NOT 4.2% sodium bicarbonate.",
+  "dilution": "Remove dose volume from bag before adding medication.\n25–199 mg: 50 mL; 200 mg: 100 mL; 300 mg: 100 mL; 400 mg: 100 mL; 500 mg: 125 mL; 600 mg: 150 mL.",
+  "rate": "Over 1–2 hours; maximum 3 mg/kg/hour. Never as bolus.",
+  "stability": "Use immediately. If needed, store reconstituted/diluted solution ≤24 hours at 2–8°C.",
+  "comments": "",
+  "extra": [],
+  "aliases": "Vfend",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "Voriconazole for Injection – FDA label",
+    "url": "https://ndclist.com/ndc/70436-029/label"
+   },
+   {
+    "title": "DailyMed (US NLM) – FDA labels: voriconazole",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=voriconazole"
+   }
+  ],
+  "reviewNote": "CORRECTED: reconstitution volume is 19 mL (not 18.5 mL); stability is 24 h at 2–8°C (7 days was not supported).",
+  "lastReviewed": "2026-11-10"
+ },
+ {
+  "id": "zerbaxa-ceftolozane-tazobactam-1-5-g",
+  "name": "Zerbaxa (Ceftolozane/Tazobactam) 1.5 g",
+  "form": "Injection",
+  "drugClass": "Antibacterial",
+  "highAlert": false,
+  "cernerCodes": [],
+  "product": "1.5 g vial (1 g ceftolozane/0.5 g tazobactam)",
+  "maxConc": "40 mg/mL",
+  "storage": "Store vials refrigerated (2–8°C), protected from light.",
+  "reconstitution": "Add 10 mL SWFI or NS; shake gently → ~11.4 mL. May be held up to 1 hour before dilution.",
+  "diluents": "NS, D5W",
+  "dilution": "Add withdrawn dose to 100 mL NS or D5W (1.5 g = 11.4 mL; 750 mg = 5.7 mL; 375 mg = 2.9 mL).",
+  "rate": "60 minutes",
+  "stability": "Diluted: 24 hours at room temperature; refrigerated 2–8°C — 7 days (US label) / 4 days (EU SmPC). Do not freeze.",
+  "comments": "Protect from light",
+  "extra": [],
+  "aliases": "Ceftolozane, C/T",
+  "updatedAt": null,
+  "references": [
+   {
+    "title": "ZERBAXA – FDA prescribing information",
+    "url": "https://drugs.com/dosage/zerbaxa.html"
+   },
+   {
+    "title": "electronic Medicines Compendium (UK SmPC): Zerbaxa",
+    "url": "https://www.medicines.org.uk/emc/search?q=Zerbaxa"
+   }
+  ],
+  "reviewNote": "Verified. Reconstituted volume/hold time added; stability shows US label (7 days refrigerated) vs EU SmPC (4 days). ⚠ Cerner item number missing.",
+  "lastReviewed": "2026-11-10"
+ }
+]

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Link, useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen, ShieldAlert, Syringe } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
@@ -57,6 +57,7 @@ const Layout = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Announcements', path: '/announcements', icon: Megaphone, hasBadge: unreadAnnouncements },
     { name: 'Medicines', path: '/medicines', icon: Pill },
+    { name: 'Admixa', path: '/admixa', icon: Syringe },
     { name: 'Spectra', path: '/spectra', icon: ShieldAlert },
     { name: 'Calculator', path: '/calculator', icon: Calculator },
     ...(isAdmin ? [
