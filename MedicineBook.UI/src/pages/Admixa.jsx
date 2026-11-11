@@ -1,48 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef, useContext } from 'react';
-import { 
-  Syringe, 
-  Search, 
-  X, 
-  AlertTriangle, 
-  AlertOctagon, 
-  Check, 
-  Copy, 
-  Printer, 
-  ExternalLink, 
-  ChevronRight, 
-  ChevronLeft, 
-  ArrowLeft, 
-  Clock, 
-  Droplets, 
-  Thermometer, 
-  FlaskConical, 
-  ShieldAlert, 
-  Package, 
-  Sparkles, 
-  Edit, 
-  Plus, 
-  Trash2, 
-  RotateCcw, 
-  Download, 
-  Upload, 
-  FileText, 
-  Info, 
-  Zap, 
-  Lock, 
-  Dna, 
-  Eye, 
-  Heart, 
-  HeartPulse, 
-  Shield, 
-  Apple, 
-  Biohazard, 
-  BookOpen,
-  Calendar,
-  Layers,
-  Activity
-} from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
 import { 
   INITIAL_ADMIXA_DRUGS, 
   DRUG_CLASSES, 
@@ -50,208 +8,193 @@ import {
   parseVehicles, 
   extractCernerCodes 
 } from '../data/admixaData';
+import { E3 } from '../data/admixaIcons';
 
-// Class icon helper
-const getClassIcon = (drugClass) => {
-  switch (drugClass) {
-    case 'Antibacterial': return Shield;
-    case 'Antifungal': return Sparkles;
-    case 'Antiviral': return Activity;
-    case 'Anticoagulant': return Heart;
-    case 'Electrolyte': return Zap;
-    case 'Corticosteroid': return FlaskConical;
-    case 'Immunosuppressant': return ShieldAlert;
-    case 'Hematologic': return Heart;
-    case 'Chemotherapy': return Biohazard;
-    case 'Catheter lock': return Lock;
-    case 'Monoclonal antibody': return Dna;
-    case 'Ophthalmic': return Eye;
-    case 'Immunoglobulin': return Shield;
-    case 'Vasopressor': return HeartPulse;
-    case 'Endocrine': return Syringe;
-    case 'Metabolic': return FlaskConical;
-    case 'Nutrition': return Apple;
-    default: return Syringe;
-  }
+const getIcon = (name, className = '') => {
+  const src = E3[name];
+  if (!src) return null;
+  return <img className={`e3 ${className}`} src={src} alt="" aria-hidden="true" />;
+};
+import './admixa.css';
+
+// Class visual definitions from Admixa template
+const CLASS_META = {
+  Antibacterial: { g: 'linear-gradient(135deg,#A78BFA,#8B5CF6 45%,#EC4899)', s: '#B149E0', e: 'bacteria' },
+  Antifungal: { g: 'linear-gradient(135deg,#C084FC,#9333EA)', s: '#9333EA', e: 'mushroom' },
+  Antiviral: { g: 'linear-gradient(135deg,#7C3AED,#3730A3 50%,#0F172A)', s: '#7C3AED', e: 'virus' },
+  Anticoagulant: { g: 'linear-gradient(135deg,#FB7185,#E11D48)', s: '#E11D48', e: 'blood' },
+  Electrolyte: { g: 'linear-gradient(135deg,#FDBA74,#F97316 50%,#EC4899)', s: '#F97316', e: 'sparkles' },
+  Corticosteroid: { g: 'linear-gradient(135deg,#FCD34D,#F59E0B)', s: '#F59E0B', e: 'testtube' },
+  Immunosuppressant: { g: 'linear-gradient(135deg,#F0ABFC,#D946EF 50%,#8B5CF6)', s: '#D946EF', e: 'shield' },
+  Hematologic: { g: 'linear-gradient(135deg,#F87171,#DC2626 50%,#991B1B)', s: '#DC2626', e: 'blood' },
+  Chemotherapy: { g: 'linear-gradient(135deg,#C084FC,#7E22CE 55%,#581C87)', s: '#7E22CE', e: 'biohazard' },
+  'Catheter lock': { g: 'linear-gradient(135deg,#6EE7B7,#10B981 50%,#0F766E)', s: '#10B981', e: 'lock' },
+  'Monoclonal antibody': { g: 'linear-gradient(135deg,#A5B4FC,#6366F1 50%,#4338CA)', s: '#6366F1', e: 'dna' },
+  Ophthalmic: { g: 'linear-gradient(135deg,#5EEAD4,#06B6D4 50%,#3B82F6)', s: '#06B6D4', e: 'eye' },
+  Immunoglobulin: { g: 'linear-gradient(135deg,#FDE68A,#F59E0B 50%,#B45309)', s: '#D97706', e: 'shield' },
+  Vasopressor: { g: 'linear-gradient(135deg,#FDA4AF,#E11D48 50%,#9F1239)', s: '#E11D48', e: 'heart' },
+  Endocrine: { g: 'linear-gradient(135deg,#7DD3FC,#0EA5E9 50%,#0369A1)', s: '#0EA5E9', e: 'syringe' },
+  Metabolic: { g: 'linear-gradient(135deg,#99F6E4,#14B8A6 50%,#0F766E)', s: '#14B8A6', e: 'alembic' },
+  Nutrition: { g: 'linear-gradient(135deg,#BEF264,#65A30D 55%,#3F6212)', s: '#65A30D', e: 'apple' }
 };
 
-// Render Tall Man lettering in medicine names
-const renderTallManName = (name) => {
-  if (!name) return '';
-  const words = name.split(' ');
-  return words.map((word, wIdx) => {
-    if (/[a-z]/.test(word) && /[A-Z]{2,}/.test(word)) {
-      const parts = word.split(/([A-Z]{2,})/g);
-      return (
-        <span key={wIdx}>
-          {parts.map((p, pIdx) => 
-            /[A-Z]{2,}/.test(p) ? (
-              <span key={pIdx} className="font-extrabold text-amber-500 dark:text-amber-400">
-                {p}
-              </span>
-            ) : p
-          )}{' '}
-        </span>
-      );
-    }
-    return word + ' ';
-  });
+const getClassMeta = (drugClass) => {
+  return CLASS_META[drugClass] || { g: 'linear-gradient(135deg,#94A3B8,#64748B)', s: '#64748B', e: 'syringe' };
 };
 
-// Pure SVG Code 128 Barcode Component
-const BarcodeSvg = ({ code, className = "h-10 w-full max-w-[210px]" }) => {
-  const { width, rects } = useMemo(() => generateBarcodeRects(code), [code]);
-  return (
-    <svg 
-      viewBox={`0 0 ${width} 50`} 
-      preserveAspectRatio="none" 
-      className={`${className} fill-current text-slate-800 dark:text-slate-100 select-none`}
-      aria-label={`Barcode ${code}`}
-    >
-      {rects.map((r, i) => (
-        <rect key={i} x={r.x} y="0" width={r.width} height="50" />
-      ))}
-    </svg>
-  );
+const HIGH_ALERT_META = { g: 'linear-gradient(135deg,#FB923C,#F43F5E 55%,#BE123C)', s: '#F43F5E', e: 'warning' };
+
+const getDrugLook = (d) => {
+  if (/chemo|cytotox/i.test((d.form || '') + ' ' + (d.drugClass || ''))) return getClassMeta('Chemotherapy');
+  if (d.highAlert) return HIGH_ALERT_META;
+  return getClassMeta(d.drugClass);
 };
 
-// Formats multi-line text with bullets and local policy tags
-const formatClinicalText = (text) => {
-  if (!text) return <p className="text-slate-400 dark:text-slate-500 italic">Not specified</p>;
-  const lines = String(text).split('\n').map(l => l.trim()).filter(Boolean);
-  if (!lines.length) return <p className="text-slate-400 dark:text-slate-500 italic">Not specified</p>;
+const isChemo = (d) => /chemo|cytotox/i.test((d.form || '') + ' ' + (d.drugClass || ''));
+const isLock = (d) => /lock/i.test((d.form || '') + ' ' + (d.drugClass || ''));
+const isOph = (d) => /eye|ophthal|intravitreal|intracameral|subconjunctival/i.test((d.form || '') + ' ' + (d.drugClass || ''));
 
-  return (
-    <div className="space-y-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-      {lines.map((line, idx) => {
-        const isBullet = /^[•\-*]\s+/.test(line);
-        let content = line.replace(/^[•\-*]\s+/, '');
-        const isHgh = /^(HGH(?: policy| product)?)\s*:\s*/i.test(content);
-        const hghTag = isHgh ? content.match(/^(HGH(?: policy| product)?)\s*:\s*/i)[1] : null;
-        if (isHgh) {
-          content = content.replace(/^(HGH(?: policy| product)?)\s*:\s*/i, '');
-        }
-
-        return (
-          <div key={idx} className={`flex items-start gap-2 ${isBullet ? 'pl-2' : ''}`}>
-            {isBullet && <span className="text-primary font-bold mt-1 text-xs">•</span>}
-            <div className="flex-1">
-              {hghTag && (
-                <span className="inline-block mr-2 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
-                  {hghTag}
-                </span>
-              )}
-              <span>{content}</span>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+const shortFirstLine = (text) => {
+  if (!text) return '';
+  return String(text).split('\n')[0].replace(/\((label|SmPC|US label)\)\.?/gi, '').replace(/^HGH(?: policy)?:\s*/, '').trim();
 };
 
-const LOCAL_STORAGE_KEY = 'admixa_custom_drugs_v1';
+const shortVehicles = (diluents) => {
+  if (!diluents) return '';
+  const first = String(diluents).split('\n')[0];
+  const v = [];
+  if (/\b(NS|0\.9%|saline)\b/i.test(first) && !/no saline|saline incompat/i.test(first)) v.push('NS');
+  if (/\b(D5W|5% dextrose|glucose)\b/i.test(first) && !/no dextrose|dextrose incompat/i.test(first)) v.push('D5W');
+  if (/\b(LR|Hartmann|Ringer)\b/i.test(first)) v.push('LR');
+  if (/\b(SWFI|sterile water)\b/i.test(first)) v.push('SWFI');
+  if (!v.length && /saline only/i.test(first)) return 'NS only';
+  if (!v.length && /glucose only|dextrose only/i.test(first)) return 'D5W only';
+  return v.join(' · ');
+};
 
 const Admixa = () => {
+  const { id: routeId } = useParams();
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { addToast } = useToast();
   const isAdmin = user?.roles?.includes('Admin');
 
-  // Load drugs from localStorage or defaults
+  // Drugs state with localStorage persistence
   const [drugs, setDrugs] = useState(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const saved = localStorage.getItem('admixa_custom_drugs');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
     } catch (e) {
-      console.warn("Failed to parse saved admixa drugs:", e);
+      console.warn('Failed to parse saved Admixa drugs:', e);
     }
     return INITIAL_ADMIXA_DRUGS;
   });
 
-  // Save to localStorage when drugs change
-  useEffect(() => {
+  const saveDrugsToStorage = (updated) => {
+    setDrugs(updated);
     try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(drugs));
+      localStorage.setItem('admixa_custom_drugs', JSON.stringify(updated));
     } catch (e) {
-      console.error("Failed to save admixa drugs:", e);
+      console.error('Storage write error:', e);
     }
-  }, [drugs]);
+  };
 
-  // View state: selectedDrugId (null = list view, id string = detail monograph view)
-  const [selectedDrugId, setSelectedDrugId] = useState(null);
+  // View state: 'home', 'drug', 'analytics'
+  const [view, setView] = useState(routeId ? 'drug' : 'home');
+  const [selectedDrugId, setSelectedDrugId] = useState(routeId || null);
 
-  // Search & Filter state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedClass, setSelectedClass] = useState('All'); // 'All', 'HighAlert', or class name
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  // Sync route param with state
+  useEffect(() => {
+    if (routeId) {
+      setSelectedDrugId(routeId);
+      setView('drug');
+    } else {
+      setSelectedDrugId(null);
+      setView('home');
+    }
+  }, [routeId]);
 
-  // Editor Drawer state (Admin)
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  // Filtering & Search
+  const [q, setQ] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [canEdit, setCanEdit] = useState(false);
+
+  // UI state
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+  const [palQ, setPalQ] = useState('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingDrug, setEditingDrug] = useState(null);
+  const [toastMsg, setToastMsg] = useState(null);
+  const [copiedCode, setCopiedCode] = useState(null);
 
-  const searchInputRef = useRef(null);
-  const commandInputRef = useRef(null);
+  const showToast = (message, icon = 'check') => {
+    setToastMsg({ message, icon });
+    setTimeout(() => setToastMsg(null), 2400);
+  };
 
-  // Keyboard shortcut listener: / or Ctrl+K opens search
+  // Keyboard shortcut listener
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.ctrlKey && (e.key === 'k' || e.key === 'K')) || (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA')) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
-        setIsCommandPaletteOpen(true);
+        setIsPaletteOpen(true);
+      } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        document.getElementById('admixa-main-q')?.focus();
       } else if (e.key === 'Escape') {
-        setIsCommandPaletteOpen(false);
-        setIsEditorOpen(false);
+        setIsPaletteOpen(false);
+        setIsDrawerOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  useEffect(() => {
-    if (isCommandPaletteOpen) {
-      setTimeout(() => commandInputRef.current?.focus(), 50);
-    }
-  }, [isCommandPaletteOpen]);
-
-  // Unique drug classes list with counts
-  const classCounts = useMemo(() => {
-    const counts = { All: drugs.length, HighAlert: 0 };
-    drugs.forEach(d => {
-      if (d.highAlert) counts.HighAlert++;
-      if (d.drugClass) {
-        counts[d.drugClass] = (counts[d.drugClass] || 0) + 1;
-      }
-    });
-    return counts;
-  }, [drugs]);
-
-  const availableClasses = useMemo(() => {
-    const classes = Object.keys(classCounts).filter(c => c !== 'All' && c !== 'HighAlert');
-    return classes.sort();
-  }, [classCounts]);
-
-  // Filtered drugs
+  // Filtered results
   const filteredDrugs = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return drugs.filter(drug => {
-      // Class/category filter
-      if (selectedClass === 'HighAlert' && !drug.highAlert) return false;
-      if (selectedClass !== 'All' && selectedClass !== 'HighAlert' && drug.drugClass !== selectedClass) return false;
+    let list = drugs;
+    if (selectedFilter !== 'All') {
+      if (selectedFilter === 'High alert') {
+        list = list.filter(d => d.highAlert);
+      } else {
+        list = list.filter(d => d.drugClass === selectedFilter);
+      }
+    }
 
-      // Text search
-      if (!q) return true;
-      const nameMatch = (drug.name || '').toLowerCase().includes(q);
-      const aliasMatch = (drug.aliases || '').toLowerCase().includes(q);
-      const classMatch = (drug.drugClass || '').toLowerCase().includes(q);
-      const productMatch = (drug.product || '').toLowerCase().includes(q);
-      const cernerMatch = (drug.cernerCodes || []).some(c => c.toLowerCase().includes(q));
+    if (!q.trim()) {
+      return [...list].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    }
 
-      return nameMatch || aliasMatch || classMatch || productMatch || cernerMatch;
+    const term = q.trim().toLowerCase();
+    return list.filter(d => {
+      const name = (d.name || '').toLowerCase();
+      const aliases = (d.aliases || '').toLowerCase();
+      const drugClass = (d.drugClass || '').toLowerCase();
+      const product = (d.product || '').toLowerCase();
+      const cerner = (d.cernerCodes || []).join(' ');
+      return name.includes(term) || aliases.includes(term) || drugClass.includes(term) || product.includes(term) || cerner.includes(term);
+    }).sort((a, b) => {
+      const aStarts = a.name.toLowerCase().startsWith(term);
+      const bStarts = b.name.toLowerCase().startsWith(term);
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+      return a.name.localeCompare(b.name);
     });
-  }, [drugs, searchQuery, selectedClass]);
+  }, [drugs, selectedFilter, q]);
+
+  // Palette results
+  const paletteResults = useMemo(() => {
+    if (!palQ.trim()) return drugs.slice(0, 10);
+    const term = palQ.trim().toLowerCase();
+    return drugs.filter(d => {
+      const name = (d.name || '').toLowerCase();
+      const aliases = (d.aliases || '').toLowerCase();
+      const cerner = (d.cernerCodes || []).join(' ');
+      return name.includes(term) || aliases.includes(term) || cerner.includes(term);
+    }).slice(0, 15);
+  }, [drugs, palQ]);
 
   // Selected drug object
   const currentDrug = useMemo(() => {
@@ -259,1319 +202,1038 @@ const Admixa = () => {
     return drugs.find(d => d.id === selectedDrugId) || null;
   }, [drugs, selectedDrugId]);
 
-  // Adjacent drugs for previous/next navigation
-  const { prevDrug, nextDrug } = useMemo(() => {
-    if (!currentDrug) return { prevDrug: null, nextDrug: null };
-    const list = filteredDrugs.length > 0 ? filteredDrugs : drugs;
-    const idx = list.findIndex(d => d.id === currentDrug.id);
-    return {
-      prevDrug: idx > 0 ? list[idx - 1] : null,
-      nextDrug: idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null
-    };
-  }, [filteredDrugs, drugs, currentDrug]);
-
-  // Copy Cerner Code helper
-  const handleCopyCode = async (code) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      addToast(`Cerner Item Code ${code} copied!`, 'success');
-    } catch {
-      addToast(code, 'info');
-    }
-  };
-
-  // Open Monograph
+  // Open drug view
   const handleOpenDrug = (drug) => {
     setSelectedDrugId(drug.id);
+    setView('drug');
+    navigate('/admixa/' + drug.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setIsCommandPaletteOpen(false);
   };
 
-  // Reset to initial dataset
-  const handleResetDefaults = () => {
-    if (window.confirm("Reset all Admixa monographs to the verified default dataset (66 medicines)? Any custom edits will be reverted.")) {
-      setDrugs(INITIAL_ADMIXA_DRUGS);
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-      addToast("Admixa reset to default monographs", "info");
-    }
+  // Back to list
+  const handleBackToList = () => {
+    setSelectedDrugId(null);
+    setView('home');
+    navigate('/admixa');
   };
 
-  // Export dataset
-  const handleExportJson = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(drugs, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", `admixa-medicines-${new Date().toISOString().slice(0, 10)}.json`);
-    document.body.appendChild(dlAnchor);
-    dlAnchor.click();
-    dlAnchor.remove();
-    addToast("Exported medicines dataset", "success");
+  // Copy Cerner Code
+  const handleCopyCerner = (code, e) => {
+    e?.stopPropagation();
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    showToast(`Cerner code ${code} copied!`, 'clipboard');
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  // Import dataset
-  const handleImportJson = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const imported = JSON.parse(event.target.result);
-        if (Array.isArray(imported) && imported.length > 0) {
-          setDrugs(imported);
-          addToast(`Imported ${imported.length} medicine monographs!`, 'success');
-        } else {
-          addToast("Invalid JSON format for medicines", "error");
-        }
-      } catch (err) {
-        addToast("Error parsing JSON file", "error");
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
+  // Drawer Edit Drug
+  const handleStartEdit = (drug) => {
+    setEditingDrug({ ...drug });
+    setIsDrawerOpen(true);
   };
 
-  // Admin: Open editor to Add
-  const handleAddDrug = () => {
+  // Drawer Add Drug
+  const handleStartAdd = () => {
     setEditingDrug({
-      id: `drug-${Date.now()}`,
+      id: 'custom-' + Date.now(),
       name: '',
-      form: 'Injection',
+      aliases: '',
       drugClass: 'Antibacterial',
       highAlert: false,
-      cernerCodes: [],
       product: '',
       maxConc: '',
       storage: '',
       reconstitution: '',
-      diluents: 'NS, D5W',
+      diluents: '',
       dilution: '',
       rate: '',
       stability: '',
       comments: '',
-      extra: [],
-      aliases: '',
-      references: [],
-      reviewNote: 'Compiled monograph',
-      lastReviewed: new Date().toISOString().slice(0, 10)
+      references: ['FDA Label', 'ASHP Handbook on Injectable Drugs'],
+      lastReviewed: new Date().toISOString()
     });
-    setIsEditorOpen(true);
+    setIsDrawerOpen(true);
   };
 
-  // Admin: Open editor to Edit
-  const handleEditDrug = (drug) => {
-    setEditingDrug(JSON.parse(JSON.stringify(drug)));
-    setIsEditorOpen(true);
-  };
-
-  // Admin: Save Drug (Create or Update)
+  // Drawer Save
   const handleSaveDrug = (e) => {
     e.preventDefault();
-    if (!editingDrug || !editingDrug.name.trim()) {
-      addToast("Medicine name is required", "error");
-      return;
-    }
+    if (!editingDrug || !editingDrug.name.trim()) return;
 
-    // Auto-derive Cerner codes from product field if not provided
-    const foundCodes = extractCernerCodes(editingDrug.product);
-    const updatedCodes = editingDrug.cernerCodes && editingDrug.cernerCodes.length > 0
-      ? editingDrug.cernerCodes
-      : foundCodes;
-
-    const savedRecord = {
+    const updatedDrug = {
       ...editingDrug,
-      cernerCodes: updatedCodes,
-      updatedAt: new Date().toISOString()
+      cernerCodes: extractCernerCodes(editingDrug.product)
     };
 
-    const exists = drugs.some(d => d.id === savedRecord.id);
-    let newDrugsList;
+    const exists = drugs.some(d => d.id === updatedDrug.id);
+    let newDrugs;
     if (exists) {
-      newDrugsList = drugs.map(d => d.id === savedRecord.id ? savedRecord : d);
-      addToast(`Updated ${savedRecord.name}`, 'success');
+      newDrugs = drugs.map(d => d.id === updatedDrug.id ? updatedDrug : d);
+      showToast(`Updated ${updatedDrug.name}`, 'check');
     } else {
-      newDrugsList = [savedRecord, ...drugs];
-      addToast(`Added ${savedRecord.name}`, 'success');
+      newDrugs = [updatedDrug, ...drugs];
+      showToast(`Added ${updatedDrug.name}`, 'check');
     }
-
-    setDrugs(newDrugsList);
-    setIsEditorOpen(false);
-    setSelectedDrugId(savedRecord.id);
-  };
-
-  // Admin: Delete Drug
-  const handleDeleteDrug = (drugId) => {
-    const toDel = drugs.find(d => d.id === drugId);
-    if (!toDel) return;
-    if (window.confirm(`Are you sure you want to delete "${toDel.name}"? This action cannot be undone.`)) {
-      setDrugs(drugs.filter(d => d.id !== drugId));
-      setIsEditorOpen(false);
-      setSelectedDrugId(null);
-      addToast(`Deleted ${toDel.name}`, 'info');
+    saveDrugsToStorage(newDrugs);
+    setIsDrawerOpen(false);
+    if (selectedDrugId === updatedDrug.id) {
+      setSelectedDrugId(updatedDrug.id);
     }
   };
+
+  // Drawer Delete
+  const handleDeleteDrug = () => {
+    if (!editingDrug) return;
+    if (confirm(`Delete ${editingDrug.name} from monographs?`)) {
+      const newDrugs = drugs.filter(d => d.id !== editingDrug.id);
+      saveDrugsToStorage(newDrugs);
+      setIsDrawerOpen(false);
+      showToast(`Deleted ${editingDrug.name}`, 'trash2');
+      if (selectedDrugId === editingDrug.id) {
+        handleBackToList();
+      }
+    }
+  };
+
+  // Reset to default
+  const handleResetDefaults = () => {
+    if (confirm('Reset all Admixa monographs to default bundled list? Any custom edits will be reverted.')) {
+      localStorage.removeItem('admixa_custom_drugs');
+      setDrugs(INITIAL_ADMIXA_DRUGS);
+      showToast('Reset to 66 default monographs', 'refresh');
+    }
+  };
+
+  // Export JSON
+  const handleExportJSON = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(drugs, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute('href', dataStr);
+    dlAnchor.setAttribute('download', `admixa_monographs_${new Date().toISOString().slice(0, 10)}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+    showToast('Exported monograph JSON', 'floppy');
+  };
+
+  // Class counts for sidebar
+  const classCounts = useMemo(() => {
+    const map = {};
+    drugs.forEach(d => {
+      map[d.drugClass] = (map[d.drugClass] || 0) + 1;
+    });
+    return map;
+  }, [drugs]);
+
+  const highAlertCount = useMemo(() => drugs.filter(d => d.highAlert).length, [drugs]);
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in pb-16">
-      
-      {/* Print-only CSS */}
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #admixa-print-area, #admixa-print-area * {
-            visibility: visible;
-          }
-          #admixa-print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            background: white !important;
-            color: black !important;
-          }
-          .no-print {
-            display: none !important;
-          }
-        }
-      `}</style>
+    <div className="admixa-page">
+      <div className="shell">
+        
+        {/* Left Side Navigation */}
+        <aside className="side">
+          <button className="logo" onClick={() => { setSelectedDrugId(null); setView('home'); }}>
+            <span className="logo-mark">
+              {getIcon('syringe')}
+            </span>
+            <span>
+              <b className="gtext">Admixa</b>
+              <small>IV &amp; injectable guide</small>
+            </span>
+          </button>
 
-      {/* =========================================================================
-          TOP HERO HEADER CARD
-         ========================================================================= */}
-      <div className="no-print bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-tr from-violet-600 via-purple-600 to-indigo-600 text-white rounded-2xl shadow-lg shadow-purple-500/25">
-                <Syringe size={28} />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-                  Admixa
-                  <span className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    IV &amp; Injectable Guide
-                  </span>
-                </h1>
-                <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                  Cleanroom preparation protocols: reconstitution, vehicle compatibility, dilution, and stability
-                </p>
-              </div>
-            </div>
-
-            <p className="text-slate-600 dark:text-slate-300 mt-3 max-w-3xl text-sm leading-relaxed">
-              Standardized parenteral monographs compiled by Sayyid Muhammed. Checked against FDA Prescribing Information, UK SmPCs, and the ASHP Handbook on Injectable Drugs (Trissel's).
-            </p>
-          </div>
-
-          {/* Quick Stat Badges & Actions */}
-          <div className="flex flex-wrap items-center gap-2 self-stretch lg:self-auto">
-            <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner text-xs font-semibold">
-              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm border border-slate-200 dark:border-white/10 flex items-center gap-1.5">
-                <Syringe size={14} />
-                <strong>{drugs.length}</strong> Medicines
-              </span>
-              <span className="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 flex items-center gap-1.5">
-                <AlertTriangle size={14} />
-                <strong>{classCounts.HighAlert || 0}</strong> High Alert
-              </span>
-            </div>
-
-            {/* Quick Command Palette Button */}
-            <button
-              type="button"
-              onClick={() => setIsCommandPaletteOpen(true)}
-              className="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary dark:hover:text-primary border border-slate-200 dark:border-white/10 shadow-sm hover:shadow transition-all text-xs font-bold"
-              title="Quick Search (Ctrl+K or /)"
+          <div className="nav-l">Browse</div>
+          <div id="sideNav">
+            <button 
+              className="nv" 
+              aria-current={view === 'home' && selectedFilter === 'All'}
+              onClick={() => { setSelectedFilter('All'); setView('home'); setSelectedDrugId(null); }}
             >
-              <Search size={15} />
-              <span className="hidden sm:inline">Find Medicine</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 rounded border border-slate-300 dark:border-slate-600">
-                Ctrl K
-              </kbd>
+              {getIcon('syringe')}
+              All medicines
+              <span className="n">{drugs.length}</span>
             </button>
 
-            {/* Admin Actions */}
-            {isAdmin && (
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={handleAddDrug}
-                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-primary text-white hover:bg-primary/90 shadow-md shadow-primary/20 transition-all text-xs font-bold"
-                >
-                  <Plus size={15} />
-                  <span>Add Medicine</span>
-                </button>
+            <button 
+              className="nv" 
+              aria-current={view === 'home' && selectedFilter === 'High alert'}
+              onClick={() => { setSelectedFilter('High alert'); setView('home'); setSelectedDrugId(null); }}
+            >
+              {getIcon('warning')}
+              High alert
+              <span className="n">{highAlertCount}</span>
+            </button>
 
+            {DRUG_CLASSES.filter(c => classCounts[c]).map(c => {
+              const meta = getClassMeta(c);
+              return (
                 <button
-                  type="button"
-                  onClick={handleExportJson}
-                  className="p-2.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary border border-slate-200 dark:border-white/10 shadow-sm transition-all"
-                  title="Export JSON"
+                  key={c}
+                  className="nv"
+                  aria-current={view === 'home' && selectedFilter === c}
+                  onClick={() => { setSelectedFilter(c); setView('home'); setSelectedDrugId(null); }}
                 >
-                  <Download size={15} />
+                  {getIcon(meta.e)}
+                  {c}
+                  <span className="n">{classCounts[c]}</span>
                 </button>
-
-                <label 
-                  className="p-2.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary border border-slate-200 dark:border-white/10 shadow-sm transition-all cursor-pointer"
-                  title="Import JSON"
-                >
-                  <Upload size={15} />
-                  <input type="file" accept=".json" onChange={handleImportJson} className="hidden" />
-                </label>
-
-                <button
-                  type="button"
-                  onClick={handleResetDefaults}
-                  className="p-2.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 border border-slate-200 dark:border-white/10 shadow-sm transition-all"
-                  title="Reset to 66 Defaults"
-                >
-                  <RotateCcw size={15} />
-                </button>
-              </div>
-            )}
+              );
+            })}
           </div>
-        </div>
-      </div>
 
-      {/* =========================================================================
-          VIEW A: SINGLE MONOGRAPH DETAIL VIEW
-         ========================================================================= */}
-      {currentDrug ? (
-        <div id="admixa-print-area" className="flex flex-col gap-6">
+          <div className="side-foot">
+            Monographs compiled by Sayyid Muhammed. Checked against FDA labels, UK SmPCs and ASHP.
+          </div>
+        </aside>
+
+        {/* Main Content Area */}
+        <div className="main">
           
-          {/* Back Navigation & Controls */}
-          <div className="no-print flex items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={() => setSelectedDrugId(null)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-primary dark:hover:text-primary border border-slate-200 dark:border-white/10 text-xs font-bold shadow-sm transition-all"
-            >
-              <ArrowLeft size={16} />
-              <span>Back to all medicines</span>
+          {/* Topbar */}
+          <header className="topbar">
+            <button className="mlogo" onClick={handleBackToList}>
+              <span className="logo-mark">{getIcon('syringe')}</span>
+              <span className="gtext">Admixa</span>
             </button>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary border border-slate-200 dark:border-white/10 text-xs font-bold shadow-sm transition-all"
+            <button className="qbtn" onClick={() => setIsPaletteOpen(true)}>
+              {getIcon('search')}
+              <span>Find a medicine</span>
+              <kbd>Ctrl K</kbd>
+            </button>
+
+            <span className="sp"></span>
+
+            <span id="topActions" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <a 
+                href="/admixa/index.html" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="pillbtn sm" 
+                title="Open standalone web version in a new tab"
               >
-                <Printer size={15} />
-                <span>Print Monograph</span>
-              </button>
+                {getIcon('desktop')}
+                <span>Standalone</span>
+              </a>
 
               {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => handleEditDrug(currentDrug)}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-primary text-white hover:bg-primary/90 text-xs font-bold shadow-md shadow-primary/20 transition-all"
-                >
-                  <Edit size={15} />
-                  <span>Edit</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Monograph Top Hero Banner */}
-          {(() => {
-            const classConfig = DRUG_CLASSES[currentDrug.drugClass] || {
-              gradient: 'from-slate-600 to-slate-800',
-              badge: 'bg-slate-100 text-slate-800'
-            };
-            const isChemo = /chemo|cytotox/i.test((currentDrug.form || '') + ' ' + (currentDrug.drugClass || ''));
-            const codes = (currentDrug.cernerCodes && currentDrug.cernerCodes.length > 0)
-              ? currentDrug.cernerCodes
-              : extractCernerCodes(currentDrug.product);
-
-            return (
-              <div className="relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-white/10">
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                  <div className="max-w-2xl">
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white border border-white/20 backdrop-blur">
-                        {currentDrug.drugClass}
-                      </span>
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-slate-200 border border-white/10">
-                        {currentDrug.form || 'Injection'}
-                      </span>
-                      {currentDrug.highAlert && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-rose-500/90 text-white border border-rose-400 shadow-md shadow-rose-900/50">
-                          <AlertTriangle size={13} />
-                          High-Alert Medicine
-                        </span>
-                      )}
-                    </div>
-
-                    <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white leading-tight">
-                      {renderTallManName(currentDrug.name)}
-                    </h2>
-
-                    {currentDrug.aliases && (
-                      <p className="text-slate-300 text-sm mt-1.5 font-medium">
-                        Also known as <strong className="text-white">{currentDrug.aliases}</strong>
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Primary Cerner Barcode Preview in Header */}
-                  {codes.length > 0 && (
-                    <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col items-center gap-2 shrink-0">
-                      <BarcodeSvg code={codes[0]} className="h-10 w-44 text-white" />
-                      <button
-                        type="button"
-                        onClick={() => handleCopyCode(codes[0])}
-                        className="text-[11px] font-mono text-slate-200 hover:text-white flex items-center gap-1.5 transition-colors"
-                        title="Click to copy Cerner code"
-                      >
-                        <Copy size={12} />
-                        <span>Cerner: {codes[0]}</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Quick Metrics Bar (4 Cards) */}
-          {(() => {
-            const vehiclesList = parseVehicles(currentDrug.diluents);
-            return (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                {/* 1. Max Final Concentration */}
-                <div className="p-4 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-sm flex items-center gap-3.5">
-                  <div className="p-3 rounded-2xl bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 shrink-0">
-                    <FlaskConical size={22} />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                      Max Concentration
-                    </span>
-                    <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block mt-0.5">
-                      {currentDrug.maxConc ? currentDrug.maxConc.split('\n')[0] : '—'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2. Infuse Over / Administration */}
-                <div className="p-4 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-sm flex items-center gap-3.5">
-                  <div className="p-3 rounded-2xl bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 shrink-0">
-                    <Clock size={22} />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                      Infuse Over / Rate
-                    </span>
-                    <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block mt-0.5">
-                      {currentDrug.rate ? currentDrug.rate.split(/[\n;]/)[0] : '—'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 3. Compatible Vehicles */}
-                <div className="p-4 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-sm flex items-center gap-3.5">
-                  <div className="p-3 rounded-2xl bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 shrink-0">
-                    <Droplets size={22} />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                      Compatible Vehicles
-                    </span>
-                    <div className="flex flex-wrap gap-1 mt-0.5">
-                      {vehiclesList.length > 0 ? (
-                        vehiclesList.slice(0, 3).map((v, i) => (
-                          <span
-                            key={i}
-                            className={`px-1.5 py-0.2 rounded text-[11px] font-bold ${
-                              v.type === 'prohibited'
-                                ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                            }`}
-                          >
-                            {v.label}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-xs text-slate-400 truncate">{currentDrug.diluents || '—'}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. Stability */}
-                <div className="p-4 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-sm flex items-center gap-3.5">
-                  <div className="p-3 rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 shrink-0">
-                    <Thermometer size={22} />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                      Stability / BUD
-                    </span>
-                    <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block mt-0.5">
-                      {currentDrug.stability ? currentDrug.stability.split(/[\n;.]/)[0] : '—'}
-                    </span>
-                  </div>
-                </div>
-
-              </div>
-            );
-          })()}
-
-          {/* Safety & Reference Banners */}
-          <div className="flex flex-col gap-3">
-            {currentDrug.highAlert && (
-              <div className="p-4 rounded-2xl bg-rose-50/90 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-900/60 text-rose-950 dark:text-rose-200 flex items-start gap-3">
-                <AlertOctagon size={20} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-                <div className="text-xs md:text-sm">
-                  <strong className="font-bold">High-Alert Medication: </strong>
-                  Requires an independent double-check before dispensing and administering to prevent medication errors.
-                </div>
-              </div>
-            )}
-
-            {/chemo|cytotox/i.test((currentDrug.form || '') + ' ' + (currentDrug.drugClass || '')) && (
-              <div className="p-4 rounded-2xl bg-purple-50/90 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-900/60 text-purple-950 dark:text-purple-200 flex items-start gap-3">
-                <Biohazard size={20} className="text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
-                <div className="text-xs md:text-sm">
-                  <strong className="font-bold">Cytotoxic — Hazardous Drug: </strong>
-                  Prepare inside a certified biological safety cabinet (BSC) or isolator with chemotherapy PPE and a closed-system drug-transfer device (CSTD).
-                </div>
-              </div>
-            )}
-
-            {currentDrug.reviewNote && (
-              <div className="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 text-blue-950 dark:text-blue-200 flex items-start gap-2.5 text-xs">
-                <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Reference Verification: </strong>
-                  {currentDrug.reviewNote}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Main Monograph 2-Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
-            {/* Left Column (8 cols): Step-by-Step Preparation & Clinical Content */}
-            <div className="lg:col-span-8 flex flex-col gap-6">
-              
-              {/* Preparation & Administration Step Flow */}
-              <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-6">
-                <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-white/10">
-                  <Syringe size={20} className="text-primary" />
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    Preparation &amp; Administration Flow
-                  </h3>
-                </div>
-
-                <div className="flex flex-col gap-6">
-                  
-                  {/* Step 1: Reconstitution */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-white/5">
-                    <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 font-black text-sm flex items-center justify-center shrink-0 shadow-sm">
-                      1
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-1.5">
-                        <span>Reconstitution</span>
-                      </h4>
-                      {formatClinicalText(currentDrug.reconstitution || 'Not needed. Ready-to-use liquid solution.')}
-                    </div>
-                  </div>
-
-                  {/* Step 2: Compatible Vehicles */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-white/5">
-                    <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 font-black text-sm flex items-center justify-center shrink-0 shadow-sm">
-                      2
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-1.5">
-                        <span>Compatible Vehicles &amp; Infusion Solutions</span>
-                      </h4>
-                      
-                      {/* Visual Vehicle Badges */}
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {parseVehicles(currentDrug.diluents).map((v, i) => (
-                          <span
-                            key={i}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
-                              v.type === 'prohibited'
-                                ? 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800'
-                                : 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
-                            }`}
-                          >
-                            <Droplets size={12} />
-                            <span>{v.label}</span>
-                            {v.note && <span className="text-[10px] opacity-75 font-normal">({v.note})</span>}
-                          </span>
-                        ))}
-                      </div>
-
-                      {formatClinicalText(currentDrug.diluents)}
-                    </div>
-                  </div>
-
-                  {/* Step 3: Dilution / Final Volume */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-white/5">
-                    <div className="w-8 h-8 rounded-xl bg-pink-100 text-pink-800 dark:bg-pink-950 dark:text-pink-300 font-black text-sm flex items-center justify-center shrink-0 shadow-sm">
-                      3
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-1.5">
-                        <span>Dilution &amp; Final Volume</span>
-                      </h4>
-                      {formatClinicalText(currentDrug.dilution)}
-                    </div>
-                  </div>
-
-                  {/* Step 4: Infuse Over / Administration Rate */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-white/5">
-                    <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-black text-sm flex items-center justify-center shrink-0 shadow-sm">
-                      4
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-1.5">
-                        <span>Infuse Over / Administration Rate</span>
-                      </h4>
-                      {formatClinicalText(currentDrug.rate)}
-                    </div>
-                  </div>
-
-                  {/* Step 5: Stability & Storage */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-white/5">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-black text-sm flex items-center justify-center shrink-0 shadow-sm">
-                      5
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-1.5">
-                        <span>Stability &amp; Beyond-Use Date (BUD)</span>
-                      </h4>
-                      {formatClinicalText(currentDrug.stability)}
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Extra Sections (if any) */}
-              {currentDrug.extra && currentDrug.extra.length > 0 && (
-                <div className="flex flex-col gap-4">
-                  {currentDrug.extra.map((sec, sIdx) => (
-                    <div key={sIdx} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm">
-                      <h4 className="text-md font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                        <Info size={18} className="text-primary" />
-                        <span>{sec.label}</span>
-                      </h4>
-                      {formatClinicalText(sec.value)}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Clinical Notes and Precautions */}
-              {currentDrug.comments && (
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-white/10 text-amber-600 dark:text-amber-400 font-bold text-sm">
-                    <AlertTriangle size={18} />
-                    <span>Clinical Notes &amp; Precautions</span>
-                  </div>
-                  {formatClinicalText(currentDrug.comments)}
-                </div>
-              )}
-
-              {/* References List */}
-              {currentDrug.references && currentDrug.references.length > 0 && (
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 font-bold text-sm">
-                    <BookOpen size={18} className="text-primary" />
-                    <span>References &amp; Product Information</span>
-                  </div>
-                  <ul className="space-y-2">
-                    {currentDrug.references.map((ref, rIdx) => (
-                      <li key={rIdx} className="text-xs flex items-center justify-between gap-3 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                        <span className="text-slate-700 dark:text-slate-300 font-medium">{ref.title}</span>
-                        {ref.url && (
-                          <a
-                            href={ref.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-primary hover:underline font-bold shrink-0"
-                          >
-                            <span>Open</span>
-                            <ExternalLink size={12} />
-                          </a>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Pager: Previous & Next Medicine */}
-              <div className="no-print flex items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
-                {prevDrug ? (
-                  <button
-                    type="button"
-                    onClick={() => handleOpenDrug(prevDrug)}
-                    className="flex items-center gap-2 p-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary border border-slate-200 dark:border-white/10 shadow-sm transition-all text-xs font-bold text-left"
+                <>
+                  <button 
+                    className="pillbtn sm" 
+                    onClick={handleStartAdd} 
+                    title="Add a new IV monograph"
                   >
-                    <ChevronLeft size={16} />
-                    <div>
-                      <span className="text-[10px] text-slate-400 block font-normal">Previous</span>
-                      <span>{prevDrug.name}</span>
-                    </div>
+                    {getIcon('pill')}
+                    <span>Add medicine</span>
                   </button>
-                ) : <div />}
 
-                {nextDrug ? (
-                  <button
-                    type="button"
-                    onClick={() => handleOpenDrug(nextDrug)}
-                    className="flex items-center gap-2 p-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-primary border border-slate-200 dark:border-white/10 shadow-sm transition-all text-xs font-bold text-right"
+                  <button 
+                    className="pillbtn sm" 
+                    onClick={handleExportJSON} 
+                    title="Export JSON backup"
                   >
-                    <div>
-                      <span className="text-[10px] text-slate-400 block font-normal">Next</span>
-                      <span>{nextDrug.name}</span>
-                    </div>
-                    <ChevronRight size={16} />
+                    {getIcon('floppy')}
+                    <span>Export</span>
                   </button>
-                ) : <div />}
-              </div>
 
-            </div>
-
-            {/* Right Column (4 cols): Product Formulation & Barcodes Sidebar */}
-            <div className="lg:col-span-4 flex flex-col gap-6">
-              
-              {/* Product Formulation & Cerner Barcodes */}
-              <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-                <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-white/10 font-bold text-sm text-slate-900 dark:text-white">
-                  <Package size={18} className="text-primary" />
-                  <span>Item &amp; Formulation</span>
-                </div>
-
-                <div className="text-xs md:text-sm text-slate-700 dark:text-slate-300">
-                  {formatClinicalText(currentDrug.product)}
-                </div>
-
-                {/* Cerner Scannable Barcodes */}
-                <div className="mt-2 flex flex-col gap-3">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    Cerner Barcodes
-                  </span>
-                  {(() => {
-                    const codes = (currentDrug.cernerCodes && currentDrug.cernerCodes.length > 0)
-                      ? currentDrug.cernerCodes
-                      : extractCernerCodes(currentDrug.product);
-
-                    if (!codes.length) {
-                      return <p className="text-xs text-slate-400 italic">No Cerner item numbers on file</p>;
-                    }
-
-                    return codes.map(code => (
-                      <div key={code} className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/10 flex flex-col items-center gap-2">
-                        <BarcodeSvg code={code} className="h-9 w-full max-w-[200px]" />
-                        <div className="flex items-center justify-between w-full pt-1 border-t border-slate-200/60 dark:border-white/5 text-xs">
-                          <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{code}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleCopyCode(code)}
-                            className="inline-flex items-center gap-1 text-primary hover:underline text-[11px] font-semibold"
-                          >
-                            <Copy size={12} />
-                            <span>Copy</span>
-                          </button>
-                        </div>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              </div>
-
-              {/* Storage of Intact Product */}
-              {currentDrug.storage && (
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-white/10 font-bold text-sm text-slate-900 dark:text-white">
-                    <Thermometer size={18} className="text-teal-600" />
-                    <span>Storage of Intact Product</span>
-                  </div>
-                  {formatClinicalText(currentDrug.storage)}
-                </div>
+                  <button 
+                    className={`pillbtn sm ${canEdit ? 'on' : ''}`} 
+                    onClick={() => { setCanEdit(!canEdit); showToast(canEdit ? 'Edit mode disabled' : 'Edit mode active', 'lock'); }}
+                  >
+                    {getIcon('pencil')}
+                    <span>{canEdit ? 'Editing ON' : 'Edit mode'}</span>
+                  </button>
+                </>
               )}
-
-              {/* Metadata Card */}
-              <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-3 text-xs text-slate-500 dark:text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Calendar size={15} />
-                  <span>Reviewed: <strong>{currentDrug.lastReviewed || 'Verified'}</strong></span>
-                </div>
-                {currentDrug.updatedAt && (
-                  <div className="flex items-center gap-2">
-                    <Clock size={15} />
-                    <span>Last Updated: <strong>{new Date(currentDrug.updatedAt).toLocaleDateString()}</strong></span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <FileText size={15} />
-                  <span>Compiled by <strong>Sayyid Muhammed</strong></span>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-      ) : (
-        /* =========================================================================
-            VIEW B: MEDICINES CATALOG / LIST VIEW
-           ========================================================================= */
-        <div className="flex flex-col gap-6">
-          
-          {/* Search Bar & Filter Strip */}
-          <div className="flex flex-col gap-4">
-            
-            {/* Live Search Input */}
-            <div className="relative">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                ref={searchInputRef}
-                type="search"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search generic name, Tazocin, Augmentin, KCl, or 10-digit Cerner code..."
-                className="w-full pl-11 pr-24 py-3.5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-              />
-              <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white"
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-                <kbd className="hidden sm:inline-block px-2 py-0.5 text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-500 rounded border border-slate-200 dark:border-slate-700">
-                  /
-                </kbd>
-              </div>
-            </div>
-
-            {/* Filter Chips Horizontal Scroll */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-              
-              {/* All Filter */}
-              <button
-                type="button"
-                onClick={() => setSelectedClass('All')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
-                  selectedClass === 'All'
-                    ? 'bg-primary text-white shadow-md shadow-primary/25 scale-[1.02]'
-                    : 'bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-slate-50'
-                }`}
-              >
-                <span>All Medicines</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                  selectedClass === 'All' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700'
-                }`}>
-                  {classCounts.All}
-                </span>
-              </button>
-
-              {/* High Alert Filter */}
-              <button
-                type="button"
-                onClick={() => setSelectedClass('HighAlert')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
-                  selectedClass === 'HighAlert'
-                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/25 scale-[1.02]'
-                    : 'bg-white dark:bg-slate-800/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 hover:bg-rose-50/50'
-                }`}
-              >
-                <AlertTriangle size={13} />
-                <span>High Alert</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                  selectedClass === 'HighAlert' ? 'bg-white/20 text-white' : 'bg-rose-100 dark:bg-rose-950'
-                }`}>
-                  {classCounts.HighAlert || 0}
-                </span>
-              </button>
-
-              {/* Class Specific Filters */}
-              {availableClasses.map(clsName => {
-                const isSelected = selectedClass === clsName;
-                const IconComponent = getClassIcon(clsName);
-                return (
-                  <button
-                    key={clsName}
-                    type="button"
-                    onClick={() => setSelectedClass(clsName)}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
-                      isSelected
-                        ? 'bg-primary text-white shadow-md shadow-primary/25 scale-[1.02]'
-                        : 'bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-slate-50'
-                    }`}
-                  >
-                    <IconComponent size={13} />
-                    <span>{clsName}</span>
-                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700'
-                    }`}>
-                      {classCounts[clsName]}
-                    </span>
-                  </button>
-                );
-              })}
-
-            </div>
-          </div>
-
-          {/* Results Summary & Counter */}
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
-            <span>
-              {searchQuery
-                ? `Showing ${filteredDrugs.length} ${filteredDrugs.length === 1 ? 'match' : 'matches'} for "${searchQuery}"`
-                : `${selectedClass === 'All' ? 'All Medicines' : selectedClass} · ${filteredDrugs.length} monographs`}
             </span>
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="text-primary hover:underline font-semibold"
-              >
-                Clear search
-              </button>
-            )}
-          </div>
+          </header>
 
-          {/* Medicines Cards Grid */}
-          {filteredDrugs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredDrugs.map(drug => {
-                const classConfig = DRUG_CLASSES[drug.drugClass] || {
-                  gradient: 'from-slate-600 to-slate-800',
-                  badge: 'bg-slate-100 text-slate-800 border-slate-200'
-                };
-                const IconComponent = getClassIcon(drug.drugClass);
-                const vehiclesList = parseVehicles(drug.diluents);
-                const codes = (drug.cernerCodes && drug.cernerCodes.length > 0)
-                  ? drug.cernerCodes
-                  : extractCernerCodes(drug.product);
-
-                return (
-                  <div
-                    key={drug.id}
-                    onClick={() => handleOpenDrug(drug)}
-                    className="group flex flex-col justify-between p-5 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/90 dark:border-white/10 hover:border-primary/60 dark:hover:border-primary/60 shadow-sm hover:shadow-lg transition-all cursor-pointer relative overflow-hidden"
-                  >
+          {/* View Container */}
+          <main className="content" id="app">
+            
+            {/* VIEW 1: HOME LIST */}
+            {view === 'home' && (
+              <>
+                {/* Hero Section */}
+                <section className="hero">
+                  <div className="hero-in">
                     <div>
-                      {/* Top Badges */}
-                      <div className="flex items-center justify-between gap-2 mb-2.5">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${classConfig.badge}`}>
-                          <IconComponent size={12} />
-                          <span>{drug.drugClass}</span>
-                        </span>
-
-                        {drug.highAlert && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
-                            <AlertTriangle size={11} />
-                            High Alert
-                          </span>
-                        )}
+                      <h1>Admixa</h1>
+                      <p>
+                        Your IV &amp; injectable preparation guide: reconstitution, vehicles, final volumes, infusion times and stability for every injectable prepared in the IV room.
+                      </p>
+                      
+                      {/* Search Field */}
+                      <div className="field">
+                        {getIcon('search')}
+                        <input 
+                          id="admixa-main-q"
+                          type="search" 
+                          value={q}
+                          onChange={(e) => setQ(e.target.value)}
+                          placeholder="Search vancomycin, Tazocin, KCl or 8900002009" 
+                          autoComplete="off" 
+                          spellCheck="false" 
+                          aria-label="Search medicines"
+                        />
+                        <div className="end">
+                          {q && (
+                            <button className="clr" onClick={() => setQ('')} aria-label="Clear search">
+                              ✕
+                            </button>
+                          )}
+                          <kbd>/</kbd>
+                        </div>
                       </div>
 
-                      {/* Medicine Name with Tall Man */}
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
-                        {renderTallManName(drug.name)}
-                      </h3>
-
-                      {/* Aliases & Brands */}
-                      {drug.aliases && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
-                          {drug.aliases}
-                        </p>
-                      )}
-
-                      {/* Quick Monograph Tags */}
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {/* Infuse over rate */}
-                        {drug.rate && (
-                          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                            {drug.rate.split(/[\n;]/)[0]}
-                          </span>
-                        )}
-
-                        {/* Max concentration */}
-                        {drug.maxConc && (
-                          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                            {drug.maxConc.split('\n')[0]}
-                          </span>
-                        )}
-
-                        {/* Primary Vehicles */}
-                        {vehiclesList.slice(0, 2).map((v, i) => (
-                          <span
-                            key={i}
-                            className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                              v.type === 'prohibited'
-                                ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
-                                : 'bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'
-                            }`}
-                          >
-                            {v.label}
-                          </span>
-                        ))}
+                      {/* Floating Hero Stats */}
+                      <div className="hero-stats">
+                        <span className="hs">
+                          {getIcon('syringe')}
+                          <b>{drugs.length}</b> medicines
+                        </span>
+                        <span className="hs">
+                          {getIcon('warning')}
+                          <b>{highAlertCount}</b> high alert
+                        </span>
+                        <span className="hs">
+                          {getIcon('books')}
+                          <b>{drugs.length}</b> referenced
+                        </span>
                       </div>
                     </div>
 
-                    {/* Bottom Action Footer */}
-                    <div className="flex items-center justify-between pt-3 mt-4 border-t border-slate-100 dark:border-white/5 text-xs">
-                      {codes.length > 0 ? (
-                        <span className="font-mono text-slate-400 dark:text-slate-500">
-                          Cerner: {codes[0]}
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 dark:text-slate-500">Monograph</span>
-                      )}
-
-                      <span className="inline-flex items-center gap-1 font-bold text-primary group-hover:translate-x-1 transition-transform">
-                        <span>View</span>
-                        <ChevronRight size={14} />
-                      </span>
+                    {/* 3D Floating Art */}
+                    <div className="hero-art">
+                      {getIcon('syringe', 'a1')}
+                      {getIcon('pill', 'a2')}
+                      {getIcon('droplet', 'a3')}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            /* Empty State */
-            <div className="p-12 text-center rounded-3xl bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 flex flex-col items-center gap-3">
-              <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400">
-                <Search size={32} />
-              </div>
-              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">
-                No medicines match your search
-              </h3>
-              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 max-w-md">
-                Try typing a generic drug name (e.g. Vancomycin), a brand name (e.g. Tazocin), an abbreviation (e.g. KCl), or a 10-digit Cerner item number.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedClass('All');
-                }}
-                className="mt-2 px-4 py-2 rounded-2xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/20"
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
+                </section>
 
+                {/* Filter Chips */}
+                <div className="filters">
+                  <button 
+                    className="chip" 
+                    aria-pressed={selectedFilter === 'All'}
+                    onClick={() => setSelectedFilter('All')}
+                  >
+                    <span className="dot" style={{ background: 'var(--grad)' }}></span>
+                    All <small>{drugs.length}</small>
+                  </button>
+
+                  <button 
+                    className="chip ha" 
+                    aria-pressed={selectedFilter === 'High alert'}
+                    onClick={() => setSelectedFilter('High alert')}
+                  >
+                    <span className="dot"></span>
+                    High alert <small>{highAlertCount}</small>
+                  </button>
+
+                  {DRUG_CLASSES.filter(c => classCounts[c]).map(c => {
+                    const meta = getClassMeta(c);
+                    return (
+                      <button
+                        key={c}
+                        className="chip"
+                        aria-pressed={selectedFilter === c}
+                        onClick={() => setSelectedFilter(c)}
+                      >
+                        <span className="dot" style={{ background: meta.g }}></span>
+                        {c} <small>{classCounts[c]}</small>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Counter Label */}
+                <div id="cnt" style={{ margin: '14px 4px 10px', fontSize: '13.5px', color: 'var(--ink-3)', fontWeight: 600 }}>
+                  {q 
+                    ? `${filteredDrugs.length} ${filteredDrugs.length === 1 ? 'match' : 'matches'} for "${q}"`
+                    : `${selectedFilter === 'All' ? 'All medicines' : selectedFilter} · ${filteredDrugs.length}`}
+                </div>
+
+                {/* Medicine Cards Grid */}
+                {filteredDrugs.length === 0 ? (
+                  <div className="empty">
+                    {getIcon('search')}
+                    <h3>Nothing matches "{q}"</h3>
+                    Try the generic name, a brand such as Tazocin, an abbreviation such as KCl, or a Cerner number.
+                  </div>
+                ) : (
+                  <div className="grid" id="grid">
+                    {filteredDrugs.map((d) => {
+                      const L = getDrugLook(d);
+                      const conc = shortFirstLine(d.maxConc);
+                      const rate = shortFirstLine(d.rate);
+                      const v = shortVehicles(d.diluents);
+
+                      return (
+                        <button 
+                          key={d.id} 
+                          className="mcard" 
+                          onClick={() => handleOpenDrug(d)}
+                        >
+                          <span className="tile" style={{ '--g': L.g, '--gs': L.s }}>
+                            {getIcon(L.e)}
+                          </span>
+
+                          <span style={{ minWidth: 0 }}>
+                            <span className="mname">{d.name}</span>
+                            {d.aliases && <div className="malias">{d.aliases}</div>}
+                            <span className="tags">
+                              {d.highAlert ? (
+                                <span className="tag ha">High alert</span>
+                              ) : (
+                                <span className="tag">{d.drugClass}</span>
+                              )}
+                              {v && <span className="tag">{v}</span>}
+                              {rate && rate.length < 26 && <span className="tag">{rate}</span>}
+                              {conc && conc.length < 22 && <span className="tag">{conc}</span>}
+                            </span>
+                          </span>
+
+                          <span className="go">
+                            <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="m9 18 6-6-6-6" />
+                            </svg>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* VIEW 2: MONOGRAPH DETAIL */}
+            {view === 'drug' && currentDrug && (() => {
+              const d = currentDrug;
+              const L = getDrugLook(d);
+              const codes = (d.cernerCodes && d.cernerCodes.length) ? d.cernerCodes : extractCernerCodes(d.product);
+              const oph = isOph(d);
+              const lock = isLock(d);
+              const vehicles = parseVehicles(d.diluents);
+
+              // Step definitions matching app.js
+              const steps = [
+                {
+                  key: 'reconstitution',
+                  label: 'Reconstitute',
+                  icon: 'syringe',
+                  color: '#EDE4FF',
+                  content: d.reconstitution
+                },
+                {
+                  key: 'diluents',
+                  label: 'Choose vehicle',
+                  icon: 'droplet',
+                  color: '#E0F2FE',
+                  content: d.diluents,
+                  vehicles: vehicles
+                },
+                {
+                  key: 'dilution',
+                  label: lock ? 'Prepare lock solution' : oph ? 'Dilute to final concentration' : 'Dilute to final volume',
+                  icon: 'testtube',
+                  color: '#FCE7F3',
+                  content: d.dilution
+                },
+                {
+                  key: 'rate',
+                  label: lock ? 'Instil and dwell' : oph ? 'Administer' : 'Infuse over',
+                  icon: lock ? 'lock' : oph ? 'eye' : 'stopwatch',
+                  color: '#FEF3C7',
+                  content: d.rate
+                },
+                {
+                  key: 'stability',
+                  label: 'Storage and beyond-use date',
+                  icon: 'thermometer',
+                  color: '#DCFCE7',
+                  content: d.stability
+                }
+              ].filter(st => String(st.content || '').trim());
+
+              // Navigation between medicines
+              const currentIndex = filteredDrugs.findIndex(x => x.id === d.id);
+              const prevDrug = currentIndex > 0 ? filteredDrugs[currentIndex - 1] : null;
+              const nextDrug = currentIndex >= 0 && currentIndex < filteredDrugs.length - 1 ? filteredDrugs[currentIndex + 1] : null;
+
+              return (
+                <div className="mono">
+                  {/* Back button */}
+                  <button className="back" onClick={handleBackToList}>
+                    <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m12 19-7-7 7-7" />
+                      <path d="M19 12H5" />
+                    </svg>
+                    All medicines
+                  </button>
+
+                  {/* Drug Hero Banner */}
+                  <section className={`dhero ${d.highAlert && !isChemo(d) ? 'ha' : ''}`} style={{ '--g': L.g, '--gs': L.s }}>
+                    <div className="dh-in">
+                      <div>
+                        <div className="dh-k">
+                          <span>{d.drugClass}</span>
+                          <span>{d.form || 'Injection'}</span>
+                          {d.highAlert && (
+                            <span className="warn">
+                              {getIcon('warning')}
+                              High-alert medicine
+                            </span>
+                          )}
+                        </div>
+                        <h1>{d.name}</h1>
+                        {d.aliases && <p className="aka">Also known as {d.aliases}</p>}
+                      </div>
+                      <div className="dh-art">
+                        {getIcon(isChemo(d) ? 'biohazard' : d.highAlert ? 'warning' : 'syringe', 'x1')}
+                        {getIcon(L.e === 'syringe' ? 'droplet' : L.e, 'x2')}
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Quick Stat Tiles */}
+                  <div className="stats">
+                    <div className="stat" title={d.maxConc || ''}>
+                      <span className="tile" style={{ '--g': 'linear-gradient(135deg,#C084FC,#8B5CF6)' }}>
+                        {getIcon('testtube')}
+                      </span>
+                      <dl style={{ margin: 0, minWidth: 0 }}>
+                        <dt>Max final concentration</dt>
+                        <dd>{shortFirstLine(d.maxConc) || '—'}</dd>
+                      </dl>
+                    </div>
+
+                    <div className="stat" title={d.rate || ''}>
+                      <span className="tile" style={{ '--g': 'linear-gradient(135deg,#FCD34D,#F97316)' }}>
+                        {getIcon(lock ? 'lock' : oph ? 'eye' : 'stopwatch')}
+                      </span>
+                      <dl style={{ margin: 0, minWidth: 0 }}>
+                        <dt>{lock ? 'Dwell' : oph ? 'Administration' : 'Infuse over'}</dt>
+                        <dd>{shortFirstLine(d.rate) || '—'}</dd>
+                      </dl>
+                    </div>
+
+                    <div className="stat" title={d.diluents || ''}>
+                      <span className="tile" style={{ '--g': 'linear-gradient(135deg,#60A5FA,#3B82F6)' }}>
+                        {getIcon('droplet')}
+                      </span>
+                      <dl style={{ margin: 0, minWidth: 0 }}>
+                        <dt>Vehicles</dt>
+                        <dd>{shortVehicles(d.diluents) || 'See monograph'}</dd>
+                      </dl>
+                    </div>
+
+                    <div className="stat" title={d.stability || ''}>
+                      <span className="tile" style={{ '--g': 'linear-gradient(135deg,#34D399,#059669)' }}>
+                        {getIcon('thermometer')}
+                      </span>
+                      <dl style={{ margin: 0, minWidth: 0 }}>
+                        <dt>Beyond-use date</dt>
+                        <dd>{shortFirstLine(d.stability) || 'See monograph'}</dd>
+                      </dl>
+                    </div>
+                  </div>
+
+                  {/* Monograph Two-Column Layout */}
+                  <div className="layout">
+                    
+                    {/* Left Column: Flow & Details */}
+                    <div>
+                      {/* Product Formulation & Cerner Barcodes */}
+                      <section className="card">
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 700, margin: '0 0 12px' }}>
+                          {getIcon('package')}
+                          Item &amp; Formulation
+                        </h2>
+                        
+                        <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px' }}>
+                          {d.product || 'Standard injectable formulation.'}
+                        </div>
+
+                        {d.storage && (
+                          <div style={{ marginTop: '12px', fontSize: '13.5px', color: 'var(--ink-3)' }}>
+                            <b>Intact vial storage:</b> {d.storage}
+                          </div>
+                        )}
+
+                        {/* Cerner Code 128 Barcodes */}
+                        {codes.length > 0 && (
+                          <div className="bcode" style={{ marginTop: '16px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                              <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ink-3)' }}>
+                                Cerner Barcode ({codes.length})
+                              </span>
+                              <span style={{ fontSize: '11px', color: 'var(--ink-3)' }}>Scannable Code 128</span>
+                            </div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                              {codes.map((code) => {
+                                const rects = generateBarcodeRects(code);
+                                return (
+                                  <div 
+                                    key={code} 
+                                    style={{ 
+                                      display: 'flex', 
+                                      alignItems: 'center', 
+                                      gap: '14px', 
+                                      padding: '10px 14px', 
+                                      borderRadius: '12px', 
+                                      background: 'var(--soft)',
+                                      border: '1px solid var(--line)'
+                                    }}
+                                  >
+                                    <div style={{ width: '130px', height: '44px', background: '#fff', padding: '3px 6px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                      <svg viewBox="0 0 150 50" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+                                        {rects.map((r, ri) => (
+                                          <rect key={ri} x={r.x} y="0" width={r.width} height="50" fill="#000" />
+                                        ))}
+                                      </svg>
+                                    </div>
+
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                      <div style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '16px', letterSpacing: '0.04em' }}>
+                                        {code}
+                                      </div>
+                                      <div style={{ fontSize: '12px', color: 'var(--ink-3)' }}>Bedside verification</div>
+                                    </div>
+
+                                    <button 
+                                      className="pillbtn sm" 
+                                      onClick={(e) => handleCopyCerner(code, e)}
+                                      title="Copy Cerner code"
+                                    >
+                                      {copiedCode === code ? getIcon('check') : getIcon('clipboard')}
+                                      <span>{copiedCode === code ? 'Copied' : 'Copy'}</span>
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </section>
+
+                      {/* 5 Preparation Steps Flow */}
+                      <section className="steps">
+                        {steps.map((st, idx) => (
+                          <div key={st.key} className="step">
+                            <div className="s-n" style={{ background: st.color }}>
+                              {getIcon(st.icon)}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700 }}>
+                                {idx + 1}. {st.label}
+                              </h3>
+
+                              {/* Special vehicle pills rendering for choose vehicle step */}
+                              {st.key === 'diluents' && (
+                                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', margin: '8px 0 10px' }}>
+                                  {vehicles.compatible.map(v => (
+                                    <span key={v} className="vb ok">{v}</span>
+                                  ))}
+                                  {vehicles.prohibited.map(v => (
+                                    <span key={v} className="vb no">{v}</span>
+                                  ))}
+                                </div>
+                              )}
+
+                              <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px' }}>
+                                {st.content}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </section>
+
+                      {/* Clinical Notes & Precautions */}
+                      {d.comments && (
+                        <section className="notes card">
+                          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 700, margin: '0 0 12px' }}>
+                            {getIcon('bulb')}
+                            Clinical Notes &amp; Precautions
+                          </h2>
+                          <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px' }}>
+                            {d.comments}
+                          </div>
+                        </section>
+                      )}
+                    </div>
+
+                    {/* Right Column: Actions & References */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      
+                      {/* Action Tools */}
+                      <div className="card">
+                        <h3 style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 700 }}>Actions</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <button className="pillbtn" onClick={() => window.print()}>
+                            {getIcon('camera')}
+                            <span>Print monograph</span>
+                          </button>
+
+                          {codes[0] && (
+                            <button className="pillbtn" onClick={(e) => handleCopyCerner(codes[0], e)}>
+                              {getIcon('clipboard')}
+                              <span>Copy Cerner ({codes[0]})</span>
+                            </button>
+                          )}
+
+                          {(canEdit || isAdmin) && (
+                            <button className="pillbtn on" onClick={() => handleStartEdit(d)}>
+                              {getIcon('pencil')}
+                              <span>Edit monograph</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Safety Overview */}
+                      <div className="card">
+                        <h3 style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 700 }}>Safety Checklist</h3>
+                        <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px', color: 'var(--ink-2)' }}>
+                          {d.highAlert && (
+                            <li style={{ color: 'var(--red)', fontWeight: 600 }}>
+                              Requires independent double check before administration.
+                            </li>
+                          )}
+                          {isChemo(d) && (
+                            <li style={{ color: 'var(--p1)', fontWeight: 600 }}>
+                              Hazardous cytotoxic medication: wear chemo PPE &amp; use closed transfer.
+                            </li>
+                          )}
+                          <li>Check vial reconstitution clarity prior to final dilution.</li>
+                          <li>Verify patient ID and Cerner barcode scan at bedside.</li>
+                        </ul>
+                      </div>
+
+                      {/* References & Review */}
+                      <div className="card" style={{ fontSize: '13px', color: 'var(--ink-3)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: 'var(--ink-2)', marginBottom: '8px' }}>
+                          {getIcon('books')}
+                          References
+                        </div>
+                        <ul style={{ margin: '0 0 12px', paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          {(d.references || ['FDA Product Label', 'ASHP Handbook on Injectable Drugs', 'UK Electronic Medicines Compendium (SmPC)']).map((r, ri) => (
+                            <li key={ri}>{r}</li>
+                          ))}
+                        </ul>
+
+                        {d.lastReviewed && (
+                          <div style={{ paddingTop: '8px', borderTop: '1px solid var(--line)' }}>
+                            <b>Last reviewed:</b> {new Date(d.lastReviewed).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* Previous / Next Pager */}
+                  <div className="pager" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--line)' }}>
+                    {prevDrug ? (
+                      <button className="pillbtn" onClick={() => handleOpenDrug(prevDrug)}>
+                        <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                          <path d="m15 18-6-6 6-6" />
+                        </svg>
+                        <span>{prevDrug.name}</span>
+                      </button>
+                    ) : <div />}
+
+                    {nextDrug ? (
+                      <button className="pillbtn" onClick={() => handleOpenDrug(nextDrug)}>
+                        <span>{nextDrug.name}</span>
+                        <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </button>
+                    ) : <div />}
+                  </div>
+
+                </div>
+              );
+            })()}
+
+          </main>
+        </div>
+
+      </div>
+
+      {/* Floating Toast Notification */}
+      {toastMsg && (
+        <div className="toast show">
+          {getIcon(toastMsg.icon)}
+          <span>{toastMsg.message}</span>
         </div>
       )}
 
-      {/* =========================================================================
-          COMMAND PALETTE SEARCH MODAL (Ctrl+K or /)
-         ========================================================================= */}
-      {isCommandPaletteOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-start justify-center pt-20 p-4">
-          <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            
-            {/* Search Input */}
-            <div className="relative border-b border-slate-200 dark:border-white/10 p-4 flex items-center gap-3">
-              <Search size={20} className="text-slate-400 shrink-0" />
-              <input
-                ref={commandInputRef}
-                type="search"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search Admixa medicines by generic, brand, abbreviation, or Cerner number..."
-                className="w-full bg-transparent text-sm md:text-base text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
+      {/* SEARCH COMMAND PALETTE MODAL */}
+      {isPaletteOpen && (
+        <>
+          <div className="pscrim" onClick={() => setIsPaletteOpen(false)}></div>
+          <div className="pal" role="dialog" aria-label="Search medicines">
+            <div className="field">
+              {getIcon('search')}
+              <input 
+                id="palQ"
+                type="search" 
+                value={palQ}
+                onChange={(e) => setPalQ(e.target.value)}
+                placeholder="Name, brand, abbreviation or Cerner number" 
+                autoComplete="off" 
+                spellCheck="false" 
+                autoFocus
               />
-              <button
-                type="button"
-                onClick={() => setIsCommandPaletteOpen(false)}
-                className="px-2 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
-              >
-                Esc
-              </button>
+              <div className="end">
+                <kbd className="kb-only">Esc</kbd>
+                <button className="pclose" onClick={() => setIsPaletteOpen(false)}>Cancel</button>
+              </div>
             </div>
 
-            {/* Results List */}
-            <div className="max-h-96 overflow-y-auto p-2 divide-y divide-slate-100 dark:divide-white/5">
-              {filteredDrugs.length > 0 ? (
-                filteredDrugs.slice(0, 15).map(drug => (
-                  <button
-                    key={drug.id}
-                    type="button"
-                    onClick={() => handleOpenDrug(drug)}
-                    className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors"
-                  >
-                    <div>
-                      <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <span>{drug.name}</span>
-                        {drug.highAlert && (
-                          <span className="px-1.5 py-0.2 rounded text-[10px] font-extrabold bg-rose-500 text-white">
-                            High Alert
-                          </span>
-                        )}
-                      </div>
-                      {drug.aliases && (
-                        <div className="text-xs text-slate-400 mt-0.5">
-                          {drug.aliases}
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-xs font-semibold text-slate-400">
-                      {drug.drugClass}
-                    </span>
-                  </button>
-                ))
-              ) : (
-                <div className="p-8 text-center text-xs text-slate-400">
-                  No matching medicines found for "{searchQuery}".
+            <div className="pres">
+              {paletteResults.length === 0 ? (
+                <div style={{ padding: '24px', textAlign: 'center', color: 'var(--ink-3)' }}>
+                  No medicines match "{palQ}"
                 </div>
+              ) : (
+                paletteResults.map((d) => {
+                  const L = getDrugLook(d);
+                  return (
+                    <button 
+                      key={d.id} 
+                      className="mcard"
+                      style={{ borderRadius: '12px', border: 'none', background: 'none', width: '100%', textAlign: 'left' }}
+                      onClick={() => {
+                        setIsPaletteOpen(false);
+                        handleOpenDrug(d);
+                      }}
+                    >
+                      <span className="tile" style={{ '--g': L.g, '--gs': L.s, width: '40px', height: '40px' }}>
+                        {getIcon(L.e)}
+                      </span>
+                      <span style={{ minWidth: 0, flex: 1 }}>
+                        <span className="mname" style={{ fontSize: '15px' }}>{d.name}</span>
+                        {d.aliases && <div className="malias" style={{ fontSize: '12.5px' }}>{d.aliases}</div>}
+                      </span>
+                      <span className="go">
+                        <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </span>
+                    </button>
+                  );
+                })
               )}
             </div>
 
-            {/* Footer */}
-            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-400 px-4">
-              <span>Press <kbd className="font-mono bg-white dark:bg-slate-700 px-1 py-0.5 rounded">Esc</kbd> to exit</span>
-              <span>Showing up to 15 results</span>
+            <div className="pfoot kb-only">
+              <span>↑ ↓ move</span>
+              <span>Enter open</span>
+              <span>Esc close</span>
             </div>
-
           </div>
-        </div>
+        </>
       )}
 
-      {/* =========================================================================
-          ADMIN EDIT / ADD MONOGRAPH DRAWER
-         ========================================================================= */}
-      {isEditorOpen && editingDrug && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end">
-          <div className="w-full max-w-xl bg-white dark:bg-slate-900 h-full shadow-2xl border-l border-slate-200 dark:border-white/10 flex flex-col animate-in slide-in-from-right duration-200">
-            
-            {/* Drawer Header */}
-            <div className="p-6 border-b border-slate-200 dark:border-white/10 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                  {editingDrug.name ? `Edit: ${editingDrug.name}` : 'Add New Medicine'}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Monograph details will be updated across the Admixa IV guide.
-                </p>
+      {/* ADMIN EDIT / ADD DRAWER */}
+      {isDrawerOpen && editingDrug && (
+        <>
+          <div className="scrim" onClick={() => setIsDrawerOpen(false)}></div>
+          <aside className="drawer" aria-hidden="false">
+            <div className="dr-h">
+              {getIcon('pencil')}
+              <div style={{ flex: 1 }}>
+                <h3 id="drT">{editingDrug.id?.startsWith('custom-') ? 'Add new medicine' : 'Edit medicine'}</h3>
+                <p>Change any value and save. Monographs persist in your browser and sync locally.</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsEditorOpen(false)}
-                className="p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white"
-              >
-                <X size={20} />
+              <button className="ib" onClick={() => setIsDrawerOpen(false)} aria-label="Close editor">
+                <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
               </button>
             </div>
 
-            {/* Drawer Form Body */}
-            <form onSubmit={handleSaveDrug} className="flex-1 overflow-y-auto p-6 space-y-4 text-xs md:text-sm">
-              
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Medicine Name &amp; Strength *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editingDrug.name}
-                  onChange={e => setEditingDrug({ ...editingDrug, name: e.target.value })}
-                  placeholder="e.g. Vancomycin 500 mg (vial)"
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            <form className="dr-b" onSubmit={handleSaveDrug}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div>
-                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Drug Class
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Generic Name (Tall Man Lettering)
                   </label>
-                  <select
-                    value={editingDrug.drugClass}
-                    onChange={e => setEditingDrug({ ...editingDrug, drugClass: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
-                  >
-                    {availableClasses.map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
+                  <input 
+                    type="text" 
+                    required 
+                    value={editingDrug.name} 
+                    onChange={e => setEditingDrug({ ...editingDrug, name: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Dosage Form
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Brand Aliases / Trade Names
                   </label>
-                  <input
-                    type="text"
-                    value={editingDrug.form || ''}
-                    onChange={e => setEditingDrug({ ...editingDrug, form: e.target.value })}
-                    placeholder="Injection, Infusion, Eye drop"
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
+                  <input 
+                    type="text" 
+                    value={editingDrug.aliases || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, aliases: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                      Drug Class
+                    </label>
+                    <select 
+                      value={editingDrug.drugClass} 
+                      onChange={e => setEditingDrug({ ...editingDrug, drugClass: e.target.value })}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                    >
+                      {DRUG_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '22px' }}>
+                    <input 
+                      type="checkbox" 
+                      id="ha_check"
+                      checked={editingDrug.highAlert || false} 
+                      onChange={e => setEditingDrug({ ...editingDrug, highAlert: e.target.checked })}
+                      style={{ width: '20px', height: '20px', accentColor: '#8B5CF6' }}
+                    />
+                    <label htmlFor="ha_check" style={{ fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
+                      High-Alert Drug
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Product formulation &amp; Cerner Numbers
+                  </label>
+                  <textarea 
+                    rows={3}
+                    value={editingDrug.product || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, product: e.target.value })}
+                    placeholder="Include 10-digit Cerner number like 8900002009..."
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Max Concentration
+                  </label>
+                  <input 
+                    type="text" 
+                    value={editingDrug.maxConc || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, maxConc: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Reconstitution Protocol
+                  </label>
+                  <textarea 
+                    rows={2}
+                    value={editingDrug.reconstitution || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, reconstitution: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Compatible Infusion Vehicles
+                  </label>
+                  <input 
+                    type="text" 
+                    value={editingDrug.diluents || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, diluents: e.target.value })}
+                    placeholder="e.g. Compatible with NS 0.9%, D5W. Incompatible with LR."
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Dilution &amp; Final Volume
+                  </label>
+                  <textarea 
+                    rows={2}
+                    value={editingDrug.dilution || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, dilution: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Infusion Rate / Administration
+                  </label>
+                  <textarea 
+                    rows={2}
+                    value={editingDrug.rate || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, rate: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Stability &amp; Storage (BUD)
+                  </label>
+                  <textarea 
+                    rows={2}
+                    value={editingDrug.stability || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, stability: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Clinical Notes &amp; Precautions
+                  </label>
+                  <textarea 
+                    rows={3}
+                    value={editingDrug.comments || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, comments: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editingDrug.highAlert || false}
-                    onChange={e => setEditingDrug({ ...editingDrug, highAlert: e.target.checked })}
-                    className="rounded text-primary focus:ring-primary w-4 h-4"
-                  />
-                  <span>Mark as High-Alert Medicine</span>
-                </label>
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Brand Names &amp; Aliases
-                </label>
-                <input
-                  type="text"
-                  value={editingDrug.aliases || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, aliases: e.target.value })}
-                  placeholder="e.g. Tazocin, Zosyn"
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Product / Item Formulation (include Cerner item 89...)
-                </label>
-                <textarea
-                  rows={2}
-                  value={editingDrug.product || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, product: e.target.value })}
-                  placeholder="500 mg (vial); Item No on Cerner: 8900001234"
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Reconstitution
-                </label>
-                <textarea
-                  rows={2}
-                  value={editingDrug.reconstitution || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, reconstitution: e.target.value })}
-                  placeholder="Reconstitute with 10 mL of SWFI to yield 50 mg/mL."
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Compatible Vehicles
-                </label>
-                <input
-                  type="text"
-                  value={editingDrug.diluents || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, diluents: e.target.value })}
-                  placeholder="NS, D5W, LR (or write 'Incompatible with normal saline')"
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Dilution &amp; Final Volume
-                </label>
-                <textarea
-                  rows={2}
-                  value={editingDrug.dilution || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, dilution: e.target.value })}
-                  placeholder="Dilute in 100 mL to 250 mL of compatible fluid."
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Infuse Over / Administration Rate
-                </label>
-                <input
-                  type="text"
-                  value={editingDrug.rate || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, rate: e.target.value })}
-                  placeholder="Infuse over 60 minutes (not faster than 10 mg/min)"
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Stability after Preparation (BUD)
-                </label>
-                <textarea
-                  rows={2}
-                  value={editingDrug.stability || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, stability: e.target.value })}
-                  placeholder="24 hours room temperature, 14 days refrigerated."
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Clinical Notes &amp; Precautions
-                </label>
-                <textarea
-                  rows={3}
-                  value={editingDrug.comments || ''}
-                  onChange={e => setEditingDrug({ ...editingDrug, comments: e.target.value })}
-                  placeholder="• Red man syndrome if infused too fast.&#10;HGH: Monitor trough levels before 4th dose."
-                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              {/* Drawer Actions */}
-              <div className="pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between gap-3">
-                {editingDrug.id && drugs.some(d => d.id === editingDrug.id) ? (
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteDrug(editingDrug.id)}
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300 text-xs font-bold transition-colors"
-                  >
-                    <Trash2 size={15} />
+              <div className="dr-f">
+                {!editingDrug.id?.startsWith('custom-') ? (
+                  <button type="button" className="pillbtn sm danger" onClick={handleDeleteDrug}>
+                    {getIcon('trash2')}
                     <span>Delete</span>
                   </button>
                 ) : <div />}
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditorOpen(false)}
-                    className="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 transition-colors"
-                  >
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button type="button" className="pillbtn sm" onClick={() => setIsDrawerOpen(false)}>
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 rounded-2xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/20 hover:bg-primary/90 transition-all"
-                  >
+                  <button type="submit" className="pillbtn sm on">
                     Save Changes
                   </button>
                 </div>
               </div>
-
             </form>
-
-          </div>
-        </div>
+          </aside>
+        </>
       )}
 
     </div>
