@@ -42,6 +42,8 @@ const getClassMeta = (drugClass) => {
   return CLASS_META[drugClass] || { g: 'linear-gradient(135deg,#94A3B8,#64748B)', s: '#64748B', e: 'syringe' };
 };
 
+const CLASS_NAMES = Object.keys(CLASS_META);
+
 const HIGH_ALERT_META = { g: 'linear-gradient(135deg,#FB923C,#F43F5E 55%,#BE123C)', s: '#F43F5E', e: 'warning' };
 
 const getDrugLook = (d) => {
@@ -365,7 +367,7 @@ const Admixa = () => {
               <span className="n">{highAlertCount}</span>
             </button>
 
-            {DRUG_CLASSES.filter(c => classCounts[c]).map(c => {
+            {CLASS_NAMES.filter(c => classCounts[c]).map(c => {
               const meta = getClassMeta(c);
               return (
                 <button
@@ -533,7 +535,7 @@ const Admixa = () => {
                     High alert <small>{highAlertCount}</small>
                   </button>
 
-                  {DRUG_CLASSES.filter(c => classCounts[c]).map(c => {
+                  {CLASS_NAMES.filter(c => classCounts[c]).map(c => {
                     const meta = getClassMeta(c);
                     return (
                       <button
@@ -775,7 +777,8 @@ const Admixa = () => {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                               {codes.map((code) => {
-                                const rects = generateBarcodeRects(code);
+                                const barcodeData = generateBarcodeRects(code);
+                                const rects = barcodeData.rects || [];
                                 return (
                                   <div 
                                     key={code} 
@@ -790,7 +793,7 @@ const Admixa = () => {
                                     }}
                                   >
                                     <div style={{ width: '130px', height: '44px', background: '#fff', padding: '3px 6px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                      <svg viewBox="0 0 150 50" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+                                      <svg viewBox={`0 0 ${barcodeData.width || 150} 50`} preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
                                         {rects.map((r, ri) => (
                                           <rect key={ri} x={r.x} y="0" width={r.width} height="50" fill="#000" />
                                         ))}
@@ -833,13 +836,12 @@ const Admixa = () => {
                               </h3>
 
                               {/* Special vehicle pills rendering for choose vehicle step */}
-                              {st.key === 'diluents' && (
+                              {st.key === 'diluents' && vehicles && vehicles.length > 0 && (
                                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', margin: '8px 0 10px' }}>
-                                  {vehicles.compatible.map(v => (
-                                    <span key={v} className="vb ok">{v}</span>
-                                  ))}
-                                  {vehicles.prohibited.map(v => (
-                                    <span key={v} className="vb no">{v}</span>
+                                  {vehicles.map((v, vi) => (
+                                    <span key={vi} className={`vb ${v.type === 'compatible' ? 'ok' : 'no'}`}>
+                                      {v.label}
+                                    </span>
                                   ))}
                                 </div>
                               )}
@@ -1097,7 +1099,7 @@ const Admixa = () => {
                       onChange={e => setEditingDrug({ ...editingDrug, drugClass: e.target.value })}
                       style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
                     >
-                      {DRUG_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+                      {CLASS_NAMES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
 
