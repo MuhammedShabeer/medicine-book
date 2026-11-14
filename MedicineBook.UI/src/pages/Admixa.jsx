@@ -783,34 +783,46 @@ const Admixa = () => {
                       </section>
 
                       {/* 5 Preparation Steps Flow */}
-                      <section className="steps">
-                        {steps.map((st, idx) => (
-                          <div key={st.key} className="step">
-                            <div className="s-n" style={{ background: st.color }}>
-                              {getIcon(st.icon)}
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700 }}>
-                                {idx + 1}. {st.label}
-                              </h3>
+                      <section className="card" style={{ marginTop: '16px', padding: '28px' }}>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '19px', fontWeight: 600, margin: '0 0 18px' }}>
+                          {getIcon('syringe')}
+                          Preparation and administration
+                        </h2>
+                        <ol className="flow" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                          {steps.map((st, idx) => (
+                            <li key={st.key} style={{ paddingBottom: '24px' }}>
+                              <span className="bubble" style={{ '--b': st.color }}>
+                                {getIcon(st.icon)}
+                                <i>{idx + 1}</i>
+                              </span>
+                              <div>
+                                <h3 style={{ margin: '4px 0 6px', fontSize: '16.5px', fontWeight: 600 }}>
+                                  {st.label}
+                                </h3>
+                                <div className="prose">
+                                  {st.key === 'diluents' && vehicles && vehicles.length > 0 && (
+                                    <div className="veh" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '8px 0 10px' }}>
+                                      {vehicles.map((v, vi) => (
+                                        <span key={vi} className={`vb ${v.type === 'compatible' ? '' : 'no'}`}>
+                                          {getIcon(v.type === 'compatible' ? 'droplet' : 'prohibited')}
+                                          {v.label}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
 
-                              {/* Special vehicle pills rendering for choose vehicle step */}
-                              {st.key === 'diluents' && vehicles && vehicles.length > 0 && (
-                                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', margin: '8px 0 10px' }}>
-                                  {vehicles.map((v, vi) => (
-                                    <span key={vi} className={`vb ${v.type === 'compatible' ? 'ok' : 'no'}`}>
-                                      {v.label}
-                                    </span>
-                                  ))}
+                                  {st.key === 'reconstitution' && /^n\/?a\b/i.test(String(st.content || '').trim()) ? (
+                                    <p style={{ margin: 0, color: 'var(--ink-2)', fontSize: '15px' }}>Not needed. Ready-to-use solution.</p>
+                                  ) : (
+                                    <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px', lineHeight: 1.6 }}>
+                                      {st.content}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-
-                              <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px' }}>
-                                {st.content}
                               </div>
-                            </div>
-                          </div>
-                        ))}
+                            </li>
+                          ))}
+                        </ol>
                       </section>
 
                       {/* Clinical Notes & Precautions */}
