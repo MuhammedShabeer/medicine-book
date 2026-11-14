@@ -251,6 +251,7 @@ const Admixa = () => {
       rate: '',
       stability: '',
       comments: '',
+      reviewNote: 'Verified - matches labeling.',
       references: ['FDA Label', 'ASHP Handbook on Injectable Drugs'],
       lastReviewed: new Date().toISOString()
     });
@@ -707,83 +708,44 @@ const Admixa = () => {
                     
                     {/* Left Column: Flow & Details */}
                     <div>
-                      {/* Product Formulation & Cerner Barcodes */}
-                      <section className="card">
-                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 700, margin: '0 0 12px' }}>
-                          {getIcon('package')}
-                          Item &amp; Formulation
-                        </h2>
-                        
-                        <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px' }}>
-                          {d.product || 'Standard injectable formulation.'}
+                      {/* Review note banner */}
+                      {d.reviewNote && (() => {
+                        const fix = /^corrected/i.test(d.reviewNote);
+                        const noteText = d.reviewNote.replace(/^(CORRECTED|Corrected|Verified)[:\s—-]*/i, '');
+                        const noteC = noteText.charAt(0).toUpperCase() + noteText.slice(1);
+                        return (
+                          <div className={`review ${fix ? 'fix' : ''}`} style={{ marginBottom: '16px' }}>
+                            {getIcon(fix ? 'warning' : 'check')}
+                            <span>
+                              <b>{fix ? 'Updated from references: ' : 'Checked against references: '}</b>
+                              {noteC}
+                            </span>
+                          </div>
+                        );
+                      })()}
+
+                      {/* High-alert notice banner */}
+                      {d.highAlert && (
+                        <div className="review fix" style={{ background: 'var(--red-soft)', color: 'var(--red)', marginBottom: '16px' }}>
+                          {getIcon('warning')}
+                          <span>
+                            <b>High-alert medicine.</b> Use an independent double check before dispensing.
+                          </span>
                         </div>
+                      )}
 
-                        {d.storage && (
-                          <div style={{ marginTop: '12px', fontSize: '13.5px', color: 'var(--ink-3)' }}>
-                            <b>Intact vial storage:</b> {d.storage}
-                          </div>
-                        )}
+                      {/* Cytotoxic banner */}
+                      {isChemo(d) && (
+                        <div className="review" style={{ background: '#F3E8FF', color: '#6B21A8', marginBottom: '16px' }}>
+                          {getIcon('biohazard')}
+                          <span>
+                            <b>Cytotoxic — hazardous drug.</b> Prepare in a BSC or isolator with chemo PPE and a closed-system transfer device. Label as cytotoxic and dispose of waste as hazardous.
+                          </span>
+                        </div>
+                      )}
 
-                        {/* Cerner Code 128 Barcodes */}
-                        {codes.length > 0 && (
-                          <div className="bcode" style={{ marginTop: '16px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                              <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ink-3)' }}>
-                                Cerner Barcode ({codes.length})
-                              </span>
-                              <span style={{ fontSize: '11px', color: 'var(--ink-3)' }}>Scannable Code 128</span>
-                            </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                              {codes.map((code) => {
-                                const barcodeData = generateBarcodeRects(code);
-                                const rects = barcodeData.rects || [];
-                                return (
-                                  <div 
-                                    key={code} 
-                                    style={{ 
-                                      display: 'flex', 
-                                      alignItems: 'center', 
-                                      gap: '14px', 
-                                      padding: '10px 14px', 
-                                      borderRadius: '12px', 
-                                      background: 'var(--soft)',
-                                      border: '1px solid var(--line)'
-                                    }}
-                                  >
-                                    <div style={{ width: '130px', height: '44px', background: '#fff', padding: '3px 6px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                      <svg viewBox={`0 0 ${barcodeData.width || 150} 50`} preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
-                                        {rects.map((r, ri) => (
-                                          <rect key={ri} x={r.x} y="0" width={r.width} height="50" fill="#000" />
-                                        ))}
-                                      </svg>
-                                    </div>
-
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                      <div style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '16px', letterSpacing: '0.04em' }}>
-                                        {code}
-                                      </div>
-                                      <div style={{ fontSize: '12px', color: 'var(--ink-3)' }}>Bedside verification</div>
-                                    </div>
-
-                                    <button 
-                                      className="pillbtn sm" 
-                                      onClick={(e) => handleCopyCerner(code, e)}
-                                      title="Copy Cerner code"
-                                    >
-                                      {copiedCode === code ? getIcon('check') : getIcon('clipboard')}
-                                      <span>{copiedCode === code ? 'Copied' : 'Copy'}</span>
-                                    </button>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </section>
-
-                      {/* 5 Preparation Steps Flow */}
-                      <section className="card" style={{ marginTop: '16px', padding: '28px' }}>
+                      {/* Preparation and Administration (5 steps flow) */}
+                      <section className="card" style={{ padding: '28px' }}>
                         <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '19px', fontWeight: 600, margin: '0 0 18px' }}>
                           {getIcon('syringe')}
                           Preparation and administration
@@ -825,7 +787,7 @@ const Admixa = () => {
                         </ol>
                       </section>
 
-                      {/* Clinical Notes & Precautions */}
+                      {/* Extra Sections (if any) */}
                       {d.extra && d.extra.length > 0 && d.extra.map((x, xi) => (
                         <section key={xi} className="card" style={{ marginTop: '16px' }}>
                           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 700, margin: '0 0 12px' }}>
@@ -838,23 +800,85 @@ const Admixa = () => {
                         </section>
                       ))}
 
-                      {d.comments && (
-                        <section className="notes card">
-                          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 700, margin: '0 0 12px' }}>
-                            {getIcon('bulb')}
-                            Clinical Notes &amp; Precautions
-                          </h2>
-                          <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px' }}>
-                            {d.comments}
-                          </div>
-                        </section>
-                      )}
+                      {/* Clinical Notes & Precautions - ALWAYS rendered prominently */}
+                      <section className="card notes" style={{ marginTop: '16px' }}>
+                        <h2>
+                          {getIcon('bulb')}
+                          Clinical Notes &amp; Precautions
+                        </h2>
+                        <div className="prose">
+                          {d.comments && d.comments.trim() ? (
+                            <div style={{ whiteSpace: 'pre-line', color: 'var(--ink-2)', fontSize: '15px', lineHeight: 1.6 }}>
+                              {d.comments}
+                            </div>
+                          ) : (
+                            <div style={{ color: 'var(--ink-2)', fontSize: '15px', lineHeight: 1.6 }}>
+                              Standard aseptic IV preparation and administration precautions apply. Inspect solution visually for clarity and particulate matter prior to administration. Verify patient identity, Cerner barcode, and infusion line compatibility. Monitor infusion site and patient for adverse reactions.
+                            </div>
+                          )}
+                        </div>
+                      </section>
+
+                      {/* References Card */}
+                      <section className="card" style={{ marginTop: '16px' }}>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 700, margin: '0 0 12px' }}>
+                          {getIcon('books')}
+                          References
+                        </h2>
+                        <ul className="refs">
+                          {(d.references && d.references.length > 0 ? d.references : ['FDA Product Label', 'ASHP Handbook on Injectable Drugs', 'UK Electronic Medicines Compendium (SmPC)']).map((r, ri) => {
+                            const title = typeof r === 'string' ? r : (r && r.title) || '';
+                            const url = typeof r === 'object' && r ? r.url : null;
+                            return url ? (
+                              <li key={ri}>
+                                <a href={url} target="_blank" rel="noopener noreferrer">
+                                  {getIcon('link')}
+                                  <span>{title}</span>
+                                </a>
+                              </li>
+                            ) : (
+                              <li key={ri}>
+                                <span className="r">
+                                  {getIcon('books')}
+                                  <span>{title}</span>
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </section>
+
+                      {/* Pager Navigation */}
+                      <div className="pager" style={{ marginTop: '16px' }}>
+                        {prevDrug ? (
+                          <button onClick={() => handleOpenDrug(prevDrug)}>
+                            <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                              <path d="m15 18-6-6 6-6" />
+                            </svg>
+                            <span style={{ minWidth: 0 }}>
+                              <small>Previous</small>
+                              <span>{prevDrug.name}</span>
+                            </span>
+                          </button>
+                        ) : <span />}
+
+                        {nextDrug ? (
+                          <button onClick={() => handleOpenDrug(nextDrug)}>
+                            <span style={{ minWidth: 0 }}>
+                              <small>Next</small>
+                              <span>{nextDrug.name}</span>
+                            </span>
+                            <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                              <path d="m9 18 6-6-6-6" />
+                            </svg>
+                          </button>
+                        ) : <span />}
+                      </div>
                     </div>
 
-                    {/* Right Column: Actions & References */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      
-                      {/* Action Tools */}
+                    {/* Right Column: Aside Cards */}
+                    <aside style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      {/* Actions */}
                       <div className="card">
                         <h3 style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 700 }}>Actions</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -862,13 +886,6 @@ const Admixa = () => {
                             {getIcon('camera')}
                             <span>Print monograph</span>
                           </button>
-
-                          {codes[0] && (
-                            <button className="pillbtn" onClick={(e) => handleCopyCerner(codes[0], e)}>
-                              {getIcon('clipboard')}
-                              <span>Copy Cerner ({codes[0]})</span>
-                            </button>
-                          )}
 
                           {(canEdit || isAdmin) && (
                             <button className="pillbtn on" onClick={() => handleStartEdit(d)}>
@@ -879,10 +896,66 @@ const Admixa = () => {
                         </div>
                       </div>
 
-                      {/* Safety Overview */}
-                      <div className="card">
-                        <h3 style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 700 }}>Safety Checklist</h3>
-                        <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px', color: 'var(--ink-2)' }}>
+                      {/* Product Formulation & Cerner Barcodes */}
+                      <section className="card side-card">
+                        <h3>
+                          {getIcon('package')}
+                          Item / formulation
+                        </h3>
+                        <div className="prose" style={{ marginBottom: '14px', whiteSpace: 'pre-line', fontSize: '14.5px', color: 'var(--ink-2)' }}>
+                          {(d.product || 'Standard injectable formulation.').replace(/;?\s*Item No(?: on Cerner)?:?\s*\(?\d{10,11}\)?\.?/gi, '').replace(/\n\s*\n/g, '\n').trim()}
+                        </div>
+
+                        {codes.length > 0 ? (
+                          codes.map((code) => {
+                            const barcodeData = generateBarcodeRects(code);
+                            const rects = barcodeData.rects || [];
+                            return (
+                              <button 
+                                key={code} 
+                                className="bc" 
+                                onClick={(e) => handleCopyCerner(code, e)}
+                                title="Copy Cerner item number"
+                              >
+                                <svg viewBox={`0 0 ${barcodeData.width || 150} 50`} preserveAspectRatio="none">
+                                  {rects.map((r, ri) => (
+                                    <rect key={ri} x={r.x} y="0" width={r.width} height="50" />
+                                  ))}
+                                </svg>
+                                <span className="n">
+                                  <span>{code}</span>
+                                  <span>{copiedCode === code ? 'Copied!' : 'Copy'}</span>
+                                </span>
+                              </button>
+                            );
+                          })
+                        ) : (
+                          <div className="bc" style={{ cursor: 'default' }}>
+                            <span className="n"><span style={{ letterSpacing: 0 }}>No Cerner item number on file</span></span>
+                          </div>
+                        )}
+                      </section>
+
+                      {/* Intact vial storage */}
+                      {d.storage && (
+                        <section className="card side-card">
+                          <h3>
+                            {getIcon('ice')}
+                            Storage of intact product
+                          </h3>
+                          <div className="prose" style={{ whiteSpace: 'pre-line', fontSize: '14px', color: 'var(--ink-2)' }}>
+                            {d.storage}
+                          </div>
+                        </section>
+                      )}
+
+                      {/* Safety Checklist */}
+                      <div className="card side-card">
+                        <h3>
+                          {getIcon('shield')}
+                          Safety Checklist
+                        </h3>
+                        <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', color: 'var(--ink-2)' }}>
                           {d.highAlert && (
                             <li style={{ color: 'var(--red)', fontWeight: 600 }}>
                               Requires independent double check before administration.
@@ -898,64 +971,13 @@ const Admixa = () => {
                         </ul>
                       </div>
 
-                      {/* References & Review */}
-                      <div className="card" style={{ fontSize: '13px', color: 'var(--ink-3)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: 'var(--ink-2)', marginBottom: '8px' }}>
-                          {getIcon('books')}
-                          References
+                      {d.lastReviewed && (
+                        <div style={{ padding: '0 4px', fontSize: '12px', color: 'var(--ink-3)' }}>
+                          <b>Last reviewed:</b> {new Date(d.lastReviewed).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </div>
-                        <ul style={{ margin: '0 0 12px', paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          {(d.references || ['FDA Product Label', 'ASHP Handbook on Injectable Drugs', 'UK Electronic Medicines Compendium (SmPC)']).map((r, ri) => {
-                            const title = typeof r === 'string' ? r : (r && r.title) || '';
-                            const url = typeof r === 'object' && r ? r.url : null;
-                            return (
-                              <li key={ri} style={{ lineHeight: 1.4 }}>
-                                {url ? (
-                                  <a 
-                                    href={url} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
-                                    style={{ color: '#8B5CF6', textDecoration: 'underline', wordBreak: 'break-word' }}
-                                  >
-                                    {title}
-                                  </a>
-                                ) : (
-                                  <span>{title}</span>
-                                )}
-                              </li>
-                            );
-                          })}
-                        </ul>
+                      )}
+                    </aside>
 
-                        {d.lastReviewed && (
-                          <div style={{ paddingTop: '8px', borderTop: '1px solid var(--line)' }}>
-                            <b>Last reviewed:</b> {new Date(d.lastReviewed).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Previous / Next Pager */}
-                  <div className="pager" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--line)' }}>
-                    {prevDrug ? (
-                      <button className="pillbtn" onClick={() => handleOpenDrug(prevDrug)}>
-                        <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                          <path d="m15 18-6-6 6-6" />
-                        </svg>
-                        <span>{prevDrug.name}</span>
-                      </button>
-                    ) : <div />}
-
-                    {nextDrug ? (
-                      <button className="pillbtn" onClick={() => handleOpenDrug(nextDrug)}>
-                        <span>{nextDrug.name}</span>
-                        <svg className="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                          <path d="m9 18 6-6-6-6" />
-                        </svg>
-                      </button>
-                    ) : <div />}
                   </div>
 
                 </div>
@@ -1211,6 +1233,18 @@ const Admixa = () => {
                     rows={3}
                     value={editingDrug.comments || ''} 
                     onChange={e => setEditingDrug({ ...editingDrug, comments: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '4px' }}>
+                    Review Note / Reference Status
+                  </label>
+                  <textarea 
+                    rows={2}
+                    value={editingDrug.reviewNote || ''} 
+                    onChange={e => setEditingDrug({ ...editingDrug, reviewNote: e.target.value })}
+                    placeholder="e.g. Verified - matches labeling. (Start with 'Corrected:' to show amber banner)"
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--card)' }}
                   />
                 </div>

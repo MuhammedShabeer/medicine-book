@@ -205,8 +205,20 @@
 .admixa-page .vb .e3{width:24px;height:24px;filter:none}
 .admixa-page .vb.no{background:var(--red-soft);color:var(--red)}
 @media (prefers-color-scheme:dark){.admixa-page .vb{background:#0C2E46;color:#7DD3FC}}
-.admixa-page .notes{background:linear-gradient(135deg,#FFF7ED,#FFEFF6);border-color:#FBD3E3}
-@media (prefers-color-scheme:dark){.admixa-page .notes{background:linear-gradient(135deg,#33200F,#3A1530);border-color:#5A2A44}}
+.admixa-page .notes,
+.admixa-page .card.notes,
+.admixa-page .notes.card{background:linear-gradient(135deg,#FFF7ED,#FFEFF6)!important;border:1px solid #FBD3E3!important;border-radius:24px;padding:24px;box-shadow:var(--shadow);display:block}
+.admixa-page .card.notes h2,
+.admixa-page .notes h2{color:#9A3412;font-size:19px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+.admixa-page .card.notes h2 .e3,
+.admixa-page .notes h2 .e3{width:30px;height:30px}
+@media (prefers-color-scheme:dark){
+  .admixa-page .notes,
+  .admixa-page .card.notes,
+  .admixa-page .notes.card{background:linear-gradient(135deg,#33200F,#3A1530)!important;border-color:#5A2A44!important}
+  .admixa-page .card.notes h2,
+  .admixa-page .notes h2{color:#FDBA74}
+}
 .admixa-page .review{display:flex;gap:12px;align-items:flex-start;border-radius:18px;padding:14px 16px;background:var(--green-soft);color:var(--green);font-size:14.5px;margin-bottom:16px}
 .admixa-page .review.fix{background:var(--amber-soft);color:var(--amber)}
 .admixa-page .review .e3{width:30px;height:30px;filter:none}
