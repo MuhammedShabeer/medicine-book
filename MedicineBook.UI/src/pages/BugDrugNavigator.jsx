@@ -237,10 +237,22 @@ const BugDrugNavigator = () => {
   // Filtered glossary for Tab 4
   const filteredGlossary = useMemo(() => {
     const q = glossarySearchQuery.trim().toLowerCase();
-    return TOOLKIT_DATA.glossary.filter(([term, def]) => 
+    const raw = TOOLKIT_DATA?.glossary || [];
+    const normalized = raw.map(item => Array.isArray(item) ? item : [item.term || '', item.def || '', item.ref || '']);
+    return normalized.filter(([term, def]) => 
       !q || term.toLowerCase().includes(q) || def.toLowerCase().includes(q)
     );
   }, [glossarySearchQuery]);
+
+  // Hazardous drugs list normalized for Tab 4
+  const hazardousDrugsList = useMemo(() => {
+    const raw = TOOLKIT_DATA?.hazardousDrugs || [];
+    if (Array.isArray(raw)) return raw;
+    return Object.entries(raw).map(([k, v]) => [
+      k === 'table1' ? 'Table 1' : k === 'table2' ? 'Table 2' : k,
+      Array.isArray(v) ? v.join(', ') : String(v)
+    ]);
+  }, []);
 
   // Active family order for current group
   const activeFamilyOrder = useMemo(() => getFamilyOrder(selectedGroup), [selectedGroup]);
@@ -1585,7 +1597,7 @@ const BugDrugNavigator = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-white/5">
-                  {TOOLKIT_DATA.hazardousDrugs.map(([tbl, drugs], i) => (
+                  {hazardousDrugsList.map(([tbl, drugs], i) => (
                     <tr key={i}>
                       <td className="p-3 font-bold text-slate-900 dark:text-white">{tbl}</td>
                       <td className="p-3 text-slate-700 dark:text-slate-300">{drugs}</td>

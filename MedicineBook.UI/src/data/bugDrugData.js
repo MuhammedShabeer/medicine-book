@@ -7877,93 +7877,87 @@ export const TOOLKIT_DATA = {
       "ref": "AHFS"
     }
   ],
-  "hazardousDrugs": {
-    "table1": [
-      "Ganciclovir",
-      "Valganciclovir",
-      "Cidofovir",
-      "Chloramphenicol"
+  "hazardousDrugs": [
+    [
+      "Table 1",
+      "Ganciclovir, valganciclovir, cidofovir, chloramphenicol"
     ],
-    "table2": [
-      "Ribavirin",
-      "Voriconazole",
-      "Fluconazole",
-      "Zidovudine",
-      "Entecavir",
-      "Miltefosine"
+    [
+      "Table 2",
+      "Ribavirin, voriconazole, fluconazole, zidovudine, entecavir, miltefosine"
     ]
-  },
+  ],
   "glossary": [
-    {
-      "term": "ESBL",
-      "def": "Extended-spectrum β-lactamase: inactivates most penicillins, cephalosporins and aztreonam; carbapenems usually still active",
-      "ref": "IDSA"
-    },
-    {
-      "term": "AmpC",
-      "def": "Chromosomal β-lactamase that can be induced during therapy (E. cloacae, K. aerogenes, C. freundii, H. alvei)",
-      "ref": "IDSA"
-    },
-    {
-      "term": "CRE",
-      "def": "Enterobacterales resistant to at least one carbapenem or producing a carbapenemase",
-      "ref": "IDSA"
-    },
-    {
-      "term": "KPC / OXA-48",
-      "def": "Serine carbapenemases (use an active-site serine); choose the agent by enzyme type — see IDSA Section 3",
-      "ref": "IDSA"
-    },
-    {
-      "term": "NDM / VIM / IMP",
-      "def": "Metallo-β-lactamases — avibactam, relebactam, vaborbactam do not inhibit them; use aztreonam-avibactam or cefiderocol",
-      "ref": "IDSA"
-    },
-    {
-      "term": "DTR P. aeruginosa",
-      "def": "Not susceptible to pip-tazo, ceftazidime, cefepime, aztreonam, meropenem, imipenem, ciprofloxacin and levofloxacin",
-      "ref": "IDSA"
-    },
-    {
-      "term": "CRAB",
-      "def": "Carbapenem-resistant Acinetobacter baumannii",
-      "ref": "IDSA"
-    },
-    {
-      "term": "AUC (vancomycin)",
-      "def": "Area under the concentration–time curve over 24 h; target 400–600 mg·h/L",
-      "ref": "ASHP"
-    },
-    {
-      "term": "AWaRe",
-      "def": "WHO grouping: Access (first choice), Watch (higher resistance risk), Reserve (last resort)",
-      "ref": "WHO"
-    },
-    {
-      "term": "TDM",
-      "def": "Therapeutic drug monitoring: measuring blood levels to adjust the dose",
-      "ref": "ASP16"
-    },
-    {
-      "term": "ACT",
-      "def": "Artemisinin-based combination therapy: first-line treatment for uncomplicated falciparum malaria",
-      "ref": "MAL"
-    },
-    {
-      "term": "Radical cure",
-      "def": "Treatment that clears dormant P. vivax/ovale liver stages (primaquine or tafenoquine) to prevent relapse",
-      "ref": "MAL"
-    },
-    {
-      "term": "BPaLM",
-      "def": "Bedaquiline, pretomanid, linezolid and moxifloxacin: 6-month regimen for MDR/RR-TB",
-      "ref": "TBW"
-    },
-    {
-      "term": "DAA",
-      "def": "Direct-acting antiviral for hepatitis C (e.g. sofosbuvir/velpatasvir)",
-      "ref": "HCV"
-    }
+    [
+      "ESBL",
+      "Extended-spectrum β-lactamase: inactivates most penicillins, cephalosporins and aztreonam; carbapenems usually still active",
+      "IDSA"
+    ],
+    [
+      "AmpC",
+      "Chromosomal β-lactamase that can be induced during therapy (E. cloacae, K. aerogenes, C. freundii, H. alvei)",
+      "IDSA"
+    ],
+    [
+      "CRE",
+      "Enterobacterales resistant to at least one carbapenem or producing a carbapenemase",
+      "IDSA"
+    ],
+    [
+      "KPC / OXA-48",
+      "Serine carbapenemases (use an active-site serine); choose the agent by enzyme type — see IDSA Section 3",
+      "IDSA"
+    ],
+    [
+      "NDM / VIM / IMP",
+      "Metallo-β-lactamases — avibactam, relebactam, vaborbactam do not inhibit them; use aztreonam-avibactam or cefiderocol",
+      "IDSA"
+    ],
+    [
+      "DTR P. aeruginosa",
+      "Not susceptible to pip-tazo, ceftazidime, cefepime, aztreonam, meropenem, imipenem, ciprofloxacin and levofloxacin",
+      "IDSA"
+    ],
+    [
+      "CRAB",
+      "Carbapenem-resistant Acinetobacter baumannii",
+      "IDSA"
+    ],
+    [
+      "AUC (vancomycin)",
+      "Area under the concentration–time curve over 24 h; target 400–600 mg·h/L",
+      "ASHP"
+    ],
+    [
+      "AWaRe",
+      "WHO grouping: Access (first choice), Watch (higher resistance risk), Reserve (last resort)",
+      "WHO"
+    ],
+    [
+      "TDM",
+      "Therapeutic drug monitoring: measuring blood levels to adjust the dose",
+      "ASP16"
+    ],
+    [
+      "ACT",
+      "Artemisinin-based combination therapy: first-line treatment for uncomplicated falciparum malaria",
+      "MAL"
+    ],
+    [
+      "Radical cure",
+      "Treatment that clears dormant P. vivax/ovale liver stages (primaquine or tafenoquine) to prevent relapse",
+      "MAL"
+    ],
+    [
+      "BPaLM",
+      "Bedaquiline, pretomanid, linezolid and moxifloxacin: 6-month regimen for MDR/RR-TB",
+      "TBW"
+    ],
+    [
+      "DAA",
+      "Direct-acting antiviral for hepatitis C (e.g. sofosbuvir/velpatasvir)",
+      "HCV"
+    ]
   ]
 };
 
@@ -8083,7 +8077,7 @@ export function getPharmacistNotes(drugName, group = 'bac') {
 export function getGapsForDrug(drug, group = 'bac', version = '2026') {
   if (!drug || !drug.cov) return [];
   if (group === 'bac') {
-    return KEYGAPS.filter(o => {
+    return KEY_GAPS.filter(o => {
       const activeOrgs = getOrganisms('bac', version);
       return activeOrgs.some(x => x.id === o) && !drug.cov[o];
     }).map(o => SHORT_NAMES[o] || o);

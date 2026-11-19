@@ -47,11 +47,14 @@ const Layout = () => {
     setUnreadAnnouncements(false);
   };
 
-  if (!user) {
+  const publicPaths = ['/spectra', '/bug-drug-navigator', '/bug-drug', '/antibiogram', '/admixa', '/calculator', '/references', '/acknowledgements'];
+  const isPublicRoute = publicPaths.some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
+
+  if (!user && !isPublicRoute) {
     return <Navigate to="/login" replace />;
   }
 
-  const isAdmin = user.roles.includes('Admin');
+  const isAdmin = user?.roles?.includes('Admin') || false;
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -84,9 +87,15 @@ const Layout = () => {
           <button onClick={toggleTheme} className="p-2 text-slate-500 dark:text-slate-300 hover:text-primary transition-colors active:scale-95">
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-          <button onClick={logout} className="p-2 text-danger hover:text-danger/80 transition-colors active:scale-95">
-            <LogOut size={20} />
-          </button>
+          {user ? (
+            <button onClick={logout} className="p-2 text-danger hover:text-danger/80 transition-colors active:scale-95" title="Logout">
+              <LogOut size={20} />
+            </button>
+          ) : (
+            <Link to="/login" className="px-2.5 py-1 text-primary text-xs font-bold hover:bg-primary/10 rounded-lg transition-colors" title="Sign In">
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
 
@@ -102,9 +111,9 @@ const Layout = () => {
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
-          <p className="text-sm text-slate-600 dark:text-slate-300">Welcome, <span className="font-semibold text-slate-900 dark:text-white">{user.fullName}</span></p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">Welcome, <span className="font-semibold text-slate-900 dark:text-white">{user?.fullName || 'Clinical Guest'}</span></p>
           <span className="text-[0.7rem] px-2 py-1 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary dark:text-primary rounded-full inline-block mt-2 font-bold tracking-wide uppercase border border-primary/20">
-            {isAdmin ? 'Administrator' : 'Staff'}
+            {user ? (isAdmin ? 'Administrator' : 'Staff') : 'Clinical Visitor'}
           </span>
         </div>
 
@@ -137,10 +146,17 @@ const Layout = () => {
         </div>
 
         <div className="p-4 mt-auto border-t border-slate-100 dark:border-white/5">
-          <button onClick={logout} className="flex items-center gap-3 p-3 w-full text-left text-danger hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all font-semibold active:scale-95">
-            <LogOut size={20} />
-            Logout
-          </button>
+          {user ? (
+            <button onClick={logout} className="flex items-center gap-3 p-3 w-full text-left text-danger hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all font-semibold active:scale-95">
+              <LogOut size={20} />
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="flex items-center gap-3 p-3 w-full text-left text-primary hover:bg-primary/10 rounded-xl transition-all font-semibold active:scale-95">
+              <LogOut size={20} className="rotate-180" />
+              Sign In
+            </Link>
+          )}
           <div className="mt-6 text-center text-[10px] text-slate-400 dark:text-white/30 tracking-wider font-semibold uppercase">
             Quintessentially Conceived & Sculpted by Sayyid Muhammed
           </div>
