@@ -70,6 +70,9 @@ const DRUG = [
 ];
 const SHORT={typhi:"S. Typhi (enteric fever)",brucella:"Brucella",tpall:"T. pallidum (syphilis)",vre:"VRE",listeria:"Listeria",steno:"Stenotrophomonas",crab:"CRAB (Acinetobacter)",strep:"Streptococci",entero:"Enterococci",sepi:"S. epidermidis",mssa:"MSSA",camrsa:"MRSA, community",hamrsa:"MRSA, hospital",gnb:"E. coli/Kleb/H. flu",gnbbl:"Same, β-lactamase+",space:"AmpC group (SPACE)",esbl:"ESBL",cre:"CRE",pseudo:"Pseudomonas",nmen:"N. meningitidis",ngon:"N. gonorrhoeae",pepto:"Peptostreptococcus",bact:"Bacteroides",cdiff:"C. difficile",myco:"Mycoplasma/Chlamydophila",legion:"Legionella",chlam:"C. trachomatis"};
 const SRC={
+ OFLX:"Ofloxacin 200 mg tablets, Summary of Product Characteristics (emc), revised 2026",
+ TEIC:"Targocid (teicoplanin) Summary of Product Characteristics (emc)",
+ FDAGC:"US FDA approval announcement, 12 December 2025 (Nuzolvence/zoliflodacin)",
  IDSA:"IDSA Guidance on AMR Gram-negative infections, July 2026",
  AHFS:"AHFS Drug Information monograph (ASHP)",
  IDSA24:"IDSA AMR Guidance v3.0 (2023, updated Jan 2024) — partly superseded by 2026",
@@ -95,7 +98,7 @@ const CHANGES=[
  ["Gentamicin/tobramycin/amikacin","cre","set","Mainly urinary infections, if susceptible","IDSA"],
  ["Tigecycline","cre","set","Alternative only; not for bloodstream or urinary infections","IDSA"],
  ["Clindamycin","bact","set","Not recommended: rising B. fragilis resistance","IAI"],
- ["Levofloxacin/moxifloxacin","bact","set","Moxifloxacin only; avoid if a quinolone was used in the last 3 months","IAI"],
+ ["Levofloxacin/moxifloxacin","bact","set","Moxifloxacin only; quinolones are not advised unless local E. coli susceptibility exceeds 90%","IAI"],
  ["Vancomycin/daptomycin","cdiff","set","Oral vancomycin: alternative to fidaxomicin","CDI"],
  ["Fidaxomicin","cdiff","set","Preferred first-line for initial and recurrent CDI","CDI"],
  ["Metronidazole","cdiff","set","Only for non-severe CDI if fidaxomicin/vancomycin unavailable","CDI"],
@@ -107,6 +110,8 @@ const CHANGES=[
  ["Clarithromycin/azithromycin","chlam","set","Azithromycin: alternative; preferred in pregnancy","CDC"]
 ];
 const NEWDRUGS=[
+ {c:"Fluoroquinolones",n:"Ofloxacin",src:"OFLX",tag:"Restricted: only when recommended first-line agents are inappropriate",why:"Added to the chart: fluoroquinolone on the HGH list; spectrum per UK SmPC (2026)",cov:{strep:Q("Moderately susceptible only (S. pneumoniae, S. pyogenes)"),entero:Q("Moderately susceptible only"),sepi:1,mssa:1,gnb:1,gnbbl:1,space:Q("Enterobacter and Citrobacter susceptible; Acinetobacter moderately susceptible"),pseudo:Q("Moderately susceptible only"),nmen:1,ngon:Q("Only if susceptibility is confirmed — not for empirical treatment"),myco:Q("Chlamydiae susceptible; Mycoplasma moderately susceptible"),legion:1,chlam:1}},
+ {c:"Glycopeptides",n:"Teicoplanin",src:"TEIC",why:"Added to the chart: glycopeptide licensed in the EU/UK (SmPC), widely used outside the US",cov:{strep:1,entero:Q("E. faecalis susceptible; acquired resistance may be a problem in E. faecium"),sepi:Q("Acquired resistance may be a problem (S. epidermidis, S. haemolyticus, S. hominis) — confirm susceptibility"),mssa:1,camrsa:1,hamrsa:1,vre:Q("Some VanB-phenotype strains are susceptible; cross-resistance with vancomycin occurs — confirm susceptibility"),pepto:1,cdiff:Q("Oral only: 100–200 mg twice daily for 7–14 days (not absorbed orally)")}},
  {c:"Monobactams",n:"Aztreonam",src:"SPC",why:"Added to the chart: key anti-Pseudomonas agent and an option in β-lactam allergy",cov:{gnb:1,gnbbl:1,pseudo:1}},
  {c:"Newer agents (added 2026)",n:"Ceftazidime-avibactam",src:"IDSA",cov:{space:Q("Active; reserve for carbapenem resistance"),esbl:Q("Active; reserve for carbapenem resistance"),cre:Q("Preferred for KPC and OXA-48-like; not active vs NDM"),pseudo:Q("For difficult-to-treat strains")}},
  {c:"Newer agents (added 2026)",n:"Meropenem-vaborbactam",src:"IDSA",cov:{esbl:Q("Active; reserve for carbapenem resistance"),cre:Q("Preferred for KPC; not active vs NDM")}},
@@ -117,6 +122,7 @@ const NEWDRUGS=[
  {c:"Newer agents (added 2026)",n:"Sulbactam-durlobactam",src:"IDSA",cov:{}},
  {c:"Newer agents (added 2026)",n:"Pivmecillinam (oral)",src:"IDSA",cov:{esbl:Q("Cystitis only")}},
  {c:"Newer agents (added 2026)",n:"Gepotidacin (oral)",src:"IDSA",cov:{esbl:Q("Cystitis only")}},
+ {c:"Newer agents (added 2026)",n:"Zoliflodacin (oral)",src:"FDAGC",cov:{ngon:Q("Uncomplicated urogenital (urethra/cervix) only: single oral dose; age ≥12 y and ≥35 kg")}},
  {c:"Penicillins",n:"Ampicillin-sulbactam (high-dose)",src:"SPC",why:"Added to the chart (FDA-labelled spectrum) so its CRAB role can be shown",cov:{strep:1,entero:1,mssa:1,gnb:1,gnbbl:1,bact:Q("Active, but not recommended for intra-abdominal infection (E. coli resistance)")}},
  {c:"Tetracyclines",n:"Minocycline (high-dose)",src:"AHFS",why:"Added to the chart so its S. maltophilia and CRAB roles can be shown",cov:{myco:1,chlam:1}},
  {c:"Newer agents (added 2026)",n:"Ceftaroline",src:"SPC",cov:{strep:1,mssa:1,camrsa:Q("MRSA labelled for skin infections only, not pneumonia"),hamrsa:Q("MRSA labelled for skin infections only, not pneumonia"),gnb:1}}
@@ -125,9 +131,9 @@ const ORGNOTE26={
  space:"Updated 2026 (IDSA): the SPACE mnemonic oversimplifies AmpC risk. Moderate risk: Enterobacter cloacae complex, Klebsiella aerogenes, Citrobacter freundii, Hafnia alvei — prefer cefepime; avoid ceftriaxone and piperacillin-tazobactam for invasive infections. Lower risk (Serratia, Morganella, Providencia): treat according to susceptibility results. Most Proteus, Providencia and Serratia strains are resistant to colistin (AHFS).",
  esbl:"Updated 2026 (IDSA): carbapenems are preferred for ESBL infections outside the urine (meropenem or imipenem if critically ill). Avoid cefepime and cephamycins. For cystitis, nitrofurantoin, TMP-SMX, single-dose aminoglycoside, pivmecillinam, gepotidacin or sulopenem are preferred.",
  cre:["Updated 2026 (IDSA): choose by carbapenemase type. KPC: meropenem-vaborbactam, ceftazidime-avibactam or imipenem-relebactam. NDM: aztreonam-avibactam or cefiderocol. OXA-48-like: ceftazidime-avibactam (IDSA 2023/24). Polymyxins are not suggested for CRE, except colistin as an alternative for uncomplicated cystitis. Tigecycline/eravacycline only when β-lactams are unsuitable, not for urinary or bloodstream infection.",["IDSA","IDSA24"]],
- bact:"IDSA/SIS intra-abdominal guideline (2010): cefotetan and clindamycin are not recommended because of rising B. fragilis group resistance. Metronidazole, carbapenems and some β-lactam/β-lactamase inhibitors remain uniformly active. Cefoxitin is still a recommended single agent for mild–moderate community-acquired infection. Avoid moxifloxacin if a quinolone was used in the previous 3 months.",
+ bact:"IDSA/SIS intra-abdominal guideline (2010): cefotetan and clindamycin are not recommended because of rising B. fragilis group resistance. Metronidazole, carbapenems and some β-lactam/β-lactamase inhibitors remain uniformly active. Cefoxitin is still a recommended single agent for mild–moderate community-acquired infection. Quinolones (moxifloxacin) are not advised unless local E. coli susceptibility exceeds 90%.",
  cdiff:"Updated (IDSA/SHEA 2021): fidaxomicin is preferred over oral vancomycin for initial and recurrent CDI. Metronidazole alone only for mild cases when the others are unavailable.",
- ngon:"Updated (CDC 2021): ceftriaxone 500 mg IM single dose (1 g if ≥150 kg). Add doxycycline if chlamydia is not excluded.",
+ ngon:"Updated (CDC 2021): ceftriaxone 500 mg IM single dose (1 g if ≥150 kg). Add doxycycline if chlamydia is not excluded. FDA (December 2025) approved oral zoliflodacin and gepotidacin for uncomplicated urogenital gonorrhoea only; they are not yet incorporated into CDC guidance, which keeps ceftriaxone first line.",
  chlam:"Updated (CDC 2021): doxycycline 100 mg twice daily for 7 days is preferred; azithromycin is the alternative and is preferred in pregnancy."
 };
 
@@ -211,12 +217,12 @@ const GROUPS={
   intro:"Tap a virus to see which antivirals are used, or tap an antiviral to see what it treats. Green labels mark first-line choices; amber labels mark limits or specific uses.",
   fams:["herp","resp","hep","retro","pox"],first:{org:"cmv",drug:"Ganciclovir / valganciclovir"},
   orgs:[
-   {id:"hsv",f:"herp",n:"Herpes simplex (HSV-1, HSV-2)",sh:"HSV",s:"",site:"Skin, mucosa, genital tract, eye, brain (encephalitis)",note:"Aciclovir, valaciclovir and famciclovir are the treatment options. For aciclovir-resistant HSV, foscarnet is the treatment of choice; topical cidofovir 1% gel or imiquimod are alternatives for genital lesions.",r:["CDC"]},
+   {id:"hsv",f:"herp",n:"Herpes simplex (HSV-1, HSV-2)",sh:"HSV",s:"",site:"Skin, mucosa, genital tract, eye, brain (encephalitis)",note:"Aciclovir, valaciclovir and famciclovir are the treatment options. For aciclovir-resistant HSV, foscarnet is the treatment of choice; topical cidofovir 1% gel or imiquimod are alternatives for genital lesions. Pritelivir, an oral helicase-primase inhibitor, was approved by FDA on 9 October 2026 for refractory mucocutaneous HSV in immunocompromised adults.",r:["CDC","PRIT"]},
    {id:"vzv",f:"herp",n:"Varicella-zoster (VZV)",sh:"VZV",s:"Chickenpox, shingles",site:"Skin, eye, brain",note:"Oral doses are higher than for HSV (aciclovir 800 mg five times daily for zoster vs 200 mg for initial genital herpes). IV aciclovir is labelled for zoster in immunocompromised patients.",r:["SPC"]},
    {id:"cmv",f:"herp",n:"Cytomegalovirus (CMV)",sh:"CMV",s:"",site:"Transplant and HIV: retina, gut, lung, blood",note:"First line: (val)ganciclovir or foscarnet. Letermovir is for prophylaxis only (stem-cell transplant; kidney transplant D+/R−). Maribavir is for refractory or resistant CMV; never combine it with (val)ganciclovir, and do not use it for retinitis or encephalitis.",r:["ASTCT","SPC","MBV"]},
    {id:"flu",f:"resp",n:"Influenza A and B",sh:"Influenza",s:"",site:"Respiratory tract",note:"Start oral or enteric oseltamivir as soon as possible in anyone admitted with suspected or confirmed influenza. Adding baloxavir to a neuraminidase inhibitor did not improve outcomes in hospitalised patients.",r:["FLU"]},
    {id:"cov",f:"resp",n:"SARS-CoV-2 (COVID-19)",sh:"SARS-CoV-2",s:"",site:"Respiratory tract",note:"Mild–moderate COVID-19 at high risk: nirmatrelvir/ritonavir (best within 5 days) or a 3-day IV remdesivir course (within 7 days). Molnupiravir only when nirmatrelvir/ritonavir cannot be used.",r:["COVID"]},
-   {id:"rsv",f:"resp",n:"Respiratory syncytial virus (RSV)",sh:"RSV",s:"",site:"Respiratory tract; infants, older adults, transplant",note:"ECIL-4: aerosolised or systemic ribavirin (with IVIG) for RSV in allogeneic stem-cell transplant recipients or those at risk of progression to lower-tract disease. Prevention products are outside this chart.",r:["ECIL4"]},
+   {id:"rsv",f:"resp",n:"Respiratory syncytial virus (RSV)",sh:"RSV",s:"",site:"Respiratory tract; infants, older adults, transplant",note:"ECIL-10 (2025): ribavirin and/or intravenous immunoglobulin for RSV in severely immunocompromised stem-cell transplant recipients. Prevention products (vaccines, monoclonal antibodies) are outside this chart.",r:["ECIL10"]},
    {id:"hbv",f:"hep",n:"Hepatitis B (HBV)",sh:"HBV",s:"",site:"Liver",note:"WHO 2024: tenofovir disoproxil (TDF) or entecavir preferred; TAF for renal or bone concerns; treatment eligibility widened. Test for HIV first — entecavir or lamivudine alone can select HIV resistance. Stopping therapy can cause severe hepatitis flares (boxed warning).",r:["HBV","SPC"]},
    {id:"hcv",f:"hep",n:"Hepatitis C (HCV)",sh:"HCV",s:"",site:"Liver",note:"Simplified treatment (treatment-naive, no cirrhosis): glecaprevir/pibrentasvir 8 weeks with food, or sofosbuvir/velpatasvir 12 weeks. Test HBsAg before starting — DAAs carry a boxed warning for HBV reactivation.",r:["HCV","SPC"]},
    {id:"hiv",f:"retro",n:"HIV-1",sh:"HIV-1",s:"",site:"Systemic",note:"Treated with combination ART chosen by the HIV team; recommended initial regimens are integrase-inhibitor based (e.g. bictegravir/TAF/FTC or dolutegravir-based). Check every new medicine for ART interactions.",r:["DHHS","LIV"]},
@@ -225,6 +231,7 @@ const GROUPS={
   drugs:[
    {c:"Anti-herpes",n:"Aciclovir / valaciclovir",cov:{hsv:P("First line; IV for HSV encephalitis",["CDC","SPC"]),vzv:P("First line; higher oral dose than for HSV",["SPC"])}},
    {c:"Anti-herpes",n:"Famciclovir",cov:{hsv:A(["CDC","SPC"]),vzv:A(["SPC"])}},
+   {c:"Anti-herpes",n:"Pritelivir (oral)",cov:{hsv:L("Immunocompromised adults: mucocutaneous HSV refractory to aciclovir, valaciclovir or famciclovir (FDA, 9 Oct 2026)",["PRIT"])}},
    {c:"Anti-CMV",n:"Ganciclovir / valganciclovir",cov:{cmv:P("First line",["ASTCT"])}},
    {c:"Anti-CMV",n:"Foscarnet",cov:{cmv:L("First-line alternative (HCT); labelled for CMV retinitis in AIDS",["ASTCT","SPC"]),hsv:L("Aciclovir-resistant HSV: treatment of choice",["CDC","SPC"])}},
    {c:"Anti-CMV",n:"Cidofovir",cov:{cmv:L("Labelled for CMV retinitis in AIDS",["SPC"]),hsv:L("Topical 1% gel: alternative for aciclovir-resistant genital HSV",["CDC"])}},
@@ -239,16 +246,19 @@ const GROUPS={
    {c:"COVID-19",n:"Molnupiravir",cov:{cov:L("Only if nirmatrelvir/ritonavir cannot be used",["COVID"])}},
    {c:"Hepatitis B / HIV",n:"Tenofovir (TDF / TAF)",cov:{hbv:P("Preferred (TDF; TAF for renal/bone concerns)",["HBV"]),hiv:L("Part of combination ART only",["DHHS"])}},
    {c:"Hepatitis B / HIV",n:"Entecavir",cov:{hbv:P("Preferred",["HBV"])}},
+   {c:"Hepatitis B / HIV",n:"Bepirovirsen (SC)",cov:{hbv:L("Add-on to a nucleos(t)ide analogue for up to 24 weeks: adults without cirrhosis, ≥6 months of therapy, HBV DNA suppressed, HBsAg ≤3000 IU/mL (FDA, 20 Oct 2026)",["BEPI"])}},
    {c:"Hepatitis B / HIV",n:"Lamivudine / emtricitabine",cov:{hbv:L("Not alone: HBV resistance emerges (about 24% at 1 year)",["SPC"]),hiv:L("Part of combination ART only",["DHHS"])}},
    {c:"Hepatitis C",n:"Sofosbuvir/velpatasvir",cov:{hcv:P("Pangenotypic, 12 weeks",["HCV"])}},
    {c:"Hepatitis C",n:"Glecaprevir/pibrentasvir",cov:{hcv:P("8 weeks with food; contraindicated in Child-Pugh B/C",["HCV","SPC"])}},
    {c:"HIV",n:"Antiretroviral therapy (combination)",cov:{hiv:P("Integrase-inhibitor-based initial regimen",["DHHS"])}},
-   {c:"Other antivirals",n:"Ribavirin",cov:{rsv:L("Allogeneic HCT or high-risk patients (ECIL-4)",["ECIL4"])}},
+   {c:"Other antivirals",n:"Ribavirin",cov:{rsv:L("Severely immunocompromised HCT recipients, ± IVIG (ECIL-10)",["ECIL10"])}},
    {c:"Other antivirals",n:"Tecovirimat",cov:{mpox:L("No benefit over placebo in clade II trial",["MPOX"])}}
   ],
   pn:{
    "Aciclovir / valaciclovir":{po:["Valaciclovir gives aciclovir bioavailability of about 55% (oral aciclovir 10–20%)",["SPC"]],mon:[["IV: infuse over at least 1 hour with adequate hydration (crystal nephropathy)",["SPC"]],["Encephalopathic changes (about 1%), more likely in renal impairment — adjust the interval by CrCl",["SPC"]]],note:[["Dose IV aciclovir on ideal body weight in obesity",["SPC"]]]},
    "Famciclovir":{po:["Penciclovir bioavailability about 77%",["SPC"]]},
+   "Pritelivir (oral)":{ix:[["Acid-reducing agents lower exposure: avoid esomeprazole and rabeprazole; limit omeprazole or lansoprazole to ≤20 mg/day and pantoprazole to ≤40 mg/day; separate from H2-receptor antagonists (2 h before or 12 h after) and antacids (2 h)",["PRIT2"]],["Inhibits BCRP: may raise levels of BCRP substrates",["PRIT2"]]]},
+   "Bepirovirsen (SC)":{note:[["First antisense oligonucleotide for chronic hepatitis B; continue the nucleos(t)ide analogue for at least 24 weeks after the last injection",["BEPI"]]]},
    "Ganciclovir / valganciclovir":{warn:[["Boxed warning: haematological toxicity, impaired fertility, fetal toxicity, mutagenesis and carcinogenesis",["SPC"]]],mon:[["Frequent blood counts with differential and platelets; dose by renal function",["SPC"]]],po:["Valganciclovir: ganciclovir bioavailability about 59%; take with food",["SPC"]],note:[["Handle as a hazardous drug (NIOSH Table 1)",["NIOSH","SPC"]]]},
    "Foscarnet":{warn:[["Boxed warning: renal impairment is the major toxicity; seizures linked to mineral and electrolyte changes",["SPC"]]],mon:[["Hydrate (750–1000 mL before the first dose). Check creatinine, calcium (incl. ionised), magnesium, potassium and phosphorus 2–3 times weekly in induction, weekly in maintenance",["SPC"]]]},
    "Cidofovir":{warn:[["Boxed warning: nephrotoxicity (renal failure after as few as 1–2 doses) and neutropenia",["SPC"]]],mon:[["Oral probenecid and IV normal saline with every dose; renal function within 48 h before each dose",["SPC"]]],note:[["Hazardous drug (NIOSH Table 1)",["NIOSH"]]]},
@@ -278,7 +288,7 @@ const GROUPS={
   fams:["tb","ntm"],first:{org:"tbds",drug:"Rifampicin (R)"},
   orgs:[
    {id:"tbds",f:"tb",n:"TB disease, drug-susceptible",sh:"DS-TB",s:"",site:"Lungs, lymph nodes, spine, brain, any organ",note:"Standard 6 months: 2HRZE/4HR. A 4-month regimen (2HPMZ/2HPM: isoniazid, rifapentine, moxifloxacin, pyrazinamide) is an option for pulmonary TB from age 12 — not in pregnancy or breastfeeding, weight under 40 kg, CD4 under 100 or extrapulmonary TB.",r:["TBW"]},
-   {id:"tbmdr",f:"tb",n:"TB, MDR/RR or pre-XDR",sh:"MDR/RR-TB",s:"Rifampicin-resistant",site:"Lungs and other sites",note:"WHO 2025: 6-month BPaLM (bedaquiline, pretomanid, linezolid 600 mg, moxifloxacin); BPaL if fluoroquinolone-resistant; BDLLfxC is an alternative 6-month regimen. Longer regimens are for extensive resistance, intolerance or complicated extrapulmonary TB.",r:["TBW"]},
+   {id:"tbmdr",f:"tb",n:"TB, MDR/RR or pre-XDR",sh:"MDR/RR-TB",s:"Rifampicin-resistant",site:"Lungs and other sites",note:"WHO 2026 (Module 4, 2nd edition): 6-month BPaLM (bedaquiline, pretomanid, linezolid 600 mg, moxifloxacin) for MDR/RR-TB. Fluoroquinolone-resistant (pre-XDR) pulmonary TB: BPaL if non-severe, BPaLC (clofazimine instead of moxifloxacin) if severe. BDLLfx/C is the alternative 6-month regimen; its BDLC form is for non-severe pre-XDR-TB only (not for severe disease). Longer regimens are for extensive resistance, intolerance or complicated extrapulmonary TB.",r:["TBW"]},
    {id:"tbhr",f:"tb",n:"TB, isoniazid-resistant (rifampicin-susceptible)",sh:"Hr-TB",s:"",site:"Lungs and other sites",note:"WHO: rifampicin, ethambutol, pyrazinamide and levofloxacin for 6 months (confirm rifampicin susceptibility; test fluoroquinolone susceptibility). Do not add streptomycin or other injectables. Levofloxacin is the preferred fluoroquinolone.",r:["HRTB"]},
    {id:"ltbi",f:"tb",n:"TB infection (latent)",sh:"TB infection",s:"No active disease",site:"Prevents progression to active TB",note:"Preferred: 3HP (weekly isoniazid + rifapentine for 3 months), 4R (daily rifampicin for 4 months) or 3HR (daily isoniazid + rifampicin for 3 months). Alternatives: 6 or 9 months of isoniazid.",r:["LTBI"]},
    {id:"mac",f:"ntm",n:"Mycobacterium avium complex (MAC)",sh:"MAC",s:"",site:"Lungs (bronchiectasis, COPD)",note:"3-drug regimen: macrolide (azithromycin preferred) + ethambutol + rifamycin. Add IV amikacin (or streptomycin) for 2–3 months in cavitary, advanced or macrolide-resistant disease; add inhaled amikacin liposome if refractory after 6 months. Treat for at least 12 months after culture conversion.",r:["NTM"]},
@@ -291,12 +301,12 @@ const GROUPS={
    {c:"First-line TB",n:"Rifabutin",cov:{tbds:L("Replaces rifampicin with interacting drugs (e.g. HIV protease inhibitors)",["ATS16","AHFS"]),mac:L("Alternative rifamycin",["NTM"])}},
    {c:"First-line TB",n:"Pyrazinamide (Z)",cov:{tbds:P("First 2 months",["TBW"]),tbhr:P("6 months (Hr-TB regimen)",["HRTB"])}},
    {c:"First-line TB",n:"Ethambutol (E)",cov:{tbds:P("First 2 months",["TBW"]),tbhr:P("6 months (Hr-TB regimen)",["HRTB"]),mac:P("Core drug",["NTM"])}},
-   {c:"MDR-TB / second-line",n:"Bedaquiline",cov:{tbmdr:P("In BPaLM, BPaL and BDLLfxC",["TBW"])}},
-   {c:"MDR-TB / second-line",n:"Pretomanid",cov:{tbmdr:P("Only within BPaLM or BPaL",["TBW"])}},
-   {c:"MDR-TB / second-line",n:"Linezolid (for TB)",cov:{tbmdr:P("600 mg in BPaLM/BPaL",["TBW"]),mabs:L("Oral option",["NTM"])}},
+   {c:"MDR-TB / second-line",n:"Bedaquiline",cov:{tbmdr:P("In BPaLM, BPaL, BPaLC and BDLLfx/C (incl. BDLC)",["TBW"])}},
+   {c:"MDR-TB / second-line",n:"Pretomanid",cov:{tbmdr:P("Only within BPaLM, BPaL or BPaLC",["TBW"])}},
+   {c:"MDR-TB / second-line",n:"Linezolid (for TB)",cov:{tbmdr:P("600 mg in BPaLM/BPaL/BPaLC; also in BDLLfx/C",["TBW"]),mabs:L("Oral option",["NTM"])}},
    {c:"MDR-TB / second-line",n:"Moxifloxacin / levofloxacin",cov:{tbds:L("Moxifloxacin in the 4-month HPMZ regimen",["TBW"]),tbhr:P("Levofloxacin (preferred) for 6 months",["HRTB"]),tbmdr:P("Moxifloxacin in BPaLM; levofloxacin in BDLLfxC",["TBW"])}},
-   {c:"MDR-TB / second-line",n:"Delamanid",cov:{tbmdr:L("In BDLLfxC (alternative 6-month regimen)",["TBW"])}},
-   {c:"MDR-TB / second-line",n:"Clofazimine",cov:{tbmdr:L("Option within BDLLfxC",["TBW"]),mac:L("Companion to ethambutol instead of a rifamycin",["NTM"]),mabs:L("Oral option",["NTM"])}},
+   {c:"MDR-TB / second-line",n:"Delamanid",cov:{tbmdr:L("In BDLLfx/C (alternative 6-month regimen) and BDLC for non-severe pre-XDR-TB",["TBW"])}},
+   {c:"MDR-TB / second-line",n:"Clofazimine",cov:{tbmdr:L("In BPaLC (severe pre-XDR-TB), BDLLfxC and BDLC",["TBW"]),mac:L("Companion to ethambutol instead of a rifamycin",["NTM"]),mabs:L("Oral option",["NTM"])}},
    {c:"NTM agents",n:"Azithromycin / clarithromycin",cov:{mac:P("Cornerstone; azithromycin preferred",["NTM"]),mabs:L("Only if no inducible or mutational macrolide resistance",["NTM"])}},
    {c:"NTM agents",n:"Amikacin (IV or inhaled liposomal)",cov:{mac:L("IV for cavitary/advanced disease; inhaled liposomal if refractory",["NTM"]),mabs:P("Parenteral option",["NTM"])}},
    {c:"NTM agents",n:"Imipenem / cefoxitin (IV)",cov:{mabs:P("Parenteral options",["NTM"])}}
@@ -325,14 +335,14 @@ const GROUPS={
   orgs:[
    {id:"pfu",f:"mal",n:"P. falciparum, uncomplicated",sh:"Falciparum (uncomplicated)",s:"",site:"Blood",note:"WHO: an ACT with 3 days of artemisinin. Artemether-lumefantrine is recommended in the first trimester of pregnancy. CDC (US) prefers artemether-lumefantrine, with atovaquone-proguanil second line.",r:["MAL","CDCMAL"]},
    {id:"psev",f:"mal",n:"Severe malaria",sh:"Severe malaria",s:"Any species",site:"Blood, brain, kidneys, lungs",note:"IV or IM artesunate for at least 24 h and until oral therapy is tolerated, then a 3-day ACT. If artesunate is unavailable, artemether is preferred to quinine. After IV artesunate, check weekly for up to 4 weeks for delayed haemolysis.",r:["MAL","CDCMAL"]},
-   {id:"pviv",f:"mal",n:"P. vivax / P. ovale",sh:"Vivax / ovale",s:"",site:"Blood, with dormant liver stages (relapse)",note:"Blood stage: ACT, or chloroquine where susceptible. Relapse prevention after G6PD testing: primaquine 0.5 mg/kg/day for 14 days or 1 mg/kg/day for 7 days; tafenoquine only with G6PD activity ≥70% (WHO) — CDC also requires age ≥16. Neither drug in pregnancy.",r:["MAL","CDCMAL"]},
+   {id:"pviv",f:"mal",n:"P. vivax / P. ovale",sh:"Vivax / ovale",s:"",site:"Blood, with dormant liver stages (relapse)",note:"Blood stage: ACT, or chloroquine where susceptible. Relapse prevention after G6PD testing: primaquine 0.5 mg/kg/day for 14 days (G6PD activity >30%) or 1 mg/kg/day for 7 days (only with G6PD activity ≥70%). Tafenoquine (WHO): single dose with chloroquine — not with an ACT — for age ≥2 with G6PD activity ≥70%; the WHO recommendation applies to South America. CDC also requires age ≥16. Neither drug in pregnancy.",r:["MAL","CDCMAL"]},
    {id:"toxo",f:"proto",n:"Toxoplasma gondii",sh:"Toxoplasma",s:"",site:"Brain (HIV), eye, congenital",note:"Pyrimethamine + sulfadiazine + leucovorin is preferred; TMP-SMX is an alternative. TMP-SMX is the preferred primary prophylaxis (seropositive, CD4 under 100).",r:["OI"]},
  {id:"trich",f:"proto",n:"Trichomonas vaginalis",sh:"Trichomonas",s:"",site:"Genital tract (STI)",note:"Women: metronidazole 500 mg twice daily for 7 days. Men: metronidazole 2 g once. Alternative: tinidazole 2 g once (avoid in pregnancy). Metronidazole can be used in pregnancy.",r:["CDC"]},
    {id:"cryptos",f:"proto",n:"Cryptosporidium",sh:"Cryptosporidium",s:"",site:"Gut (diarrhoea)",note:"Nitazoxanide is labelled for C. parvum diarrhoea from age 1, but has not been shown effective in HIV-infected or immunodeficient patients.",r:["SPC"]},
    {id:"leish",f:"proto",n:"Leishmania (visceral)",sh:"Visceral leishmaniasis",s:"Kala-azar",site:"Liver, spleen, bone marrow",note:"Liposomal amphotericin B is FDA-approved first line (immunocompetent: 3 mg/kg on days 1–5, 14 and 21). Miltefosine is an oral option for L. donovani (age ≥12, weight ≥30 kg). Cutaneous leishmaniasis does not always need treatment — individualise with expert advice.",r:["LEISH","SPC"]},
    {id:"giar",f:"proto",n:"Giardia duodenalis",sh:"Giardia",s:"",site:"Small intestine (diarrhoea)",note:"Options: tinidazole, nitazoxanide or metronidazole. Tinidazole and nitazoxanide are preferred in the HIV paediatric guideline; metronidazole is the alternative (not FDA-approved for giardiasis).",r:["YB","OIPED"]},
    {id:"ehis",f:"proto",n:"Entamoeba histolytica",sh:"Entamoeba",s:"",site:"Colon (dysentery), liver abscess",note:"Treat with metronidazole or tinidazole, then a luminal agent (paromomycin or iodoquinol).",r:["YB"]},
-   {id:"stro",f:"helm",n:"Strongyloides stercoralis",sh:"Strongyloides",s:"",site:"Gut, skin; hyperinfection with steroids or HTLV-1",note:"Ivermectin first line; albendazole is the alternative. Test people on, or about to start, corticosteroids or immunosuppressants, and those with HTLV-1. Ivermectin is contraindicated with Loa loa infection and in pregnancy.",r:["STRO"]},
+   {id:"stro",f:"helm",n:"Strongyloides stercoralis",sh:"Strongyloides",s:"",site:"Gut, skin; hyperinfection with steroids or HTLV-1",note:"Ivermectin first line; albendazole is the alternative. Test people on, or about to start, corticosteroids or immunosuppressants, and those with HTLV-1. Confirmed or suspected Loa loa co-infection is a relative contraindication to ivermectin; data on use in pregnancy are limited.",r:["STRO"]},
    {id:"sth",f:"helm",n:"Roundworm, hookworm, pinworm, whipworm",sh:"Intestinal worms",s:"",site:"Gut",note:"Albendazole or mebendazole (ivermectin for ascariasis and whipworm). Pinworm: single dose repeated after 2 weeks, with strict household hand hygiene.",r:["STH","PIN"]},
  {id:"schisto",f:"helm",n:"Schistosoma spp.",sh:"Schistosomiasis",s:"Bilharzia",site:"Bladder, bowel, liver",note:"Praziquantel 40 mg/kg/day in 2 doses for one day (S. mansoni, S. haematobium); 60 mg/kg/day in 3 doses for S. japonicum/mekongi. Treat at least 6–8 weeks after last freshwater exposure; a second dose 2–4 weeks later may be needed.",r:["SCHI"]},
    {id:"taenia",f:"helm",n:"Taenia (intestinal tapeworm)",sh:"Intestinal tapeworm",s:"",site:"Gut",note:"Praziquantel 5–10 mg/kg once. Alternatives: niclosamide 2 g once, or albendazole 400 mg daily for 3 days. Use praziquantel and albendazole cautiously if cysticercosis is possible (seizures reported).",r:["TAEN"]},
@@ -348,7 +358,7 @@ const GROUPS={
    {c:"Antimalarials",n:"Atovaquone-proguanil",cov:{pfu:L("Second line if artemether-lumefantrine unavailable (CDC)",["CDCMAL"])}},
    {c:"Antimalarials",n:"Chloroquine",cov:{pviv:L("Blood stage, only where chloroquine-susceptible",["MAL"])}},
    {c:"Antimalarials",n:"Primaquine",cov:{pviv:P("Relapse prevention 7 or 14 days; G6PD test first",["MAL"]),pfu:L("Single 0.25 mg/kg dose with ACT in low-transmission areas",["MAL"])}},
-   {c:"Antimalarials",n:"Tafenoquine",cov:{pviv:L("Alternative to primaquine; G6PD ≥70%",["MAL","CDCMAL"])}},
+   {c:"Antimalarials",n:"Tafenoquine",cov:{pviv:L("Alternative to primaquine: with chloroquine (not ACT); G6PD ≥70%",["MAL","CDCMAL"])}},
    {c:"Antiprotozoals",n:"Pyrimethamine + sulfadiazine",cov:{toxo:P("Preferred, with leucovorin",["OI"])}},
    {c:"Antiprotozoals",n:"Co-trimoxazole (TMP-SMX)",cov:{toxo:L("Treatment alternative; preferred prophylaxis",["OI"])}},
    {c:"Antiprotozoals",n:"Metronidazole / tinidazole",cov:{trich:P("Metronidazole first line; tinidazole alternative",["CDC"]),giar:P("Tinidazole preferred; metronidazole alternative",["OIPED","YB"]),ehis:P("Then a luminal agent",["YB"])}},
@@ -369,7 +379,7 @@ const GROUPS={
    "Atovaquone-proguanil":{po:["Take with food or a milky drink",["SPC"]]},
    "Chloroquine":{mon:[["QT prolongation; irreversible retinal damage (risk with >2.3 mg/kg/day or over 5 years)",["SPC"]]]},
    "Primaquine":{warn:[["Test G6PD first (quantitative); not in pregnancy",["MAL","CDCMAL"]]]},
-   "Tafenoquine":{warn:[["G6PD activity ≥70% required (WHO); CDC: normal quantitative G6PD and age ≥16; not in pregnancy",["MAL","CDCMAL"]]]},
+   "Tafenoquine":{warn:[["G6PD activity ≥70% required (WHO); CDC: normal quantitative G6PD and age ≥16; not in pregnancy or breastfeeding",["MAL","CDCMAL"]]],note:[["WHO: give with chloroquine, not with an ACT; recommendation applies to South America",["MAL"]]]},
    "Pyrimethamine + sulfadiazine":{note:[["Give leucovorin (folinic acid) with pyrimethamine",["OI"]]]},
    "Co-trimoxazole (TMP-SMX)":{mon:[["Frequent blood counts and chemistry; stop at the first rash",["SPC"]]]},
    "Metronidazole / tinidazole":{po:["Metronidazole: IV and oral pharmacokinetics similar",["AHFS"]],ix:[["Potentiates warfarin; avoid alcohol during and for 3 days after metronidazole",["SPC"]]]},
@@ -390,6 +400,15 @@ GORDER.slice(1).forEach(g=>SEL[g]={...GROUPS[g].first});
 
 /* Key current-guidance points shown in the What changed tab */
 const KEYPOINTS=[
+ ["Antibacterial","Ofloxacin added","Fluoroquinolone (UK SmPC, 2026): restricted to use when recommended first-line agents are inappropriate; not for empirical gonorrhoea treatment; not for MRSA unless susceptible; contraindicated in pregnancy, epilepsy and children (added 18 Nov 2026)","OFLX"],
+ ["Antibacterial","Teicoplanin added","Glycopeptide (EU/UK SmPC): streptococci, S. aureus incl. MRSA, E. faecalis, Peptostreptococcus, C. difficile (oral). Acquired resistance in E. faecium and coagulase-negative staphylococci; some VanB VRE susceptible. Trough targets by indication (added 18 Nov 2026)","TEIC"],
+ ["TB","Pre-XDR-TB (WHO 2026)","WHO Module 4, 2nd edition: BPaL for non-severe and BPaLC for severe pulmonary pre-XDR-TB; BDLC only for non-severe pre-XDR-TB (audit 18 Nov 2026)","TBW"],
+ ["Antiviral","RSV after stem-cell transplant","ECIL-10 (2025) supersedes ECIL-4: ribavirin and/or IV immunoglobulin for severely immunocompromised HCT recipients (audit 18 Nov 2026)","ECIL10"],
+ ["Antiparasitic","Tafenoquine (WHO 2026)","Give with chloroquine, not with an ACT; G6PD activity ≥70%; the WHO recommendation applies to South America. 7-day high-dose primaquine only with G6PD ≥70% (audit 18 Nov 2026)","MAL"],
+ ["Antibacterial","Intra-abdominal quinolones","Correction: SIS/IDSA 2010 advises against quinolones unless local E. coli susceptibility exceeds 90% (an earlier '3-month prior use' rule was not in the guideline) (audit 18 Nov 2026)","IAI"],
+ ["Antibacterial","Gonorrhoea — new oral agents","FDA approved zoliflodacin (single oral dose) and gepotidacin for uncomplicated urogenital gonorrhoea (December 2025). Not yet in CDC guidance; ceftriaxone 500 mg IM remains first line (audit 17 Nov 2026)","FDAGC"],
+ ["Antiviral","Refractory HSV","Pritelivir (oral helicase-primase inhibitor) approved 9 Oct 2026 for refractory mucocutaneous HSV in immunocompromised adults (audit 17 Nov 2026)","PRIT"],
+ ["Antiviral","Hepatitis B","Bepirovirsen approved 20 Oct 2026 as a 24-week add-on to nucleos(t)ide analogue therapy in selected non-cirrhotic adults (audit 17 Nov 2026)","BEPI"],
  ["Antibacterial","Cefoxitin (intra-abdominal)","Correction: cefoxitin IS a recommended single agent for mild–moderate community-acquired intra-abdominal infection; cefotetan and clindamycin are the agents not recommended","IAI"],
  ["Antibacterial","ESBL cystitis","Sulopenem added to the preferred oral options","IDSA"],
  ["Antibacterial","S. maltophilia","2026: cefiderocol monotherapy preferred for invasive infection. TMP-SMX, minocycline and levofloxacin shown as combination options from the 2023/24 guidance","IDSA24"],
@@ -428,17 +447,17 @@ const NEWREFS=[
  ["REMR","Veklury (remdesivir) US prescribing information, 2024","https://www.accessdata.fda.gov/drugsatfda_docs/label/2024/214787s027lbl.pdf"],
  ["ASTCT","ASTCT Series #11: Updated Cytomegalovirus Guidelines in Hematopoietic Cell Transplant and Cellular Therapy Recipients. Transplant Cell Ther 2025","https://www.sciencedirect.com/science/article/pii/S2666636725012680"],
  ["MBV","Livtencity (maribavir) US prescribing information, 2024","https://www.accessdata.fda.gov/drugsatfda_docs/label/2024/215596s005lbl.pdf"],
- ["ECIL4","Hirsch HH, et al. ECIL-4 guidelines for RSV, parainfluenza, metapneumovirus, rhinovirus and coronavirus in leukaemia and HSCT patients. Clin Infect Dis 2013;56:258-66","https://academic.oup.com/cid/article/56/2/258/402780"],
+ ["ECIL10","10th European Conference on Infections in Leukaemia (ECIL-10). Community-acquired respiratory virus infections in patients with haematological malignancies or undergoing haematopoietic cell transplantation: updated recommendations. Lancet Infect Dis, published 27 August 2025 (supersedes ECIL-4, 2013)","https://doi.org/10.1016/S1473-3099(25)00365-2"],
  ["HBV","WHO. Guidelines for the prevention, diagnosis, care and treatment for people with chronic hepatitis B infection, 29 March 2024 (recommendations checked via the World Hepatitis Alliance briefing on the guideline)","https://www.who.int/publications/i/item/9789240090903"],
  ["HCV","AASLD-IDSA. HCV Guidance — simplified treatment for treatment-naive adults without cirrhosis","https://www.hcvguidelines.org/treatment-naive/simplified-treatment"],
  ["DHHS","DHHS Panel. Guidelines for the Use of Antiretroviral Agents in Adults and Adolescents with HIV (initial regimens; drug interactions)","https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-arv/what-start-initial-combination-regimens"],
  ["LIV","University of Liverpool drug interaction checkers (HIV, hepatitis, COVID-19)","https://www.hiv-druginteractions.org/"],
  ["MPOX","NIAID. Tecovirimat safe but ineffective as treatment for clade II mpox (STOMP trial)","https://www.niaid.nih.gov/news-events/tecovirimat-safe-ineffective-treatment-clade-ii-mpox"],
- ["TBW","WHO consolidated guidelines on tuberculosis. Module 4: treatment and care, 2025","https://www.ncbi.nlm.nih.gov/books/NBK613101/"],
+ ["TBW","WHO consolidated guidelines on tuberculosis. Module 4: treatment and care, 2nd edition (25 September 2026)","https://www.who.int/publications/i/item/9789240125124"],
  ["ATS16","Nahid P, et al. ATS/CDC/IDSA Clinical Practice Guidelines: Treatment of Drug-Susceptible Tuberculosis. Clin Infect Dis 2016;63:e147-95","https://www.idsociety.org/practice-guideline/treatment-of-drug-susceptible-tb/"],
  ["LTBI","Sterling TR, et al. Guidelines for the Treatment of Latent Tuberculosis Infection: NTCA and CDC, 2020. MMWR Recomm Rep 2020;69(1)","https://www.cdc.gov/mmwr/volumes/69/rr/rr6901a1.htm"],
  ["NTM","Daley CL, et al. Treatment of Nontuberculous Mycobacterial Pulmonary Disease: ATS/ERS/ESCMID/IDSA guideline. Clin Infect Dis 2020;71:e1-36","https://ntminfo.org/wp-content/uploads/2020/07/NTMguidelines2020.pdf"],
- ["MAL","WHO guidelines for malaria, 13 August 2025","https://www.severemalaria.org/sites/default/files/content/document/WHO%20malaria%20guidelines%20-%20August%202025.pdf"],
+ ["MAL","WHO guidelines for malaria, 10 September 2026","https://www.who.int/publications/i/item/guidelines-for-malaria"],
  ["CDCMAL","CDC. Treatment of uncomplicated malaria and treatment of severe malaria (clinical guidance pages)","https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-uncomplicated-malaria.html"],
  ["NCC","White AC Jr, et al. Diagnosis and Treatment of Neurocysticercosis: IDSA/ASTMH Clinical Practice Guidelines, 2017. Clin Infect Dis 2018;66:e49-75","https://www.idsociety.org/practice-guideline/neurocysticercosis/"],
  ["YB","CDC Yellow Book: Travelers' Diarrhea (giardiasis and amebiasis treatment)","https://www.cdc.gov/yellow-book/hcp/preparing-international-travelers/travelers-diarrhea.html"],
@@ -459,7 +478,14 @@ const NEWREFS=[
  ["SCHI","CDC. Clinical Care of Schistosomiasis","https://www.cdc.gov/schistosomiasis/hcp/treatment/index.html"],
  ["TAEN","CDC. Clinical Treatment of Taeniasis","https://www.cdc.gov/taeniasis/hcp/clinical-care/index.html"],
  ["LEISH","CDC. Clinical Care of Leishmaniasis","https://www.cdc.gov/leishmaniasis/hcp/clinical-care/index.html"],
- ["ECHI","CDC. Clinical Treatment of Echinococcosis","https://www.cdc.gov/echinococcosis/hcp/clinical-care/index.html"]
+ ["ECHI","CDC. Clinical Treatment of Echinococcosis","https://www.cdc.gov/echinococcosis/hcp/clinical-care/index.html"],
+ ["OFLX","Ofloxacin 200 mg Tablets. Summary of Product Characteristics. Generics (UK) Ltd t/a Viatris; electronic medicines compendium, revised August 2026","https://www.medicines.org.uk/emc/product/8481/smpc"],
+ ["TEIC","Targocid 400 mg powder for solution for injection/infusion or oral solution (teicoplanin). Summary of Product Characteristics. Sanofi; electronic medicines compendium","https://www.medicines.org.uk/emc/product/2927/smpc"],
+ ["UKAW","UKHSA. UK Access, Watch, Reserve and Other classification for antibiotics (UK-AWaRe), 2024","https://www.gov.uk/government/publications/uk-aware-antibiotic-classification/uk-access-watch-reserve-and-other-classification-for-antibiotics-uk-aware-antibiotic-classification"],
+ ["FDAGC","US FDA. FDA approves two oral therapies to treat gonorrhea (Nuzolvence/zoliflodacin and Blujepa/gepotidacin), 12 December 2025","https://www.fda.gov/news-events/press-announcements/fda-approves-two-oral-therapies-treat-gonorrhea"],
+ ["PRIT","Hovilpri (pritelivir) FDA approval, 9 October 2026 — indication (Drugs.com approval history)","https://www.drugs.com/history/hovilpri.html"],
+ ["PRIT2","Contagion Live. FDA approves pritelivir for refractory HSV in immunocompromised adults (label interactions and PRIOH-1 data), 10 October 2026 — check against the full US prescribing information","https://www.contagionlive.com/view/fda-approves-pritelivir-refractory-hsv-immunocompromised-adults"],
+ ["BEPI","FDA approval of Hibsago (bepirovirsen) for chronic hepatitis B, 20 October 2026 (GSK announcement as reported by Healio)","https://www.healio.com/news/gastroenterology/20261021/hibsago-scores-fda-approval-as-first-antisense-therapy-for-chronic-hepatitis-b"]
 ];
 
 /* ---------- References (numbered in this order) ---------- */
@@ -532,6 +558,7 @@ const EXTRA=[
  ["Tetracycline/doxycycline","tpall","Doxycycline 14 days: penicillin allergy (not in pregnancy)","CDC"],
  ["Ceftriaxone/cefotaxime","tpall","Ceftriaxone: penicillin-allergy alternative (incl. neurosyphilis)","CDC"],
  ["Gentamicin/tobramycin/amikacin","ngon","Gentamicin 240 mg IM + azithromycin 2 g: if cephalosporin allergy","CDC"],
+ ["Gepotidacin (oral)","ngon","Uncomplicated urogenital only (age ≥12 y, ≥45 kg); FDA: for patients with few or no other treatment options","FDAGC"],
  ["Levofloxacin/moxifloxacin","chlam","Levofloxacin 7 days: alternative","CDC"],
  ["Amoxicillin/ampicillin","chlam","Amoxicillin 7 days: alternative in pregnancy","CDC"],
  ["Levofloxacin/moxifloxacin","pseudo","Levofloxacin only (labelled, e.g. 750 mg for nosocomial pneumonia)","FDA_FQ"],
@@ -557,7 +584,7 @@ const PN={
  "Cefepime":{aw:"W",note:[["Preferred for moderate-risk AmpC organisms if MIC ≤8",["IDSA"]],["Avoid for ESBL cUTI or invasive ESBL infection, even if susceptible",["IDSA"]]]},
  "Ceftobiprole":{aw:"R"},
  "Meropenem/imipenem/doripenem":{aw:"W",ix:[["Valproate: carbapenems cause a rapid, large fall in valproate levels — combination not recommended; use an alternative antibiotic",["MHRA"]]],note:[["Preferred for invasive ESBL infection (meropenem or imipenem if critically ill)",["IDSA"]]]},
- "Ertapenem":{aw:"W",ix:[["Valproate: combination not recommended (class effect)",["MHRA"]]],note:[["Highly protein-bound: prefer meropenem/imipenem if critically ill or albumin <2.5 g/dL",["IDSA"]]]},
+ "Ertapenem":{aw:"W",ix:[["Valproate: combination not recommended (class effect)",["MHRA"]]],note:[["Highly protein-bound: prefer meropenem or imipenem if critically ill or hypoalbuminaemic",["IDSA"]]]},
  "Erythromycin":{aw:"W"},
  "Clarithromycin/azithromycin":{aw:"W",po:["Absolute bioavailability: azithromycin 38%, clarithromycin 50–55%",["SPC","AHFS"]],note:[["Azithromycin no longer recommended for gonorrhoea",["CDC"]]]},
  "Tetracycline/doxycycline":{aw:"A",po:["Doxycycline: 90–100% absorbed (fasting)",["AHFS"]],note:[["Avoid doxycycline for ESBL cystitis (low urine levels)",["IDSA"]],["Doxycycline is preferred for chlamydia",["CDC"]]]},
@@ -569,10 +596,10 @@ const PN={
  "Clindamycin":{aw:"A",po:["Oral absorption virtually complete (90%)",["SPC"]],note:[["Not recommended for intra-abdominal infection (B. fragilis resistance)",["IAI"]]]},
  "Vancomycin/daptomycin":{aw:"W",awx:"Vancomycin: Watch · Daptomycin: Reserve",mon:[["Vancomycin: AUC-guided dosing, target AUC 400–600 mg·h/L; trough-only monitoring no longer recommended",["ASHP"]],["Daptomycin: monitor CPK weekly, more often with statins or renal impairment",["DAP"]]],note:[["Daptomycin is not indicated for pneumonia (inactivated by pulmonary surfactant)",["DAP"]],["Oral vancomycin for C. difficile only (not absorbed)",["CDI"]]]},
  "Linezolid/tedizolid":{aw:"R",po:["Linezolid: about 100% bioavailable — same dose IV or oral",["FDA_LZD"]],mon:[["Weekly blood counts, especially beyond 2 weeks; peripheral/optic neuropathy mainly beyond 28 days",["FDA_LZD"]]],ix:[["Serotonin syndrome with serotonergic drugs, especially SSRIs/SNRIs; contraindicated with MAOIs",["FDA_LZD"]]]},
- "Trimethoprim-sulfamethoxazole":{aw:"A",po:["Rapidly and well absorbed orally",["AHFS"]],note:[["Preferred for ESBL cUTI if susceptible; only ~50% of ESBL urinary isolates are susceptible",["IDSA"]]]},
+ "Trimethoprim-sulfamethoxazole":{aw:"A",po:["Rapidly and well absorbed orally",["AHFS"]],note:[["Preferred for ESBL cUTI if susceptible (confirm susceptibility)",["IDSA"]]]},
  "Chloramphenicol":{aw:"A"},
  "Metronidazole":{aw:"A",po:["IV and oral pharmacokinetics similar",["AHFS"]],note:[["For C. difficile: only if fidaxomicin/vancomycin unavailable (non-severe)",["CDI"]]]},
- "Nitrofurantoin/fosfomycin":{aw:"A",awx:"Nitrofurantoin: Access · IV fosfomycin: Reserve",note:[["Cystitis only — not for pyelonephritis or bacteraemia step-down",["IDSA"]],["Oral fosfomycin: E. coli only (fosA genes in Klebsiella)",["IDSA"]],["IV fosfomycin has a high sodium load: caution in heart failure and the elderly",["IDSA"]]]},
+ "Nitrofurantoin/fosfomycin":{aw:"A",awx:"Nitrofurantoin: Access · oral fosfomycin: Watch · IV fosfomycin: Reserve",note:[["Cystitis only — not for pyelonephritis or bacteraemia step-down",["IDSA"]],["Oral fosfomycin: E. coli only",["IDSA","IDSA24"]]]},
  "Rifampin":{aw:"W",po:["Well absorbed; food reduces absorption by about 30%",["AHFS"]]},
  "Fidaxomicin":{aw:"W",note:[["Preferred over oral vancomycin for initial and recurrent CDI",["CDI"]]]},
  "Ceftazidime-avibactam":{aw:"R",note:[["Resistance emerges during therapy in about 10% (KPC); not active against NDM",["IDSA"]]]},
@@ -582,12 +609,15 @@ const PN={
  "Cefiderocol":{aw:"R",note:[["Preferred for NDM-CRE and for invasive Stenotrophomonas",["IDSA"]]]},
  "Cefepime-enmetazobactam":{aw:null,note:[["AWaRe group not confirmed in the sources reviewed — check WHO list",["WHO"]]]},
  "Sulbactam-durlobactam":{aw:null,note:[["Give with a carbapenem for CRAB",["IDSA"]]]},
- "Pivmecillinam (oral)":{aw:null,note:[["Not active against KPC-producing organisms",["IDSA"]]]},
- "Gepotidacin (oral)":{aw:null,note:[["Also active against N. gonorrhoeae: overuse may select resistance",["IDSA"]]]},
- "Aztreonam":{aw:null,note:[["Limited activity against Gram-positive and anaerobic bacteria — add other agents empirically if these are possible",["SPC"]],["Can be given in penicillin or cephalosporin allergy without testing, except ceftazidime allergy (identical R1 side chain)",["DAPP"]]]},
- "Ampicillin-sulbactam (high-dose)":{aw:null,note:[["Not recommended for community-acquired intra-abdominal infection: high E. coli resistance",["IAI"]],["CRAB: high-dose sulbactam plus another agent was preferred in IDSA 2023/24; IDSA 2026 prioritises sulbactam-durlobactam",["IDSA24","IDSA"]]]},
- "Minocycline (high-dose)":{aw:null,note:[["Off-label for S. maltophilia (alternative to co-trimoxazole) and Acinetobacter",["AHFS"]]]},
- "Ceftaroline":{aw:null,note:[["Coverage from the FDA label: MRSA only for skin infections, not pneumonia",["SPC"]]]}
+ "Pivmecillinam (oral)":{aw:"A",awx:"Access (listed as mecillinam)",note:[["Not active against KPC-producing organisms",["IDSA"]]]},
+ "Gepotidacin (oral)":{aw:"W",note:[["Also FDA-approved for uncomplicated urogenital gonorrhoea (December 2025); FDA restricts that use to patients with few or no other treatment options",["FDAGC"]],["Gonorrhoea indication (FDA, 11 Dec 2025): urethra or cervix only; not studied for pharyngeal or rectal infection",["FDAGC"]]]},
+ "Zoliflodacin (oral)":{aw:null,note:[["First-in-class oral agent approved by FDA on 12 Dec 2025 for uncomplicated urogenital gonorrhoea; not yet in CDC guidance — ceftriaxone 500 mg IM remains first line",["FDAGC","CDC"]]]},
+ "Ofloxacin":{aw:"W",awx:"Watch (UK-AWaRe 2024)",po:["Oral absorption rapid and almost complete; food has no relevant effect",["OFLX"]],warn:[["Fluoroquinolone class warnings: tendinitis/tendon rupture (higher risk with corticosteroids, older age, renal impairment, transplant), aortic aneurysm/dissection, heart-valve regurgitation, QT prolongation, dysglycaemia, seizures and psychiatric reactions, peripheral neuropathy; not recommended in myasthenia gravis",["OFLX"]],["Contraindicated: epilepsy, previous fluoroquinolone tendon disorder, children and growing adolescents, pregnancy, breastfeeding, G6PD deficiency",["OFLX"]]],ix:[["Separate antacids, sucralfate and iron, zinc, magnesium or aluminium products by at least 2 h",["OFLX"]],["Glibenclamide or insulin: risk of dysglycaemia; QT-prolonging drugs",["OFLX"]]],note:[["Adults 200–800 mg daily (max 400 mg twice daily); gonococcal urethritis/cervicitis 400 mg single dose only if susceptible; course no longer than 2 months",["OFLX"]],["Renal: CrCl 20–50 mL/min 100–200 mg/day; CrCl <20 mL/min or dialysis 100 mg/day. Severe hepatic impairment: max 400 mg/day",["OFLX"]],["Not recommended for MRSA (co-resistance very likely) unless susceptibility is confirmed. Inactive against Bacteroides, Peptostreptococcus, C. difficile and T. pallidum",["OFLX"]],["AWaRe group taken from the UKHSA UK-AWaRe 2024 list (derived from WHO AWaRe)",["UKAW"]]]},
+ "Teicoplanin":{aw:"W",awx:"Watch (UK-AWaRe 2024)",warn:[["Caution in vancomycin hypersensitivity (cross-reactions occur); a previous vancomycin infusion ('red man') reaction is not a contraindication. SJS, TEN, DRESS and AGEP reported — stop if they occur",["TEIC"]]],mon:[["Trough TDM at steady state after loading, then at least weekly (FPIA assay): >15 mg/L for skin/soft-tissue infection, pneumonia and cUTI; >20 mg/L for bone and joint infection; 30–40 mg/L during loading then >30 mg/L for endocarditis. HPLC targets differ (≥10 mg/L; 15–30 mg/L in severe infection)",["TEIC"]],["Full blood count (thrombocytopenia) and renal function; auditory testing if other ototoxic or nephrotoxic drugs are given",["TEIC"]]],note:[["Loading 6 mg/kg every 12 h for 3 doses (12 mg/kg every 12 h for 3–5 doses in bone/joint infection and endocarditis), then the same dose once daily",["TEIC"]],["Renal impairment, from day 4: CrCl 30–80 mL/min — half the maintenance dose; CrCl <30 mL/min or haemodialysis — one-third (not removed by haemodialysis)",["TEIC"]],["IV bolus over 3–5 min or 30-min infusion, or IM; not absorbed orally — the oral route is only for C. difficile infection",["TEIC"]],["Inherently inactive against all Gram-negative bacteria, Legionella, Mycoplasma and Chlamydia. Check HMC formulary availability",["TEIC"]],["AWaRe group taken from the UKHSA UK-AWaRe 2024 list (derived from WHO AWaRe)",["UKAW"]]]},
+ "Aztreonam":{aw:"R",note:[["Limited activity against Gram-positive and anaerobic bacteria — add other agents empirically if these are possible",["SPC"]],["Can be given in penicillin or cephalosporin allergy without testing, except ceftazidime allergy (identical R1 side chain)",["DAPP"]]]},
+ "Ampicillin-sulbactam (high-dose)":{aw:"A",note:[["Not recommended for community-acquired intra-abdominal infection: high E. coli resistance",["IAI"]],["CRAB: high-dose sulbactam plus another agent was preferred in IDSA 2023/24; IDSA 2026 prioritises sulbactam-durlobactam",["IDSA24","IDSA"]]]},
+ "Minocycline (high-dose)":{aw:"W",awx:"Oral: Watch · IV: Reserve",note:[["IV minocycline is FDA-labelled for susceptible Acinetobacter species; use for S. maltophilia is off-label",["SPC","AHFS"]]]},
+ "Ceftaroline":{aw:"R",note:[["Coverage from the FDA label: MRSA only for skin infections, not pneumonia",["SPC"]]]}
 };
 const DRUG26=(()=>{
   const out=DRUG.map(d=>({...d,cov:{...d.cov},chg:{}}));
@@ -603,8 +633,8 @@ const DRUG26=(()=>{
 let ver="2026", grp="bac";
 const G=()=>GROUPS[grp];
 const DATA=()=>grp!=="bac"?G().drugs:(ver==="2026"?DRUG26:DRUG);
-const orgName=o=>ver==="2026"&&o.id==="space"?"AmpC organisms (SPACE)":ver==="2026"&&o.id==="cre"?"CRE":o.n;
-const orgSub=o=>ver==="2026"&&o.id==="cre"?"Carbapenem-resistant Enterobacterales":ver==="2026"&&o.id==="space"?"Enterobacter, K. aerogenes, Citrobacter, Serratia, Proteus, Acinetobacter":o.s;
+const orgName=o=>o.edited?o.n:ver==="2026"&&o.id==="space"?"AmpC organisms (SPACE)":ver==="2026"&&o.id==="cre"?"CRE":o.n;
+const orgSub=o=>o.edited?o.s:ver==="2026"&&o.id==="cre"?"Carbapenem-resistant Enterobacterales":ver==="2026"&&o.id==="space"?"Enterobacter, K. aerogenes, Citrobacter, Serratia, Proteus, Acinetobacter":o.s;
 const css=v=>`var(${v})`;
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const famOrder=["gpos","gpbac","gneg","gncc","anae","atyp","spir"];
@@ -694,7 +724,7 @@ function renderToolkit(){
   </div>`;
 }
 function renderRefs(){
-  document.getElementById("refs").innerHTML=`<ol class="refl">${REFS.map(([k,t,u])=>`<li id="ref-${k}">${esc(t)}${u?` — <a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//,"").slice(0,70))}${u.length>78?"…":""}</a>`:""}</li>`).join("")}</ol><p class="fine">Every statement in this chart was re-checked on 4 October 2026 against the source cited next to it; statements that could not be confirmed in a primary guideline, an FDA label or AHFS were removed. Two links point to summaries because the original was not reachable: WHO hepatitis B 2024 (checked via the World Hepatitis Alliance briefing) and the cryptococcal guideline chapter on NCBI Bookshelf. US guidance (IDSA, CDC, DHHS) should be checked against the HMC antibiogram, formulary and national policy.</p>`;
+  document.getElementById("refs").innerHTML=`<ol class="refl">${REFS.map(([k,t,u])=>`<li id="ref-${k}">${esc(t)}${u?` — <a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//,"").slice(0,70))}${u.length>78?"…":""}</a>`:""}</li>`).join("")}</ol><p class="fine">Every statement in this chart was re-checked on 4 October 2026 against the source cited next to it, new approvals and guidance up to 17 November 2026 were added, and all 608 statements were re-audited against their primary sources on 18 November 2026; statements that could not be confirmed in a primary guideline, an FDA label or AHFS were removed. Two links point to summaries because the original was not reachable: WHO hepatitis B 2024 (checked via the World Hepatitis Alliance briefing) and the cryptococcal guideline chapter on NCBI Bookshelf. US guidance (IDSA, CDC, DHHS) should be checked against the HMC antibiogram, formulary and national policy.</p>`;
 }
 function renderOrgPanel(){
   const el=document.getElementById("orgPanel");
@@ -706,7 +736,9 @@ function renderOrgPanel(){
   el.querySelectorAll(".org").forEach(b=>b.onclick=()=>{curOrg=b.dataset.o;renderOrgPanel();renderOrgDetail();if(innerWidth<820)document.getElementById("orgDetail").scrollIntoView({behavior:"smooth"})});
 }
 function renderOrgDetail(){
-  const o=orgById[curOrg],F=FAM[o.f],ds=drugsFor(o.id);
+  if(!ORGS().some(x=>x.id===curOrg)&&ORGS().length) curOrg=ORGS()[0].id;
+  const o=orgById[curOrg];if(!o){document.getElementById("orgDetail").innerHTML="";return;}
+  const F=FAM[o.f],ds=drugsFor(o.id);
   const byC={};ds.forEach(d=>(byC[d.c]=byC[d.c]||[]).push(d));
   const bac=grp==="bac";
   const removed=bac&&ver==="2026"?DRUG26.filter(d=>d.chg[o.id]&&d.chg[o.id].act==="remove"):[];
@@ -726,12 +758,14 @@ function renderDrugList(){
   const el=document.getElementById("drugList");
   const list=DATA().filter(d=>!t||d.n.toLowerCase().includes(t)||d.c.toLowerCase().includes(t));
   if(!DATA().some(d=>d.n===curDrug)) curDrug=grp==="bac"?"Meropenem/imipenem/doripenem":G().first.drug;
+  if(!DATA().some(d=>d.n===curDrug)&&DATA().length) curDrug=DATA()[0].n;
   let lc="";
   el.innerHTML=list.length?list.map(d=>{const hd=d.c!==lc?`<div style="font-size:12px;font-weight:700;color:var(--muted);margin:10px 10px 2px">${esc(d.c)}</div>`:"";lc=d.c;const up=grp==="bac"&&ver==="2026"&&d.chg&&Object.keys(d.chg).length;return hd+`<button class="dl" data-d="${esc(d.n)}" aria-pressed="${d.n===curDrug}"><span>${esc(d.n)}${up?` <span class="upd">${d.isNew?"new":"2026"}</span>`:""}</span><small>${Object.keys(d.cov).length}/${ORGS().length}</small></button>`}).join(""):`<p style="color:var(--muted);margin:8px">No ${esc(G().noun)} matches “${esc(t)}”. Try the class name, such as “${esc(G().hint)}”.</p>`;
   el.querySelectorAll(".dl").forEach(b=>b.onclick=()=>{curDrug=b.dataset.d;renderDrugList();renderDrugDetail();if(innerWidth<820)document.getElementById("drugDetail").scrollIntoView({behavior:"smooth"})});
 }
 function renderDrugDetail(){
-  const d=DATA().find(x=>x.n===curDrug),n=Object.keys(d.cov).length,bac=grp==="bac";
+  const d=DATA().find(x=>x.n===curDrug);if(!d){document.getElementById("drugDetail").innerHTML="";return;}
+  const n=Object.keys(d.cov).length,bac=grp==="bac";
   const removed=bac&&ver==="2026"&&d.chg?Object.entries(d.chg).filter(([o,c])=>c.act==="remove"):[];
   document.getElementById("drugDetail").innerHTML=
   `<div class="panel" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">

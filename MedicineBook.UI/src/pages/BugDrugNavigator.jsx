@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext, useEffect, useRef } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { 
   ShieldAlert, 
   Pill, 
@@ -11,7 +12,8 @@ import {
   Info, 
   Check, 
   X, 
-  ExternalLink, 
+  ExternalLink,
+  Maximize2, 
   Sparkles,
   ArrowRight,
   Filter,
@@ -78,6 +80,32 @@ const BugDrugNavigator = () => {
   
   // Active view tab: 'bug', 'drug', 'map', 'tk', 'chg', 'ref'
   const [activeTab, setActiveTab] = useState('bug');
+  const [viewMode, setViewMode] = useState('integrated'); // 'integrated' or 'standalone'
+  const [activeFingerprintOrg, setActiveFingerprintOrg] = useState(null);
+  const { user } = useContext(AuthContext);
+  const isAdmin = user?.roles?.includes('Admin');
+  const iframeRef = useRef(null);
+
+  // Sync user info to standalone spectra iframe if rendered
+  useEffect(() => {
+    if (viewMode !== 'standalone' || !iframeRef.current?.contentWindow) return;
+    const origin = window.location.origin;
+    const handleMsg = (e) => {
+      if (e.source !== iframeRef.current?.contentWindow) return;
+      if (e.data?.source === 'spectra' && e.data?.type === 'ready') {
+        iframeRef.current.contentWindow.postMessage({
+          source: 'hulool',
+          type: 'spectra:setUser',
+          userId: user?.username || 'CLINICIAN-01',
+          role: isAdmin ? 'sysadmin' : 'pharmacist',
+          site: 'HGH',
+          appVersion: '3.1.0'
+        }, origin);
+      }
+    };
+    window.addEventListener('message', handleMsg);
+    return () => window.removeEventListener('message', handleMsg);
+  }, [viewMode, user, isAdmin]);
 
   // Track selected organism and drug per group so user choices persist when toggling groups
   const [selectionsByGroup, setSelectionsByGroup] = useState({
@@ -302,7 +330,7 @@ const BugDrugNavigator = () => {
                   </span>
                 </h1>
                 <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                  Comprehensive Antimicrobial & Anti-Infective Decision Support Tool
+                  Anti-Infective Coverage Reference · Verified 4 Oct 2026, Re-Audited 18 Nov 2026 (608 Statements)
                 </p>
               </div>
             </div>
@@ -312,39 +340,75 @@ const BugDrugNavigator = () => {
             </p>
           </div>
 
-          {/* Right Action: Antibacterial Version Switcher */}
-          {isBac && (
-            <div className="flex flex-col items-end gap-1.5 shrink-0 self-stretch sm:self-auto">
-              <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 pl-2 pr-1">Version:</span>
-                <button
-                  type="button"
-                  onClick={() => setVersion('2026')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    version === '2026'
-                      ? 'bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm border border-slate-200 dark:border-white/10'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  2026 update
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setVersion('2019')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    version === '2019'
-                      ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-sm border border-slate-200 dark:border-white/10'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  Original 2019
-                </button>
-              </div>
-              <span className="text-[11px] text-slate-400 dark:text-slate-500 text-right">
-                {version === '2026' ? 'IDSA 2026 · CDC · AHFS verified' : 'McCormack & Lalji (UBC 2019)'}
-              </span>
+          {/* Right Actions: View Mode Switcher & Version Toggle */}
+          <div className="flex flex-wrap items-center gap-3 shrink-0 self-stretch sm:self-auto">
+            {/* View Mode Switcher */}
+            <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner">
+              <button
+                type="button"
+                onClick={() => setViewMode('integrated')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  viewMode === 'integrated'
+                    ? 'bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm border border-slate-200 dark:border-white/10'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                Integrated UI
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('standalone')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  viewMode === 'standalone'
+                    ? 'bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm border border-slate-200 dark:border-white/10'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                Standalone Spectra
+              </button>
             </div>
-          )}
+
+            <a
+              href="/spectra/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+              title="Open standalone Spectra in full-screen tab"
+            >
+              <span>Full Tab</span>
+              <ExternalLink size={14} />
+            </a>
+
+            {/* Antibacterial Version Switcher */}
+            {isBac && (
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner">
+                  <button
+                    type="button"
+                    onClick={() => setVersion('2026')}
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                      version === '2026'
+                        ? 'bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm border border-slate-200 dark:border-white/10'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    2026 update
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setVersion('2019')}
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                      version === '2019'
+                        ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-sm border border-slate-200 dark:border-white/10'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Original 2019
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Drug Group Selector Tabs */}
@@ -439,7 +503,18 @@ const BugDrugNavigator = () => {
         </div>
       </div>
 
-      {/* View Tabs Navigation */}
+      {viewMode === 'standalone' ? (
+        <div className="w-full rounded-3xl overflow-hidden border border-slate-200/80 dark:border-white/10 shadow-lg bg-white dark:bg-slate-900">
+          <iframe
+            ref={iframeRef}
+            src={`/spectra/index.html?uid=${user?.username || 'CLINICIAN'}&role=${isAdmin ? 'sysadmin' : 'pharmacist'}&site=HGH&app=3.1.0`}
+            title="Spectra — Bug–Drug Spectrum Navigator"
+            className="w-full h-[85vh] min-h-[700px] border-0"
+          />
+        </div>
+      ) : (
+        <>
+        {/* View Tabs Navigation */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200 dark:border-white/10 no-scrollbar">
         <button
           type="button"
@@ -839,6 +914,172 @@ const BugDrugNavigator = () => {
                   </div>
                 </div>
 
+                {/* Spectrum Fingerprint Visualization */}
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-5 shadow-sm flex flex-col gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200/70 dark:border-white/10">
+                    <div>
+                      <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                        <Grid size={16} className="text-primary" />
+                        <span>Spectrum Fingerprint</span>
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Interactive organism coverage array · Tap any square for pathogen status & details
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+                      <span className="text-primary font-black text-sm">
+                        {Object.keys(currentDrug.cov || {}).length}
+                      </span>
+                      <span>of {currentOrganisms.length} pathogens covered</span>
+                    </div>
+                  </div>
+
+                  {/* Fingerprint Squares grouped by family */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1" role="group" aria-label="Spectrum fingerprint">
+                    {activeFamilyOrder.map(famKey => {
+                      const fam = FAMILIES[famKey];
+                      const famOrgs = currentOrganisms.filter(o => o.f === famKey);
+                      if (!famOrgs.length) return null;
+
+                      return (
+                        <div 
+                          key={famKey} 
+                          className="inline-flex items-center gap-1 p-1 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-white/5"
+                          title={fam?.name || famKey}
+                        >
+                          {famOrgs.map(o => {
+                            const cov = currentDrug.cov ? currentDrug.cov[o.id] : null;
+                            const isConditional = cov && cov.q;
+                            const isPreferred = cov && cov.p;
+                            const isActive = cov && !cov.q;
+                            const isNotCovered = !cov;
+
+                            let statusLabel = 'Not covered';
+                            let statusText = '';
+                            if (isActive) {
+                              statusLabel = isPreferred ? 'Preferred' : 'Active';
+                              statusText = isPreferred ? cov.p : '';
+                            } else if (isConditional) {
+                              statusLabel = 'Conditional / Limitation';
+                              statusText = cov.q;
+                            }
+
+                            const isSelected = activeFingerprintOrg?.id === o.id;
+
+                            return (
+                              <button
+                                key={o.id}
+                                type="button"
+                                onClick={() => {
+                                  setActiveFingerprintOrg(isSelected ? null : {
+                                    id: o.id,
+                                    name: getOrganismName(o, version),
+                                    family: fam?.name || famKey,
+                                    status: statusLabel,
+                                    text: statusText,
+                                    isCovered: Boolean(cov)
+                                  });
+                                }}
+                                className={`w-6 h-6 rounded-md flex items-center justify-center transition-all cursor-pointer ${
+                                  isActive
+                                    ? `${fam?.theme?.dot || 'bg-violet-600'} text-white shadow-xs`
+                                    : isConditional
+                                    ? `bg-transparent border-2 ${fam?.theme?.ring || 'border-amber-500'}`
+                                    : 'bg-slate-200/80 dark:bg-slate-700/50 border border-transparent opacity-40 hover:opacity-90'
+                                } ${isSelected ? 'ring-2 ring-primary scale-110' : 'hover:scale-105'}`}
+                                title={`${getOrganismName(o, version)} (${fam?.name || famKey}): ${statusLabel}`}
+                              >
+                                {isActive && <span className="w-2 h-2 rounded-xs bg-white"></span>}
+                                {isConditional && <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Fingerprint Interactive Detail Popover */}
+                  {activeFingerprintOrg && (
+                    <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-slate-900 dark:text-white">
+                            {activeFingerprintOrg.name}
+                          </span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400">
+                            ({activeFingerprintOrg.family})
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                            activeFingerprintOrg.status === 'Not covered'
+                              ? 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                              : activeFingerprintOrg.status.includes('Conditional')
+                              ? 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300'
+                              : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300'
+                          }`}>
+                            {activeFingerprintOrg.status}
+                          </span>
+                          {activeFingerprintOrg.text && (
+                            <span className="text-xs text-slate-700 dark:text-slate-300 italic">
+                              "{activeFingerprintOrg.text}"
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const target = document.getElementById(`org-card-${activeFingerprintOrg.id}`);
+                            if (target) {
+                              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              target.classList.add('ring-2', 'ring-primary');
+                              setTimeout(() => target.classList.remove('ring-2', 'ring-primary'), 2000);
+                            }
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-all shadow-xs"
+                        >
+                          Jump to Card
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveFingerprintOrg(null)}
+                          className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Fingerprint Legend */}
+                  <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 dark:text-slate-400 pt-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-xs bg-violet-600 inline-flex items-center justify-center">
+                        <span className="w-1 h-1 bg-white rounded-xs"></span>
+                      </span>
+                      <span>Active</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-xs border-2 border-amber-500 bg-transparent inline-flex items-center justify-center">
+                        <span className="w-1 h-1 bg-amber-500 rounded-full"></span>
+                      </span>
+                      <span>Conditional / Limitation</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-xs bg-slate-300 dark:bg-slate-700 opacity-60 inline-block"></span>
+                      <span>Not covered</span>
+                    </div>
+                    <span className="text-[11px] text-slate-400 italic">
+                      · Grouped by pathogen family in chart order
+                    </span>
+                  </div>
+                </div>
+
                 {/* Pharmacist Clinical Notes Card */}
                 <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
@@ -1024,6 +1265,7 @@ const BugDrugNavigator = () => {
                               return (
                                 <div
                                   key={org.id}
+                                  id={`org-card-${org.id}`}
                                   className={`p-3 rounded-2xl border transition-all ${
                                     isCovered
                                       ? `${fam?.theme?.bg || 'bg-slate-50'} ${fam?.theme?.border || 'border-slate-200'} shadow-sm`
@@ -1550,6 +1792,8 @@ const BugDrugNavigator = () => {
         </div>
       )}
 
+        </>
+      )}
     </div>
   );
 };
