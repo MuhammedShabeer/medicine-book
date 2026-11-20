@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Hulool.FormularyRestrictions.EntityFrameworkCore</RootNamespace>
+    <Description>Entity Framework Core 8 storage for the Hulool 360° formulary restriction module (SQL Server, PostgreSQL, SQLite).</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hulool.FormularyRestrictions\Hulool.FormularyRestrictions.csproj" />
+  </ItemGroup>
+</Project>

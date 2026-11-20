@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { 
   INITIAL_ADMIXA_DRUGS, 
@@ -358,6 +358,15 @@ const Admixa = () => {
             <span className="sp"></span>
 
             <span id="topActions" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <Link 
+                to="/admixa-ai" 
+                className="pillbtn sm" 
+                style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', color: '#fff', border: 'none', fontWeight: 600 }}
+                title="Open Admixa AI conversational preparation assistant"
+              >
+                <span style={{ marginRight: '4px' }}>✨</span>
+                <span>Admixa AI</span>
+              </Link>
               <a 
                 href="/admixa/index.html" 
                 target="_blank" 

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Link, useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen, ShieldAlert, Syringe } from 'lucide-react';
+import { LayoutDashboard, Users, Pill, LogOut, Sun, Moon, Heart, Activity, Calculator, AlertTriangle, FlaskConical, PackageOpen, Menu, X, Megaphone, Settings, BookOpen, ShieldAlert, Syringe, ShieldCheck, Sparkles } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
@@ -47,7 +47,7 @@ const Layout = () => {
     setUnreadAnnouncements(false);
   };
 
-  const publicPaths = ['/spectra', '/bug-drug-navigator', '/bug-drug', '/antibiogram', '/admixa', '/calculator', '/references', '/acknowledgements'];
+  const publicPaths = ['/spectra', '/bug-drug-navigator', '/bug-drug', '/antibiogram', '/admixa', '/admixa-ai', '/iv-ai', '/restrictions', '/formulary-restrictions', '/calculator', '/references', '/acknowledgements'];
   const isPublicRoute = publicPaths.some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
 
   if (!user && !isPublicRoute) {
@@ -60,7 +60,9 @@ const Layout = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Announcements', path: '/announcements', icon: Megaphone, hasBadge: unreadAnnouncements },
     { name: 'Medicines', path: '/medicines', icon: Pill },
+    { name: 'Restrictions', path: '/restrictions', icon: ShieldCheck },
     { name: 'Admixa', path: '/admixa', icon: Syringe },
+    { name: 'Admixa AI', path: '/admixa-ai', icon: Sparkles },
     { name: 'Spectra', path: '/spectra', icon: ShieldAlert },
     { name: 'Calculator', path: '/calculator', icon: Calculator },
     ...(isAdmin ? [

@@ -1,5 +1,6 @@
 using MedicineBook.API.Data;
 using MedicineBook.API.Models;
+using Hulool.FormularyRestrictions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,8 +48,17 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policyBuilder =>
-        policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("ETag"));
 });
+
+// Configure Hulool 360 Formulary Restrictions
+builder.Services
+    .AddFormularyRestrictions(o =>
+    {
+        o.AdminRoles = ["Admin"];
+        o.RequireSignedInUserForReads = false;
+    })
+    .UseJsonFileStore(Path.Combine(builder.Environment.ContentRootPath, "App_Data", "formulary"));
 
 var app = builder.Build();
 
@@ -68,10 +78,12 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapFormularyRestrictions();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 // Seed Database
+await app.Services.InitializeFormularyRestrictionsAsync();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

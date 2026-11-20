@@ -20,6 +20,8 @@ import Announcements from './pages/Announcements';
 import AdminConfig from './pages/AdminConfig';
 import BugDrugNavigator from './pages/BugDrugNavigator';
 import Admixa from './pages/Admixa';
+import AdmixaAI from './pages/AdmixaAI';
+import Restrictions from './pages/Restrictions';
 
 function App() {
   return (
@@ -35,8 +37,12 @@ function App() {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="medicines" element={<MedicinesList />} />
+                <Route path="restrictions" element={<Restrictions />} />
+                <Route path="formulary-restrictions" element={<Restrictions />} />
                 <Route path="admixa" element={<Admixa />} />
                 <Route path="admixa/:id" element={<Admixa />} />
+                <Route path="admixa-ai" element={<AdmixaAI />} />
+                <Route path="iv-ai" element={<AdmixaAI />} />
                 <Route path="iv-guide" element={<Admixa />} />
                 <Route path="spectra" element={<BugDrugNavigator />} />
                 <Route path="bug-drug-navigator" element={<BugDrugNavigator />} />
